@@ -1,25 +1,38 @@
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { Streamdown } from 'streamdown';
+/*
+  DESIGN: Foreman's Blueprint — Home Page
+  Assembles all sections in order with proper spacing
+  Mobile bottom bar always visible
+*/
+import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import ServicesSection from "@/components/ServicesSection";
+import WhyChooseUs from "@/components/WhyChooseUs";
+import GallerySection from "@/components/GallerySection";
+import ReviewsSection from "@/components/ReviewsSection";
+import ServiceAreasSection from "@/components/ServiceAreasSection";
+import FAQSection from "@/components/FAQSection";
+import ContactSection from "@/components/ContactSection";
+import Footer from "@/components/Footer";
+import MobileBar from "@/components/MobileBar";
 
-/**
- * All content in this page are only for example, replace with your own feature implementation
- * When building pages, remember your instructions in Frontend Best Practices, Design Guide and Common Pitfalls
- */
 export default function Home() {
-  // If theme is switchable in App.tsx, we can implement theme toggling like this:
-  // const { theme, toggleTheme } = useTheme();
-
   return (
     <div className="min-h-screen flex flex-col">
-      <main>
-        {/* Example: lucide-react for icons */}
-        <Loader2 className="animate-spin" />
-        Example Page
-        {/* Example: Streamdown for markdown rendering */}
-        <Streamdown>Any **markdown** content</Streamdown>
-        <Button variant="default">Example Button</Button>
+      <Navbar />
+      <main className="flex-1">
+        <HeroSection />
+        <ServicesSection />
+        <WhyChooseUs />
+        <GallerySection />
+        <ReviewsSection />
+        <ServiceAreasSection />
+        <FAQSection />
+        <ContactSection />
       </main>
+      <Footer />
+      <MobileBar />
+      {/* Bottom padding on mobile so content isn't hidden behind sticky bar */}
+      <div className="h-16 md:hidden" />
     </div>
   );
 }
