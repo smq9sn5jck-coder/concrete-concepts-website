@@ -73,10 +73,13 @@ export default function QuoteForm({ onSuccess, compact = false }: QuoteFormProps
           (window as any).fbq("track", "Lead", { content_name: form.service });
         }
 
-        // Call optional callback
-        if (onSuccess) {
-          setTimeout(onSuccess, 2000);
-        }
+        // Auto-close after 3 seconds
+        setTimeout(() => {
+          setStatus("idle");
+          if (onSuccess) {
+            onSuccess();
+          }
+        }, 3000);
       } else {
         setStatus("error");
       }
@@ -88,12 +91,15 @@ export default function QuoteForm({ onSuccess, compact = false }: QuoteFormProps
   if (status === "success") {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-        <CheckCircle className="w-14 h-14 text-green-600" />
+        <CheckCircle className="w-14 h-14 text-green-600 animate-bounce" />
         <h3 className="text-navy text-xl font-bold" style={{ fontFamily: "Fraunces, serif" }}>
-          Quote Request Sent!
+          ✓ Quote Request Sent!
         </h3>
         <p className="text-charcoal/70 text-sm max-w-xs">
-          Jarrad will be in touch within a few hours. If it's urgent, call <a href="tel:0424463268" className="text-gold font-semibold">0424 463 268</a>.
+          We've received your enquiry and Jarrad will be in touch within a few hours.
+        </p>
+        <p className="text-charcoal/50 text-xs mt-2">
+          For urgent matters, call <a href="tel:0424463268" className="text-gold font-semibold hover:underline">0424 463 268</a>
         </p>
       </div>
     );
