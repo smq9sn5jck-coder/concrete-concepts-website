@@ -1,7 +1,7 @@
 /*
   Reusable Quote Form Component
-  Can be used in ContactSection, modals, or anywhere on the site
-  Sends to Web3Forms which emails info@concreteconceptsgroup.com
+  Uses Resend API to send emails to info@concreteconceptsgroup.com
+  Maintains Google Ads and Meta Pixel tracking
 */
 import { useState } from "react";
 import { Send, CheckCircle, Loader2 } from "lucide-react";
@@ -22,9 +22,6 @@ const SERVICE_OPTIONS = [
   "Other",
 ];
 
-// Web3Forms access key — sends to info@concreteconceptsgroup.com
-const WEB3FORMS_KEY = "3e395780-912f-45f3-b018-d1c5949bee7d";
-
 interface QuoteFormProps {
   onSuccess?: () => void;
   compact?: boolean;
@@ -42,19 +39,22 @@ export default function QuoteForm({ onSuccess, compact = false }: QuoteFormProps
     e.preventDefault();
     setStatus("sending");
     try {
-      const res = await fetch("https://api.web3forms.com/submit", {
+      // Send email via Resend API through backend
+      const res = await fetch("/api/send-quote", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: `New Quote Request — ${form.service || "General"} — ${form.suburb || "Brisbane"}`,
-          from_name: form.name,
-          email_from: form.email || "noreply@concreteconceptsgroup.com",
-          ...form,
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          service: form.service,
+          suburb: form.suburb,
+          message: form.message,
         }),
       });
+
       const data = await res.json();
-      if (data.success) {
+      if (res.ok && data.success) {
         setStatus("success");
         setForm({ name: "", email: "", phone: "", service: "", suburb: "", message: "" });
         
