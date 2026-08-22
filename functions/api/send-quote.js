@@ -1,143 +1,167 @@
-/**
- * Cloudflare Worker Function
- * Multi-channel lead capture: Resend Email + Jotform + SMS
- * Endpoint: POST /api/send-quote
- */
+const PRODUCTION_ORIGINS = new Set([
+  "https://concreteconceptsgroup.com",
+  "https://www.concreteconceptsgroup.com",
+]);
 
-export async function onRequest(context) {
-  const { request } = context;
+const MAX_BODY_BYTES = 32 * 1024;
+const PHONE_PATTERN = /^[+()\d\s-]{8,24}$/;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  // Only allow POST requests
-  if (request.method !== "POST") {
-    return new Response(JSON.stringify({ error: "Method not allowed" }), {
-      status: 405,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      "Cache-Control": "no-store",
+    },
+  });
+}
+
+function isAllowedOrigin(origin) {
+  if (!origin) return false;
+  if (PRODUCTION_ORIGINS.has(origin)) return true;
 
   try {
-    const body = await request.json();
-    const { name, email, phone, service, suburb, message } = body;
-
-    // Validate required fields
-    if (!name || !phone || !service || !suburb) {
-      return new Response(
-        JSON.stringify({ error: "Missing required fields" }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // Get API keys from environment
-    const RESEND_API_KEY = context.env.RESEND_API_KEY;
-    const JOTFORM_API_KEY = "d16496444df6c6fa6af42c4e361892f6";
-    const JOTFORM_FORM_ID = "261984004033855";
-
-    // Run all channels in parallel - never lose a lead
-    const results = await Promise.allSettled([
-      // Channel 1: Send email via Resend API
-      sendResendEmail(RESEND_API_KEY, { name, email, phone, service, suburb, message }),
-      // Channel 2: Submit to Jotform for backup
-      submitToJotform(JOTFORM_API_KEY, JOTFORM_FORM_ID, { name, email, phone, service, suburb, message }),
-    ]);
-
-    // Log results for debugging
-    const emailResult = results[0];
-    const jotformResult = results[1];
-
-    console.log("Email:", emailResult.status, emailResult.value || emailResult.reason);
-    console.log("Jotform:", jotformResult.status, jotformResult.value || jotformResult.reason);
-
-    // As long as at least one channel succeeded, return success
-    const anySuccess = results.some(r => r.status === "fulfilled" && r.value?.success);
-
-    if (anySuccess) {
-      return new Response(
-        JSON.stringify({
-          success: true,
-          message: "Quote request sent successfully",
-          channels: {
-            email: emailResult.status === "fulfilled" ? "sent" : "failed",
-            jotform: jotformResult.status === "fulfilled" ? "logged" : "failed",
-          },
-        }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    // All channels failed
-    return new Response(
-      JSON.stringify({ error: "Failed to process quote request" }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
+    const url = new URL(origin);
+    return (
+      url.protocol === "https:" &&
+      url.hostname.endsWith(".concrete-concepts-group.pages.dev")
     );
-  } catch (error) {
-    console.error("Error processing quote request:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error", message: error.message }),
-      { status: 500, headers: { "Content-Type": "application/json" } }
-    );
+  } catch {
+    return false;
   }
 }
 
-/**
- * Channel 1: Send formatted email via Resend API
- */
-async function sendResendEmail(apiKey, { name, email, phone, service, suburb, message }) {
-  if (!apiKey) {
-    return { success: false, error: "RESEND_API_KEY not configured" };
+function cleanText(value, maxLength) {
+  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function normalizeLead(input) {
+  const lead = {
+    name: cleanText(input?.name, 100),
+    email: cleanText(input?.email, 254),
+    phone: cleanText(input?.phone, 24),
+    service: cleanText(input?.service, 120),
+    suburb: cleanText(input?.suburb, 120),
+    message: cleanText(input?.message, 4000),
+    company: cleanText(input?.company, 120),
+    requestId: cleanText(input?.requestId, 128),
+  };
+
+  if (!lead.name || !lead.phone || !lead.service || !lead.suburb) {
+    return { error: "Please complete all required fields." };
+  }
+  if (!PHONE_PATTERN.test(lead.phone)) {
+    return { error: "Please enter a valid phone number." };
+  }
+  if (lead.email && !EMAIL_PATTERN.test(lead.email)) {
+    return { error: "Please enter a valid email address." };
   }
 
-  const htmlBody = `
+  return { lead };
+}
+
+function makeRequestId(candidate) {
+  if (/^[A-Za-z0-9_-]{8,128}$/.test(candidate || "")) return candidate;
+  return crypto.randomUUID();
+}
+
+function buildEmailHtml(lead) {
+  const details = escapeHtml(lead.message || "No additional details provided").replaceAll("\n", "<br>");
+  const email = lead.email
+    ? `<a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a>`
+    : "Not provided";
+
+  return `
     <h2 style="color:#1a1a1a;margin-bottom:20px;">New Quote Request</h2>
     <table border="1" cellpadding="10" cellspacing="0" style="border-collapse:collapse;border-color:#ddd;width:100%;max-width:600px;">
-      <tr style="background:#f5f5f5;"><td style="font-weight:bold;width:120px;">Name</td><td>${name}</td></tr>
-      <tr><td style="font-weight:bold;">Phone</td><td><a href="tel:${phone}">${phone}</a></td></tr>
-      <tr style="background:#f5f5f5;"><td style="font-weight:bold;">Email</td><td>${email ? `<a href="mailto:${email}">${email}</a>` : "Not provided"}</td></tr>
-      <tr><td style="font-weight:bold;">Service</td><td>${service}</td></tr>
-      <tr style="background:#f5f5f5;"><td style="font-weight:bold;">Suburb</td><td>${suburb}</td></tr>
-      <tr><td style="font-weight:bold;">Details</td><td>${(message || "No additional details provided").replace(/\n/g, "<br>")}</td></tr>
+      <tr style="background:#f5f5f5;"><td style="font-weight:bold;width:120px;">Name</td><td>${escapeHtml(lead.name)}</td></tr>
+      <tr><td style="font-weight:bold;">Phone</td><td><a href="tel:${escapeHtml(lead.phone)}">${escapeHtml(lead.phone)}</a></td></tr>
+      <tr style="background:#f5f5f5;"><td style="font-weight:bold;">Email</td><td>${email}</td></tr>
+      <tr><td style="font-weight:bold;">Service</td><td>${escapeHtml(lead.service)}</td></tr>
+      <tr style="background:#f5f5f5;"><td style="font-weight:bold;">Suburb</td><td>${escapeHtml(lead.suburb)}</td></tr>
+      <tr><td style="font-weight:bold;">Details</td><td>${details}</td></tr>
     </table>
     <p style="margin-top:20px;color:#666;font-size:12px;">This lead was captured from concreteconceptsgroup.com</p>
   `;
+}
 
+async function sendResendEmail(apiKey, lead, requestId) {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      "Authorization": `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
+      "Idempotency-Key": `legacy-lead/${requestId}`,
     },
     body: JSON.stringify({
       from: "noreply@concreteconceptsgroup.com",
       to: "info@concreteconceptsgroup.com",
-      subject: `New Quote: ${service} - ${suburb} (${name})`,
-      html: htmlBody,
+      subject: `New Quote: ${lead.service} - ${lead.suburb} (${lead.name})`,
+      html: buildEmailHtml(lead),
     }),
   });
 
-  const data = await response.json();
-  return { success: response.ok, data };
+  if (!response.ok) {
+    throw new Error(`Resend delivery failed with status ${response.status}`);
+  }
 }
 
-/**
- * Channel 2: Submit to Jotform for backup logging
- */
-async function submitToJotform(apiKey, formId, { name, email, phone, service, suburb, message }) {
-  const params = new URLSearchParams();
-  params.append("submission[1]", name);
-  params.append("submission[2]", phone);
-  params.append("submission[3]", email || "Not provided");
-  params.append("submission[4]", service);
-  params.append("submission[5]", suburb);
-  params.append("submission[6]", message || "No additional details");
+export async function onRequest(context) {
+  const { request, env = {} } = context;
 
-  const response = await fetch(
-    `https://api.jotform.com/form/${formId}/submissions?apiKey=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: params.toString(),
+  if (request.method !== "POST") {
+    return jsonResponse({ success: false, error: "Method not allowed" }, 405);
+  }
+
+  if (!isAllowedOrigin(request.headers.get("Origin"))) {
+    return jsonResponse({ success: false, error: "Origin not allowed" }, 403);
+  }
+
+  const contentType = request.headers.get("Content-Type") || "";
+  if (!contentType.toLowerCase().includes("application/json")) {
+    return jsonResponse({ success: false, error: "Content-Type must be application/json" }, 415);
+  }
+
+  const contentLength = Number(request.headers.get("Content-Length") || "0");
+  if (contentLength > MAX_BODY_BYTES) {
+    return jsonResponse({ success: false, error: "Request body is too large" }, 413);
+  }
+
+  if (!env.RESEND_API_KEY) {
+    return jsonResponse({ success: false, error: "Lead delivery is temporarily unavailable" }, 503);
+  }
+
+  try {
+    const input = await request.json();
+    const normalized = normalizeLead(input);
+    if (normalized.error) {
+      return jsonResponse({ success: false, error: normalized.error }, 400);
     }
-  );
 
-  const data = await response.json();
-  return { success: data.responseCode === 200, data };
+    const lead = normalized.lead;
+    const requestId = makeRequestId(lead.requestId);
+
+    // Honeypot submissions are acknowledged without sending external email.
+    if (lead.company) {
+      return jsonResponse({ success: true, channel: "email", requestId });
+    }
+
+    await sendResendEmail(env.RESEND_API_KEY, lead, requestId);
+    return jsonResponse({ success: true, channel: "email", requestId });
+  } catch (error) {
+    console.error("Lead delivery failed", {
+      message: error instanceof Error ? error.message : "Unknown error",
+    });
+    return jsonResponse({ success: false, error: "Failed to process quote request" }, 502);
+  }
 }
