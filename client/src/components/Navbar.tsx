@@ -4,7 +4,8 @@
   Mobile: hamburger drawer with full-width call + quote buttons
 */
 import { useState, useEffect } from "react";
-import { Menu, X, Phone } from "lucide-react";
+import { Phone, Menu, X } from "lucide-react";
+import { GOOGLE_ADS_CONVERSION_IDS } from "@/lib/google-ads";
 
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
@@ -12,6 +13,7 @@ const NAV_LINKS = [
   { label: "Reviews", href: "#reviews" },
   { label: "Service Areas", href: "#areas" },
   { label: "FAQ", href: "#faq" },
+  { label: "Referrals", href: "/trade-referral-program" },
 ];
 
 export default function Navbar() {
@@ -26,6 +28,17 @@ export default function Navbar() {
 
   const handleNavClick = (href: string) => {
     setOpen(false);
+
+    if (href.startsWith("/")) {
+      window.location.assign(href);
+      return;
+    }
+
+    if (window.location.pathname !== "/") {
+      window.location.assign(`/${href}`);
+      return;
+    }
+
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -43,8 +56,12 @@ export default function Navbar() {
         <div className="container flex items-center justify-between h-16 md:h-18">
           {/* Logo */}
           <a
-            href="#"
-            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+            href="/"
+            onClick={e => {
+              if (window.location.pathname !== "/") return;
+              e.preventDefault();
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             className="flex items-center gap-3 flex-shrink-0"
           >
             <img
@@ -56,13 +73,19 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-7">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map(link => (
               <a
                 key={link.href}
                 href={link.href}
-                onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                onClick={e => {
+                  e.preventDefault();
+                  handleNavClick(link.href);
+                }}
                 className="text-sm font-medium text-bone/80 hover:text-gold transition-colors duration-150"
-                style={{ fontFamily: "Inter, sans-serif", letterSpacing: "0.02em" }}
+                style={{
+                  fontFamily: "Inter, sans-serif",
+                  letterSpacing: "0.02em",
+                }}
               >
                 {link.label}
               </a>
@@ -77,7 +100,7 @@ export default function Navbar() {
               onClick={() => {
                 if (typeof window !== "undefined" && (window as any).gtag) {
                   (window as any).gtag("event", "conversion", {
-                    send_to: "AW-18007005419/phone_call_click",
+                    send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
                   });
                 }
               }}
@@ -87,7 +110,10 @@ export default function Navbar() {
             </a>
             <a
               href="#contact"
-              onClick={(e) => { e.preventDefault(); handleNavClick("#contact"); }}
+              onClick={e => {
+                e.preventDefault();
+                handleNavClick("#contact");
+              }}
               className="btn-gold text-sm py-2 px-5"
             >
               Free Quote
@@ -122,11 +148,14 @@ export default function Navbar() {
             </button>
           </div>
           <div className="flex flex-col gap-1 px-6 py-6">
-            {NAV_LINKS.map((link) => (
+            {NAV_LINKS.map(link => (
               <a
                 key={link.href}
                 href={link.href}
-                onClick={(e) => { e.preventDefault(); handleNavClick(link.href); }}
+                onClick={e => {
+                  e.preventDefault();
+                  handleNavClick(link.href);
+                }}
                 className="text-xl font-semibold text-bone py-3 border-b border-white/10 hover:text-gold transition-colors"
                 style={{ fontFamily: "Fraunces, serif" }}
               >
@@ -141,7 +170,7 @@ export default function Navbar() {
               onClick={() => {
                 if (typeof window !== "undefined" && (window as any).gtag) {
                   (window as any).gtag("event", "conversion", {
-                    send_to: "AW-18007005419/phone_call_click",
+                    send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
                   });
                 }
               }}
@@ -150,7 +179,11 @@ export default function Navbar() {
             </a>
             <a
               href="#contact"
-              onClick={(e) => { e.preventDefault(); setOpen(false); handleNavClick("#contact"); }}
+              onClick={e => {
+                e.preventDefault();
+                setOpen(false);
+                handleNavClick("#contact");
+              }}
               className="btn-navy-outline w-full justify-center text-base py-4"
             >
               Get Free Quote

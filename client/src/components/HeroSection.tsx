@@ -6,6 +6,7 @@
 */
 import { useEffect, useRef, useState } from "react";
 import { Phone, ChevronDown } from "lucide-react";
+import { GOOGLE_ADS_CONVERSION_IDS } from "@/lib/google-ads";
 
 const STATS = [
   { value: "150+", label: "Projects Completed" },
@@ -25,11 +26,6 @@ export default function HeroSection() {
 
   const scrollToContact = () => {
     document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
-    if (typeof window !== "undefined" && (window as any).gtag) {
-      (window as any).gtag("event", "conversion", {
-        send_to: "AW-18007005419/quote_submission",
-      });
-    }
   };
 
   return (
@@ -49,7 +45,8 @@ export default function HeroSection() {
         <div
           className="absolute inset-0"
           style={{
-            background: "linear-gradient(to right, rgba(9,30,48,0.92) 0%, rgba(9,30,48,0.75) 55%, rgba(9,30,48,0.3) 100%)",
+            background:
+              "linear-gradient(to right, rgba(9,30,48,0.92) 0%, rgba(9,30,48,0.75) 55%, rgba(9,30,48,0.3) 100%)",
           }}
         />
         <div
@@ -108,7 +105,8 @@ export default function HeroSection() {
               >
                 Right
               </span>
-              ,<br />First Time.
+              ,<br />
+              First Time.
             </h1>
 
             {/* Sub-copy */}
@@ -122,7 +120,9 @@ export default function HeroSection() {
                 transition: "opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s",
               }}
             >
-              Driveways, slabs, patios, exposed aggregate, retaining walls & excavation across Brisbane and all surrounding areas. Owned and operated by Jarrad — on every job, every time.
+              Driveways, slabs, patios, exposed aggregate, retaining walls &
+              excavation across Brisbane and all surrounding areas. Owned and
+              operated by Jarrad — on every job, every time.
             </p>
 
             {/* CTAs */}
@@ -134,7 +134,10 @@ export default function HeroSection() {
                 transition: "opacity 0.5s ease 0.3s, transform 0.5s ease 0.3s",
               }}
             >
-              <button onClick={scrollToContact} className="btn-gold text-base py-4 px-8">
+              <button
+                onClick={scrollToContact}
+                className="btn-gold text-base py-4 px-8"
+              >
                 Get Free Quote
               </button>
               <a
@@ -143,7 +146,7 @@ export default function HeroSection() {
                 onClick={() => {
                   if (typeof window !== "undefined" && (window as any).gtag) {
                     (window as any).gtag("event", "conversion", {
-                      send_to: "AW-18007005419/phone_call_click",
+                      send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
                     });
                   }
                 }}
@@ -159,7 +162,10 @@ export default function HeroSection() {
       {/* Stats bar */}
       <div
         className="relative z-10"
-        style={{ background: "rgba(9,30,48,0.92)", borderTop: "1px solid rgba(201,164,77,0.25)" }}
+        style={{
+          background: "rgba(9,30,48,0.92)",
+          borderTop: "1px solid rgba(201,164,77,0.25)",
+        }}
       >
         <div className="container">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-white/10">
@@ -175,13 +181,22 @@ export default function HeroSection() {
               >
                 <div
                   className="text-gold font-bold"
-                  style={{ fontFamily: "Fraunces, serif", fontSize: "1.6rem", lineHeight: 1.1 }}
+                  style={{
+                    fontFamily: "Fraunces, serif",
+                    fontSize: "1.6rem",
+                    lineHeight: 1.1,
+                  }}
                 >
                   {stat.value}
                 </div>
                 <div
                   className="text-bone/60 mt-1"
-                  style={{ fontFamily: "Inter, sans-serif", fontSize: "0.78rem", letterSpacing: "0.06em", textTransform: "uppercase" }}
+                  style={{
+                    fontFamily: "Inter, sans-serif",
+                    fontSize: "0.78rem",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                  }}
                 >
                   {stat.label}
                 </div>

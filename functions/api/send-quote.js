@@ -1,49 +1,15 @@
-const PRODUCTION_ORIGINS = new Set([
-  "https://concreteconceptsgroup.com",
-  "https://www.concreteconceptsgroup.com",
-]);
-
-const MAX_BODY_BYTES = 32 * 1024;
-const PHONE_PATTERN = /^[+()\d\s-]{8,24}$/;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function jsonResponse(body, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-    },
-  });
-}
-
-function isAllowedOrigin(origin) {
-  if (!origin) return false;
-  if (PRODUCTION_ORIGINS.has(origin)) return true;
-
-  try {
-    const url = new URL(origin);
-    return (
-      url.protocol === "https:" &&
-      url.hostname.endsWith(".concrete-concepts-group.pages.dev")
-    );
-  } catch {
-    return false;
-  }
-}
-
-function cleanText(value, maxLength) {
-  return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
+import {
+  EMAIL_PATTERN,
+  attributionRows,
+  cleanAttribution,
+  cleanText,
+  escapeHtml,
+  jsonResponse,
+  makeRequestId,
+  normalizeAustralianPhone,
+  sendResendEmail,
+  validateBaseRequest,
+} from "./_lead-utils.js";
 
 function normalizeLead(input) {
   const lead = {
@@ -55,12 +21,13 @@ function normalizeLead(input) {
     message: cleanText(input?.message, 4000),
     company: cleanText(input?.company, 120),
     requestId: cleanText(input?.requestId, 128),
+    attribution: cleanAttribution(input?.attribution),
   };
 
   if (!lead.name || !lead.phone || !lead.service || !lead.suburb) {
     return { error: "Please complete all required fields." };
   }
-  if (!PHONE_PATTERN.test(lead.phone)) {
+  if (!normalizeAustralianPhone(lead.phone)) {
     return { error: "Please enter a valid phone number." };
   }
   if (lead.email && !EMAIL_PATTERN.test(lead.email)) {
@@ -70,13 +37,10 @@ function normalizeLead(input) {
   return { lead };
 }
 
-function makeRequestId(candidate) {
-  if (/^[A-Za-z0-9_-]{8,128}$/.test(candidate || "")) return candidate;
-  return crypto.randomUUID();
-}
-
 function buildEmailHtml(lead) {
-  const details = escapeHtml(lead.message || "No additional details provided").replaceAll("\n", "<br>");
+  const details = escapeHtml(
+    lead.message || "No additional details provided"
+  ).replaceAll("\n", "<br>");
   const email = lead.email
     ? `<a href="mailto:${escapeHtml(lead.email)}">${escapeHtml(lead.email)}</a>`
     : "Not provided";
@@ -91,55 +55,15 @@ function buildEmailHtml(lead) {
       <tr style="background:#f5f5f5;"><td style="font-weight:bold;">Suburb</td><td>${escapeHtml(lead.suburb)}</td></tr>
       <tr><td style="font-weight:bold;">Details</td><td>${details}</td></tr>
     </table>
+    ${attributionRows(lead.attribution)}
     <p style="margin-top:20px;color:#666;font-size:12px;">This lead was captured from concreteconceptsgroup.com</p>
   `;
 }
 
-async function sendResendEmail(apiKey, lead, requestId) {
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-      "Idempotency-Key": `legacy-lead/${requestId}`,
-    },
-    body: JSON.stringify({
-      from: "noreply@concreteconceptsgroup.com",
-      to: "info@concreteconceptsgroup.com",
-      subject: `New Quote: ${lead.service} - ${lead.suburb} (${lead.name})`,
-      html: buildEmailHtml(lead),
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Resend delivery failed with status ${response.status}`);
-  }
-}
-
 export async function onRequest(context) {
   const { request, env = {} } = context;
-
-  if (request.method !== "POST") {
-    return jsonResponse({ success: false, error: "Method not allowed" }, 405);
-  }
-
-  if (!isAllowedOrigin(request.headers.get("Origin"))) {
-    return jsonResponse({ success: false, error: "Origin not allowed" }, 403);
-  }
-
-  const contentType = request.headers.get("Content-Type") || "";
-  if (!contentType.toLowerCase().includes("application/json")) {
-    return jsonResponse({ success: false, error: "Content-Type must be application/json" }, 415);
-  }
-
-  const contentLength = Number(request.headers.get("Content-Length") || "0");
-  if (contentLength > MAX_BODY_BYTES) {
-    return jsonResponse({ success: false, error: "Request body is too large" }, 413);
-  }
-
-  if (!env.RESEND_API_KEY) {
-    return jsonResponse({ success: false, error: "Lead delivery is temporarily unavailable" }, 503);
-  }
+  const baseError = validateBaseRequest(request, env);
+  if (baseError) return baseError;
 
   try {
     const input = await request.json();
@@ -151,17 +75,27 @@ export async function onRequest(context) {
     const lead = normalized.lead;
     const requestId = makeRequestId(lead.requestId);
 
-    // Honeypot submissions are acknowledged without sending external email.
     if (lead.company) {
       return jsonResponse({ success: true, channel: "email", requestId });
     }
 
-    await sendResendEmail(env.RESEND_API_KEY, lead, requestId);
+    await sendResendEmail({
+      apiKey: env.RESEND_API_KEY,
+      requestId,
+      namespace: "quote-lead",
+      subject: `New Quote: ${lead.service} - ${lead.suburb} (${lead.name})`,
+      html: buildEmailHtml(lead),
+      replyTo: lead.email || undefined,
+    });
+
     return jsonResponse({ success: true, channel: "email", requestId });
   } catch (error) {
     console.error("Lead delivery failed", {
       message: error instanceof Error ? error.message : "Unknown error",
     });
-    return jsonResponse({ success: false, error: "Failed to process quote request" }, 502);
+    return jsonResponse(
+      { success: false, error: "Failed to process quote request" },
+      502
+    );
   }
 }

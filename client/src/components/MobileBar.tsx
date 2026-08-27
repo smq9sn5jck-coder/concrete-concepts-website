@@ -4,6 +4,7 @@
   Hidden on md+ (desktop has navbar CTA)
 */
 import { Phone, FileText } from "lucide-react";
+import { GOOGLE_ADS_CONVERSION_IDS } from "@/lib/google-ads";
 
 export default function MobileBar() {
   return (
@@ -22,7 +23,7 @@ export default function MobileBar() {
         onClick={() => {
           if (typeof window !== "undefined" && (window as any).gtag) {
             (window as any).gtag("event", "conversion", {
-              send_to: "AW-18007005419/phone_call_click",
+              send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
             });
           }
         }}
@@ -32,9 +33,11 @@ export default function MobileBar() {
       </a>
       <a
         href="#contact"
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault();
-          document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" });
+          document
+            .querySelector("#contact")
+            ?.scrollIntoView({ behavior: "smooth" });
         }}
         className="flex-1 flex items-center justify-center gap-2 py-4 font-bold text-bone"
         style={{ fontFamily: "Inter, sans-serif", fontSize: "0.95rem" }}

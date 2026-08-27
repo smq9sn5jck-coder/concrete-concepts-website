@@ -2,7 +2,8 @@
   DESIGN: Foreman's Blueprint — Footer
   Deep navy, gold accents, QBCC badge, social links, schema JSON-LD
 */
-import { Phone, Mail, MapPin, Facebook } from "lucide-react";
+import { ArrowRight, Phone, Mail, MapPin, Facebook } from "lucide-react";
+import { GOOGLE_ADS_CONVERSION_IDS } from "@/lib/google-ads";
 
 const SCHEMA = {
   "@context": "https://schema.org",
@@ -10,30 +11,68 @@ const SCHEMA = {
   "@id": "https://concreteconceptsgroup.com/#business",
   name: "Concrete Concepts Group Pty Ltd",
   alternateName: "Concrete Concepts Group",
-  description: "Professional concreting services in Brisbane and all surrounding areas. Driveways, slabs, patios, retaining walls, exposed aggregate, and excavation. QBCC Licensed #15299707.",
+  description:
+    "Professional concreting services in Brisbane and all surrounding areas. Driveways, slabs, patios, retaining walls, exposed aggregate, and excavation. QBCC Licensed #15299707.",
   url: "https://concreteconceptsgroup.com",
   telephone: "+61424463268",
   email: "info@concreteconceptsgroup.com",
-  image: "https://concreteconceptsgroup.com/manus-storage/ccg-full-hero_a3bbd489_51c9c0e6.png",
+  image:
+    "https://concreteconceptsgroup.com/manus-storage/ccg-full-hero_a3bbd489_51c9c0e6.png",
   logo: "https://concreteconceptsgroup.com/manus-storage/ccg-full-navbar_2520906a_51166f62.png",
   priceRange: "$$",
   currenciesAccepted: "AUD",
   paymentAccepted: "Cash, Credit Card, Bank Transfer",
-  address: { "@type": "PostalAddress", addressLocality: "Brisbane", addressRegion: "QLD", postalCode: "4000", addressCountry: "AU" },
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Brisbane",
+    addressRegion: "QLD",
+    postalCode: "4000",
+    addressCountry: "AU",
+  },
   geo: { "@type": "GeoCoordinates", latitude: -27.4698, longitude: 153.0251 },
   areaServed: [
     { "@type": "State", name: "South East Queensland" },
-    { "@type": "City", name: "Brisbane" }, { "@type": "City", name: "Ipswich" },
-    { "@type": "City", name: "Logan" }, { "@type": "City", name: "Moreton Bay" },
-    { "@type": "City", name: "Gold Coast" }, { "@type": "City", name: "Sunshine Coast" },
+    { "@type": "City", name: "Brisbane" },
+    { "@type": "City", name: "Ipswich" },
+    { "@type": "City", name: "Logan" },
+    { "@type": "City", name: "Moreton Bay" },
+    { "@type": "City", name: "Gold Coast" },
+    { "@type": "City", name: "Sunshine Coast" },
   ],
-  hasCredential: { "@type": "EducationalOccupationalCredential", credentialCategory: "QBCC Licence", identifier: "15299707", recognizedBy: { "@type": "Organization", name: "Queensland Building and Construction Commission" } },
-  sameAs: ["https://www.facebook.com/share/14Z2spZfScB/", "https://www.concrete-concepts.com.au/"],
+  hasCredential: {
+    "@type": "EducationalOccupationalCredential",
+    credentialCategory: "QBCC Licence",
+    identifier: "15299707",
+    recognizedBy: {
+      "@type": "Organization",
+      name: "Queensland Building and Construction Commission",
+    },
+  },
+  sameAs: [
+    "https://www.facebook.com/share/14Z2spZfScB/",
+    "https://www.concrete-concepts.com.au/",
+  ],
   openingHoursSpecification: [
-    { "@type": "OpeningHoursSpecification", dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"], opens: "06:00", closes: "17:00" },
-    { "@type": "OpeningHoursSpecification", dayOfWeek: "Saturday", opens: "07:00", closes: "14:00" },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "06:00",
+      closes: "17:00",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "07:00",
+      closes: "14:00",
+    },
   ],
-  aggregateRating: { "@type": "AggregateRating", ratingValue: "4.9", reviewCount: "17", bestRating: "5", worstRating: "1" },
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "4.9",
+    reviewCount: "17",
+    bestRating: "5",
+    worstRating: "1",
+  },
 };
 
 export default function Footer() {
@@ -48,7 +87,10 @@ export default function Footer() {
       {/* Pre-footer CTA strip */}
       <div style={{ background: "#C9A44D" }}>
         <div className="container py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-navy font-bold text-base" style={{ fontFamily: "Fraunces, serif" }}>
+          <p
+            className="text-navy font-bold text-base"
+            style={{ fontFamily: "Fraunces, serif" }}
+          >
             Ready to get started? Call Jarrad directly.
           </p>
           <a
@@ -57,7 +99,9 @@ export default function Footer() {
             style={{ fontFamily: "Inter, sans-serif" }}
             onClick={() => {
               if (typeof window !== "undefined" && (window as any).gtag) {
-                (window as any).gtag("event", "conversion", { send_to: "AW-18007005419/phone_call_click" });
+                (window as any).gtag("event", "conversion", {
+                  send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
+                });
               }
             }}
           >
@@ -78,20 +122,45 @@ export default function Footer() {
               className="h-10 w-auto mb-4 object-contain"
             />
             <p className="text-bone/60 text-sm leading-relaxed mb-4">
-              Brisbane's trusted concreting specialists. QBCC Licensed, fully insured, and owner-operated by Jarrad.
+              Brisbane's trusted concreting specialists. QBCC Licensed, fully
+              insured, and owner-operated by Jarrad.
             </p>
-            <div className="mono-stamp text-gold text-xs">QBCC LICENCE #15299707</div>
+            <div className="mono-stamp text-gold text-xs">
+              QBCC LICENCE #15299707
+            </div>
+            <a
+              href="/trade-referral-program"
+              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-bone/70 transition-colors hover:text-gold"
+            >
+              Refer a job · Receive $100 <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
 
           {/* Services */}
           <div>
-            <h4 className="text-bone font-semibold text-sm uppercase tracking-widest mb-4 mono-stamp">Services</h4>
+            <h4 className="text-bone font-semibold text-sm uppercase tracking-widest mb-4 mono-stamp">
+              Services
+            </h4>
             <ul className="space-y-2 text-bone/60 text-sm">
-              {["Concrete Driveways", "Concrete Slabs", "Exposed Aggregate", "Patios & Entertaining", "Retaining Walls", "Excavation", "Pool Surrounds", "Coloured Concrete"].map((s) => (
+              {[
+                "Concrete Driveways",
+                "Concrete Slabs",
+                "Exposed Aggregate",
+                "Patios & Entertaining",
+                "Retaining Walls",
+                "Excavation",
+                "Pool Surrounds",
+                "Coloured Concrete",
+              ].map(s => (
                 <li key={s}>
                   <a
                     href="#services"
-                    onClick={(e) => { e.preventDefault(); document.querySelector("#services")?.scrollIntoView({ behavior: "smooth" }); }}
+                    onClick={e => {
+                      e.preventDefault();
+                      document
+                        .querySelector("#services")
+                        ?.scrollIntoView({ behavior: "smooth" });
+                    }}
                     className="hover:text-gold transition-colors"
                   >
                     {s}
@@ -103,13 +172,21 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-bone font-semibold text-sm uppercase tracking-widest mb-4 mono-stamp">Contact</h4>
+            <h4 className="text-bone font-semibold text-sm uppercase tracking-widest mb-4 mono-stamp">
+              Contact
+            </h4>
             <div className="space-y-3">
-              <a href="tel:0424463268" className="flex items-center gap-2 text-bone/70 hover:text-gold transition-colors text-sm">
+              <a
+                href="tel:0424463268"
+                className="flex items-center gap-2 text-bone/70 hover:text-gold transition-colors text-sm"
+              >
                 <Phone className="w-4 h-4 text-gold" />
                 <span className="mono-stamp">0424 463 268</span>
               </a>
-              <a href="mailto:info@concreteconceptsgroup.com" className="flex items-center gap-2 text-bone/70 hover:text-gold transition-colors text-sm">
+              <a
+                href="mailto:info@concreteconceptsgroup.com"
+                className="flex items-center gap-2 text-bone/70 hover:text-gold transition-colors text-sm"
+              >
                 <Mail className="w-4 h-4 text-gold" />
                 info@concreteconceptsgroup.com
               </a>
@@ -140,8 +217,19 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-bone/40 text-xs">
-          <p>© {new Date().getFullYear()} Concrete Concepts Group Pty Ltd. All rights reserved.</p>
-          <p className="mono-stamp">ABN · QBCC #15299707 · Brisbane QLD</p>
+          <p>
+            © {new Date().getFullYear()} Concrete Concepts Group Pty Ltd. All
+            rights reserved.
+          </p>
+          <div className="flex flex-col items-center gap-2 sm:items-end">
+            <p className="mono-stamp">ABN · QBCC #15299707 · Brisbane QLD</p>
+            <a
+              href="/construction-growth-systems"
+              className="transition-colors hover:text-gold"
+            >
+              Website and growth systems by CGS
+            </a>
+          </div>
         </div>
       </div>
     </footer>
