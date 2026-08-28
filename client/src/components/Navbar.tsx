@@ -112,6 +112,17 @@ export default function Navbar() {
 
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
+            <a
+              href="https://concreteconceptsgroup.com/trade-partners"
+              className={`text-sm font-semibold tracking-wide uppercase transition-colors duration-300 ${
+                scrolled
+                  ? "text-brand-charcoal hover:text-brand-gold"
+                  : "text-white/90 hover:text-brand-gold"
+              }`}
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Trade Partners
+            </a>
             <Link href="/get-quote">
               <Button
                 className="bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-semibold px-6 py-2.5 text-sm tracking-wide uppercase shadow-lg shadow-brand-gold/20 transition-all duration-300 hover:shadow-xl hover:shadow-brand-gold/30"
@@ -175,6 +186,14 @@ export default function Navbar() {
                   </button>
                 )
               ))}
+              <a
+                href="https://concreteconceptsgroup.com/trade-partners"
+                onClick={() => setMobileOpen(false)}
+                className="text-xl font-medium text-brand-gold hover:text-white tracking-wide uppercase transition-colors"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Trade Partners
+              </a>
               <div className="w-16 h-px bg-brand-gold/40 my-2" />
               <Link href="/get-quote">
                 <Button
