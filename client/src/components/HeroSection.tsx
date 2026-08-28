@@ -8,11 +8,48 @@ import { saveQuoteDraft } from "@/lib/quoteDraft";
 import { trackPhoneCallClick } from "@/components/ConversionTracking";
 import { trackCTAClick, trackFormFieldComplete, trackFormFieldFocus } from "@/components/GodModeTracking";
 import { classifyServiceArea } from "@shared/leadValidation";
+import performanceAssets from "@/config/performance-assets.json";
+import { useMediaQuery } from "@/hooks/useMediaQuery";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-hero_a3bbd489.png";
 const HERO_VIDEO_WEBM = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-hero-video.webm";
 const HERO_VIDEO_MP4 = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-hero-video.mp4";
 const HERO_POSTER_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/static/hero-poster.jpg";
+const MOBILE_HERO_POSTER = performanceAssets.mobileHero.standard.url;
+const MOBILE_HERO_POSTER_SRCSET = `${performanceAssets.mobileHero.standard.url} ${performanceAssets.mobileHero.standard.width}w, ${performanceAssets.mobileHero.highDensity.url} ${performanceAssets.mobileHero.highDensity.width}w`;
+const heroCopyVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.7 } },
+};
+
+function ResponsiveHeroMedia() {
+  const isTabletOrDesktop = useMediaQuery("(min-width: 768px)");
+
+  if (isTabletOrDesktop) {
+    return (
+      <video autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 h-full w-full object-cover" poster={HERO_POSTER_URL}>
+        <source src={HERO_VIDEO_WEBM} type="video/webm" />
+        <source src={HERO_VIDEO_MP4} type="video/mp4" />
+      </video>
+    );
+  }
+
+  return (
+    <picture>
+      <source type="image/webp" srcSet={MOBILE_HERO_POSTER_SRCSET} sizes="100vw" />
+      <img
+        src={MOBILE_HERO_POSTER}
+        alt="Concrete Concepts Group crew power floating a fresh concrete slab"
+        width={performanceAssets.mobileHero.standard.width}
+        height={performanceAssets.mobileHero.standard.height}
+        loading="eager"
+        decoding="async"
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover"
+      />
+    </picture>
+  );
+}
 
 const SERVICES = [
   ["driveway", "Driveway"],
@@ -60,6 +97,7 @@ function QuoteCounter() {
 
 export default function HeroSection() {
   const [formData, setFormData] = useState({ service: "", location: "", description: "" });
+  const isTabletOrDesktop = useMediaQuery("(min-width: 768px)");
 
   const handleContinue = (event: React.FormEvent) => {
     event.preventDefault();
@@ -100,10 +138,7 @@ export default function HeroSection() {
       </motion.div>
 
       <div className="absolute inset-0 z-0">
-        <video autoPlay muted loop playsInline preload="metadata" className="absolute inset-0 h-full w-full object-cover" poster={HERO_POSTER_URL}>
-          <source src={HERO_VIDEO_WEBM} type="video/webm" />
-          <source src={HERO_VIDEO_MP4} type="video/mp4" />
-        </video>
+        <ResponsiveHeroMedia />
         <div className="absolute inset-0 bg-brand-charcoal/80" />
       </div>
       <div className="absolute inset-0 z-[1] opacity-[0.03]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "48px 48px" }} />
@@ -114,12 +149,15 @@ export default function HeroSection() {
         <div className="grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <div className="mb-6 animate-fade-in-scale lg:mb-8">
-              <img src={LOGO_URL} alt="Concrete Concepts Group Brisbane concreting services" width={768} height={512} loading="eager" decoding="sync" fetchPriority="high" className="h-auto w-[220px] object-contain sm:w-[280px] md:w-[340px] lg:w-[400px]" />
+              <picture>
+                <source media="(max-width: 767px)" srcSet={performanceAssets.logo.standard.url} type="image/webp" />
+                <img src={LOGO_URL} alt="Concrete Concepts Group Brisbane concreting services" width={768} height={512} loading="eager" decoding="sync" fetchPriority="high" className="h-auto w-[220px] object-contain sm:w-[280px] md:w-[340px] lg:w-[400px]" />
+              </picture>
             </div>
             <h1 className="mb-4 animate-fade-in-up text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-5xl xl:text-6xl" style={{ animationDelay: "0.3s" }}>
               Your Concrete, <span className="italic text-brand-gold">Our Expertise</span>
             </h1>
-            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.7 }} className="mb-6 max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl">
+            <motion.p variants={heroCopyVariants} initial={isTabletOrDesktop ? "hidden" : false} animate="visible" className="mb-6 max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl">
               Driveways, slabs, patios and more — serving Brisbane and surrounding South East Queensland areas.
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.9 }} className="mb-8 flex flex-col gap-4 sm:flex-row sm:gap-6">

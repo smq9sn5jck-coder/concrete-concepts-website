@@ -22,6 +22,7 @@ import SocialProofNotification from "@/components/SocialProofNotification";
 import TrustBar from "@/components/TrustBar";
 import GuideCtaBanner from "@/components/GuideCtaBanner";
 import MiniQuoteForm from "@/components/MiniQuoteForm";
+import DeferredSection from "@/components/DeferredSection";
 import { useGodModeTracking } from "@/components/GodModeTracking";
 
 const localBusinessSchema = {
@@ -212,23 +213,23 @@ export default function Home() {
       <Navbar />
       <HeroSection />
       <TrustBar />
-      <ServicesSection />
-      <MiniQuoteForm />
-      <AboutSection />
-      <ServiceAreaMap />
-      <ProcessSection />
-      <WhyChooseUs />
-      <ProjectGallery />
-      <BeforeAfterSection />
-      <TestimonialsSection />
-      <SeasonalBanner />
-      <TrustedPartners />
-      <GuideCtaBanner variant="section" />
-      <FAQSection />
-      <PaymentPlans />
-      <ContactSection />
-      <CTABanner />
-      <Footer />
+      <DeferredSection><ServicesSection /></DeferredSection>
+      <DeferredSection><MiniQuoteForm /></DeferredSection>
+      <DeferredSection><AboutSection /></DeferredSection>
+      <DeferredSection><ServiceAreaMap /></DeferredSection>
+      <DeferredSection><ProcessSection /></DeferredSection>
+      <DeferredSection><WhyChooseUs /></DeferredSection>
+      <DeferredSection><ProjectGallery /></DeferredSection>
+      <DeferredSection><BeforeAfterSection /></DeferredSection>
+      <DeferredSection><TestimonialsSection /></DeferredSection>
+      <DeferredSection><SeasonalBanner /></DeferredSection>
+      <DeferredSection><TrustedPartners /></DeferredSection>
+      <DeferredSection><GuideCtaBanner variant="section" /></DeferredSection>
+      <DeferredSection><FAQSection /></DeferredSection>
+      <DeferredSection><PaymentPlans /></DeferredSection>
+      <DeferredSection><ContactSection /></DeferredSection>
+      <DeferredSection><CTABanner /></DeferredSection>
+      <DeferredSection><Footer /></DeferredSection>
       {/* ExitIntentPopup removed per owner preference */}
       <StickyMobileCTA />
       <SocialProofNotification />

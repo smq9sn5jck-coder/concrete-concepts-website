@@ -1,0 +1,54 @@
+{
+  "mobileHero": {
+    "standard": {
+      "url": "/manus-storage/hero-poster-mobile-480x854_e42a361f.webp",
+      "width": 480,
+      "height": 854,
+      "bytes": 46242
+    },
+    "highDensity": {
+      "url": "/manus-storage/hero-poster-mobile-960x1708_af6574b1.webp",
+      "width": 960,
+      "height": 1708,
+      "bytes": 118052
+    }
+  },
+  "services": {
+    "troweling": {
+      "standard": {
+        "url": "/manus-storage/project-troweling-480_f279bc87.webp",
+        "width": 480,
+        "height": 640,
+        "bytes": 72324
+      },
+      "highDensity": {
+        "url": "/manus-storage/project-troweling-800_ad1d3719.webp",
+        "width": 800,
+        "height": 1067,
+        "bytes": 203190
+      }
+    },
+    "excavation": {
+      "standard": {
+        "url": "/manus-storage/new-gallery-4-480_f54f9734.webp",
+        "width": 480,
+        "height": 640,
+        "bytes": 77492
+      },
+      "highDensity": {
+        "url": "/manus-storage/new-gallery-4-800_de16f626.webp",
+        "width": 800,
+        "height": 1066,
+        "bytes": 195132
+      }
+    }
+  },
+  "logo": {
+    "standard": {
+      "url": "/manus-storage/ccg-full-hero-480_4996102e.webp",
+      "width": 480,
+      "height": 320,
+      "bytes": 29230
+    }
+  }
+}

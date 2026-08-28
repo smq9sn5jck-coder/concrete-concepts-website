@@ -139,6 +139,18 @@
     min-width: 0;
   }
 
+  .defer-below-fold {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 900px;
+  }
+
+  @media print {
+    .defer-below-fold {
+      content-visibility: visible;
+      contain-intrinsic-size: none;
+    }
+  }
+
   @media (min-width: 640px) {
     .container {
       padding-left: 1.5rem;

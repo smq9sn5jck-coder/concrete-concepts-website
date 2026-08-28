@@ -152,10 +152,11 @@ function vitePluginManusDebugCollector(): Plugin {
 
 // For Cloudflare Pages builds, exclude manus-runtime (367KB visual editor) and debug-collector
 const isCfBuild = process.env.CF_BUILD === '1';
+const sourceLocationPlugins = isCfBuild ? [] : [jsxLocPlugin()];
 const plugins = [
   react(),
   tailwindcss(),
-  jsxLocPlugin(),
+  ...sourceLocationPlugins,
   ...(!isCfBuild ? [vitePluginManusRuntime(), vitePluginManusDebugCollector()] : []),
 ];
 

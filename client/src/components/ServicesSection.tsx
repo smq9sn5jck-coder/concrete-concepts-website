@@ -9,12 +9,17 @@
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle } from "lucide-react";
 import { Link } from "wouter";
+import performanceAssets from "@/config/performance-assets.json";
+
+const SERVICE_IMAGE_SIZES = "(max-width: 767px) calc(100vw - 2rem), (max-width: 1279px) calc(50vw - 3rem), 400px";
 
 const featuredServices = [
   {
     title: "Our Team at Work",
     description: "Our experienced crew brings skill, pride, and teamwork to every pour. From prep to finish, the Concrete Concepts team delivers quality results on every job across Brisbane and surrounding areas.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-troweling_06ff9a7c.jpeg",
+    srcSet: `${performanceAssets.services.troweling.standard.url} ${performanceAssets.services.troweling.standard.width}w, ${performanceAssets.services.troweling.highDensity.url} ${performanceAssets.services.troweling.highDensity.width}w`,
+    sizes: SERVICE_IMAGE_SIZES,
     alt: "Concrete Concepts Group team hand troweling fresh concrete to a smooth finish on a Brisbane residential project",
     link: null,
   },
@@ -22,6 +27,8 @@ const featuredServices = [
     title: "Concrete Slabs & Foundations",
     description: "Engineered slabs for residential and commercial builds. From house pads to shed slabs, we deliver level, durable foundations built to Australian standards.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-finished-slab_74e9f7cd.jpeg",
+    srcSet: undefined,
+    sizes: undefined,
     alt: "Finished concrete slab with integrated steps for a residential home in Brisbane",
     link: "/services/concrete-slabs-brisbane",
   },
@@ -29,6 +36,8 @@ const featuredServices = [
     title: "Driveways & Pathways",
     description: "Transform your property's entrance with exposed aggregate, coloured, or plain concrete driveways and pathways that combine beauty with lasting durability.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
+    srcSet: undefined,
+    sizes: undefined,
     alt: "Exposed aggregate concrete driveway installation in Brisbane by Concrete Concepts Group",
     link: "/services/concrete-driveways-brisbane",
   },
@@ -36,6 +45,8 @@ const featuredServices = [
     title: "Retaining Walls",
     description: "Structural retaining walls that manage terrain and prevent erosion. Expertly designed and built to handle Queensland's unique soil and weather conditions.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-1_942fd49e.jpeg",
+    srcSet: undefined,
+    sizes: undefined,
     alt: "Concrete retaining wall installation along fence line in Brisbane suburb",
     link: "/services/retaining-walls-brisbane",
   },
@@ -43,6 +54,8 @@ const featuredServices = [
     title: "Excavation & Site Prep",
     description: "Full excavation services to get your site ready for concrete. We handle site clearing, trenching, and ground preparation with our own machinery for a seamless start to your project.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-4_c54657e7.jpeg",
+    srcSet: `${performanceAssets.services.excavation.standard.url} ${performanceAssets.services.excavation.standard.width}w, ${performanceAssets.services.excavation.highDensity.url} ${performanceAssets.services.excavation.highDensity.width}w`,
+    sizes: SERVICE_IMAGE_SIZES,
     alt: "Excavation and site preparation for concrete project in Brisbane",
     link: "/services/excavation-brisbane",
   },
@@ -50,6 +63,8 @@ const featuredServices = [
     title: "Site Waste Removal & Tipping",
     description: "Complete site waste removal, excavation clean-up, and tipping services across Brisbane. We handle dirt, rubble, concrete, and green waste removal so your site stays clean and compliant throughout the project.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-5_d25c6ec1.jpeg",
+    srcSet: undefined,
+    sizes: undefined,
     alt: "Site waste removal truck loaded with excavation dirt for tipping in Brisbane",
     link: "/services/excavation-brisbane",
   },
@@ -144,6 +159,8 @@ export default function ServicesSection() {
                 <div className="relative h-56 overflow-hidden">
                   <img
                     src={service.image}
+                    srcSet={service.srcSet}
+                    sizes={service.sizes}
                     alt={service.alt}
                     width={400}
                     height={224}
