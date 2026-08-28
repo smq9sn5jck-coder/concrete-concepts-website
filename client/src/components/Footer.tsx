@@ -1,170 +1,214 @@
 /*
-  DESIGN: Foreman's Blueprint — Footer
-  Deep navy, gold accents, QBCC badge, social links, schema JSON-LD
+  DESIGN: Refined Craft — Concrete Concepts Group brand
+  Footer: SEO-optimized with service links, suburb links, area pages, and structured content
 */
-import { ArrowRight, Phone, Mail, MapPin, Facebook } from "lucide-react";
-import { GOOGLE_ADS_CONVERSION_IDS } from "@/lib/google-ads";
+import { Link } from "wouter";
+import { trackPhoneCallClick, trackEmailClick } from "@/components/ConversionTracking";
 
-const SCHEMA = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://concreteconceptsgroup.com/#business",
-  name: "Concrete Concepts Group Pty Ltd",
-  alternateName: "Concrete Concepts Group",
-  description:
-    "Professional concreting services in Brisbane and all surrounding areas. Driveways, slabs, patios, retaining walls, exposed aggregate, and excavation. QBCC Licensed #15299707.",
-  url: "https://concreteconceptsgroup.com",
-  telephone: "+61424463268",
-  email: "info@concreteconceptsgroup.com",
-  image:
-    "https://concreteconceptsgroup.com/manus-storage/ccg-full-hero_a3bbd489_51c9c0e6.png",
-  logo: "https://concreteconceptsgroup.com/manus-storage/ccg-full-navbar_2520906a_51166f62.png",
-  priceRange: "$$",
-  currenciesAccepted: "AUD",
-  paymentAccepted: "Cash, Credit Card, Bank Transfer",
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Brisbane",
-    addressRegion: "QLD",
-    postalCode: "4000",
-    addressCountry: "AU",
-  },
-  geo: { "@type": "GeoCoordinates", latitude: -27.4698, longitude: 153.0251 },
-  areaServed: [
-    { "@type": "State", name: "South East Queensland" },
-    { "@type": "City", name: "Brisbane" },
-    { "@type": "City", name: "Ipswich" },
-    { "@type": "City", name: "Logan" },
-    { "@type": "City", name: "Moreton Bay" },
-    { "@type": "City", name: "Gold Coast" },
-    { "@type": "City", name: "Sunshine Coast" },
-  ],
-  hasCredential: {
-    "@type": "EducationalOccupationalCredential",
-    credentialCategory: "QBCC Licence",
-    identifier: "15299707",
-    recognizedBy: {
-      "@type": "Organization",
-      name: "Queensland Building and Construction Commission",
-    },
-  },
-  sameAs: [
-    "https://www.facebook.com/share/14Z2spZfScB/",
-    "https://www.concrete-concepts.com.au/",
-  ],
-  openingHoursSpecification: [
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      opens: "06:00",
-      closes: "17:00",
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: "Saturday",
-      opens: "07:00",
-      closes: "14:00",
-    },
-  ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    reviewCount: "17",
-    bestRating: "5",
-    worstRating: "1",
-  },
-};
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-navbar_2520906a.png";
+
+const serviceLinks = [
+  { name: "Concrete Driveways", href: "/services/concrete-driveways-brisbane" },
+  { name: "Concrete Slabs", href: "/services/concrete-slabs-brisbane" },
+  { name: "Retaining Walls", href: "/services/retaining-walls-brisbane" },
+  { name: "Exposed Aggregate", href: "/services/exposed-aggregate-brisbane" },
+  { name: "Concrete Patios", href: "/services/concrete-patios-brisbane" },
+  { name: "Excavation", href: "/services/excavation-brisbane" },
+];
+
+const areaLinks = [
+  { name: "Morningside", href: "/areas/morningside" },
+  { name: "Coorparoo", href: "/areas/coorparoo" },
+  { name: "Greenslopes", href: "/areas/greenslopes" },
+  { name: "Annerley", href: "/areas/annerley" },
+  { name: "Carindale", href: "/areas/carindale" },
+  { name: "Holland Park", href: "/areas/holland-park" },
+  { name: "Tarragindi", href: "/areas/tarragindi" },
+  { name: "Moorooka", href: "/areas/moorooka" },
+  { name: "Mt Gravatt", href: "/areas/mount-gravatt" },
+  { name: "Camp Hill", href: "/areas/camp-hill" },
+  { name: "Sunnybank", href: "/areas/sunnybank" },
+  { name: "Indooroopilly", href: "/areas/indooroopilly" },
+  { name: "Kenmore", href: "/areas/kenmore" },
+  { name: "Chapel Hill", href: "/areas/chapel-hill" },
+  { name: "Nundah", href: "/areas/nundah" },
+  { name: "Stafford", href: "/areas/stafford" },
+  { name: "Everton Park", href: "/areas/everton-park" },
+  { name: "Chermside", href: "/areas/chermside" },
+  { name: "Aspley", href: "/areas/aspley" },
+  { name: "The Gap", href: "/areas/the-gap" },
+  { name: "Ferny Grove", href: "/areas/ferny-grove" },
+  { name: "North Lakes", href: "/areas/north-lakes" },
+  { name: "Caboolture", href: "/areas/caboolture" },
+  { name: "Logan", href: "/areas/logan" },
+  { name: "Beenleigh", href: "/areas/beenleigh" },
+  { name: "Wynnum", href: "/areas/wynnum" },
+  { name: "Redlands", href: "/areas/redlands" },
+  { name: "Capalaba", href: "/areas/capalaba" },
+  { name: "Ipswich", href: "/areas/ipswich" },
+  { name: "Springfield", href: "/areas/springfield" },
+];
+
+const suburbs = [
+  "Brisbane CBD", "Southside", "Northside", "Ipswich", "Logan",
+  "Redlands", "Moreton Bay", "Capalaba", "Cleveland", "Wynnum",
+  "Manly", "Coorparoo", "Camp Hill", "Cannon Hill", "Bulimba",
+  "Carindale", "Mount Gravatt", "Sunnybank", "Springwood", "Beenleigh",
+  "Springfield", "Forest Lake", "Goodna", "Redbank Plains", "Marsden",
+  "Morningside", "Greenslopes", "Holland Park", "Tarragindi", "Annerley",
+  "Moorooka", "Kenmore", "Indooroopilly", "Chapel Hill", "The Gap",
+  "Ferny Grove", "Everton Park", "Stafford", "Nundah", "North Lakes",
+];
 
 export default function Footer() {
+  const scrollToSection = (href: string) => {
+    if (href === "#top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <footer className="bg-navy-deep" style={{ background: "#091e30" }}>
-      {/* Schema JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(SCHEMA) }}
-      />
-
-      {/* Pre-footer CTA strip */}
-      <div style={{ background: "#C9A44D" }}>
-        <div className="container py-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p
-            className="text-navy font-bold text-base"
-            style={{ fontFamily: "Fraunces, serif" }}
-          >
-            Ready to get started? Call Jarrad directly.
-          </p>
-          <a
-            href="tel:0424463268"
-            className="bg-navy text-bone font-bold py-3 px-7 rounded-sm flex items-center gap-2 hover:bg-navy-light transition-colors"
-            style={{ fontFamily: "Inter, sans-serif" }}
-            onClick={() => {
-              if (typeof window !== "undefined" && (window as any).gtag) {
-                (window as any).gtag("event", "conversion", {
-                  send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
-                });
-              }
-            }}
-          >
-            <Phone className="w-4 h-4" />
-            <span className="mono-stamp">0424 463 268</span>
-          </a>
-        </div>
-      </div>
-
-      {/* Main footer */}
-      <div className="container py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          {/* Brand */}
-          <div>
+    <footer className="bg-[#1a1a1a] border-t border-white/5">
+      <div className="container py-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
+          {/* Logo & Description */}
+          <div className="sm:col-span-2 lg:col-span-1">
             <img
-              src="/manus-storage/ccg-full-navbar_2520906a_51166f62.png"
-              alt="Concrete Concepts Group"
-              className="h-10 w-auto mb-4 object-contain"
+              src={LOGO_URL}
+              alt="Concrete Concepts Group - Brisbane Concreting Services"
+              width={56}
+              height={56}
+              loading="lazy"
+              decoding="async"
+              className="h-14 w-auto mb-4 rounded-sm"
             />
-            <p className="text-bone/60 text-sm leading-relaxed mb-4">
-              Brisbane's trusted concreting specialists. QBCC Licensed, fully
-              insured, and owner-operated by Jarrad.
-            </p>
-            <div className="mono-stamp text-gold text-xs">
-              QBCC LICENCE #15299707
-            </div>
-            <a
-              href="/trade-referral-program"
-              className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-bone/70 transition-colors hover:text-gold"
+            <p
+              className="text-white/60 text-sm leading-relaxed max-w-xs"
+              style={{ fontFamily: "var(--font-body)" }}
             >
-              Refer a job · Receive $100 <ArrowRight className="h-4 w-4" />
-            </a>
+              Brisbane's trusted concreting professionals. From driveways and slabs 
+              to retaining walls and excavation — QBCC Licensed, fully insured, 
+              and committed to quality on every project.
+            </p>
           </div>
 
-          {/* Services */}
+          {/* Quick Links */}
           <div>
-            <h4 className="text-bone font-semibold text-sm uppercase tracking-widest mb-4 mono-stamp">
-              Services
-            </h4>
-            <ul className="space-y-2 text-bone/60 text-sm">
+            <h3
+              className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Quick Links
+            </h3>
+            <ul className="space-y-2.5">
               {[
-                "Concrete Driveways",
-                "Concrete Slabs",
-                "Exposed Aggregate",
-                "Patios & Entertaining",
-                "Retaining Walls",
-                "Excavation",
-                "Pool Surrounds",
-                "Coloured Concrete",
-              ].map(s => (
-                <li key={s}>
-                  <a
-                    href="#services"
-                    onClick={e => {
-                      e.preventDefault();
-                      document
-                        .querySelector("#services")
-                        ?.scrollIntoView({ behavior: "smooth" });
-                    }}
-                    className="hover:text-gold transition-colors"
+                { label: "Services", href: "#services" },
+                { label: "About Us", href: "#about" },
+                { label: "Our Work", href: "#work" },
+                { label: "Service Areas", href: "#service-area" },
+                { label: "Get a Quote", href: "/get-quote" },
+              ].map((link) => (
+                <li key={link.href}>
+                  <button
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-white/60 hover:text-brand-gold text-sm transition-colors"
+                    style={{ fontFamily: "var(--font-body)" }}
                   >
-                    {s}
-                  </a>
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+              <li>
+                <Link href="/reviews">
+                  <span className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer" style={{ fontFamily: "var(--font-body)" }}>
+                    Reviews
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog">
+                  <span className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer" style={{ fontFamily: "var(--font-body)" }}>
+                    Blog
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/gallery/before-after">
+                  <span className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer" style={{ fontFamily: "var(--font-body)" }}>
+                    Before & After
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/calculator">
+                  <span className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer" style={{ fontFamily: "var(--font-body)" }}>
+                    Cost Calculator
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/finishes">
+                  <span className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer" style={{ fontFamily: "var(--font-body)" }}>
+                    Concrete Finishes
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq">
+                  <span className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer" style={{ fontFamily: "var(--font-body)" }}>
+                    FAQ
+                  </span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Services with links */}
+          <div>
+            <h3
+              className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Our Services
+            </h3>
+            <ul className="space-y-2.5">
+              {serviceLinks.map((service) => (
+                <li key={service.name}>
+                  <Link href={service.href}>
+                    <span
+                      className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
+                      {service.name}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Service Areas with links */}
+          <div>
+            <h3
+              className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
+              Service Areas
+            </h3>
+            <ul className="space-y-2.5">
+              {areaLinks.map((area) => (
+                <li key={area.name}>
+                  <Link href={area.href}>
+                    <span
+                      className="text-white/60 hover:text-brand-gold text-sm transition-colors cursor-pointer"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
+                      {area.name}
+                    </span>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -172,63 +216,74 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h4 className="text-bone font-semibold text-sm uppercase tracking-widest mb-4 mono-stamp">
+            <h3
+              className="text-white/80 text-sm font-semibold uppercase tracking-wider mb-4"
+              style={{ fontFamily: "var(--font-body)" }}
+            >
               Contact
-            </h4>
-            <div className="space-y-3">
-              <a
-                href="tel:0424463268"
-                className="flex items-center gap-2 text-bone/70 hover:text-gold transition-colors text-sm"
-              >
-                <Phone className="w-4 h-4 text-gold" />
-                <span className="mono-stamp">0424 463 268</span>
-              </a>
-              <a
-                href="mailto:info@concreteconceptsgroup.com"
-                className="flex items-center gap-2 text-bone/70 hover:text-gold transition-colors text-sm"
-              >
-                <Mail className="w-4 h-4 text-gold" />
-                info@concreteconceptsgroup.com
-              </a>
-              <div className="flex items-center gap-2 text-bone/70 text-sm">
-                <MapPin className="w-4 h-4 text-gold" />
-                Brisbane & All SEQ
-              </div>
-            </div>
-            <div className="flex gap-3 mt-5">
-              <a
-                href="https://www.facebook.com/share/14Z2spZfScB/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-sm bg-white/10 flex items-center justify-center text-bone/60 hover:text-gold hover:bg-white/20 transition-colors"
-              >
-                <Facebook className="w-4 h-4" />
-              </a>
-              <a
-                href="https://www.google.com/maps/place/Concrete+concepts+group+pty+Ltd/@-27.4479932,153.0574609,17z"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-9 h-9 rounded-sm bg-white/10 flex items-center justify-center text-bone/60 hover:text-gold hover:bg-white/20 transition-colors text-xs font-bold"
-              >
-                G
-              </a>
-            </div>
+            </h3>
+            <ul className="space-y-2.5" style={{ fontFamily: "var(--font-body)" }}>
+              <li>
+                <a href="tel:0424463268" onClick={() => trackPhoneCallClick()} className="text-white/60 hover:text-brand-gold text-sm transition-colors">
+                  0424 463 268
+                </a>
+              </li>
+              <li>
+                <a href="mailto:info@concreteconceptsgroup.com" onClick={() => trackEmailClick()} className="text-white/40 hover:text-brand-gold text-sm transition-colors break-all">
+                  info@concreteconceptsgroup.com
+                </a>
+              </li>
+              <li className="text-white/40 text-sm">
+                Brisbane &amp; All Surrounding Areas, QLD
+              </li>
+              <li className="text-white/40 text-sm">
+                ABN: 61 695 485 593
+              </li>
+              <li className="text-white/40 text-sm">
+                QBCC Licence: 15299707
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-bone/40 text-xs">
-          <p>
-            © {new Date().getFullYear()} Concrete Concepts Group Pty Ltd. All
-            rights reserved.
+        {/* Service Areas — suburb keywords for local SEO */}
+        <div className="mt-12 pt-8 border-t border-white/5">
+          <h3
+            className="text-white/50 text-xs font-semibold uppercase tracking-wider mb-3"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            Proudly Serving
+          </h3>
+          <p
+            className="text-white/40 text-xs leading-relaxed"
+            style={{ fontFamily: "var(--font-body)" }}
+          >
+            {suburbs.join(" · ")}
           </p>
-          <div className="flex flex-col items-center gap-2 sm:items-end">
-            <p className="mono-stamp">ABN · QBCC #15299707 · Brisbane QLD</p>
-            <a
-              href="/construction-growth-systems"
-              className="transition-colors hover:text-gold"
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-8 pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-white/25 text-xs" style={{ fontFamily: "var(--font-body)" }}>
+            &copy; {new Date().getFullYear()} Concrete Concepts Group Pty Ltd. All rights reserved.
+          </p>
+          <div className="flex items-center gap-4">
+            <Link href="/privacy" className="text-white/25 hover:text-brand-gold text-xs transition-colors" style={{ fontFamily: "var(--font-body)" }}>
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="text-white/25 hover:text-brand-gold text-xs transition-colors" style={{ fontFamily: "var(--font-body)" }}>
+              Terms of Service
+            </Link>
+            <Link href="/faq" className="text-white/25 hover:text-brand-gold text-xs transition-colors" style={{ fontFamily: "var(--font-body)" }}>
+              FAQ
+            </Link>
+            <button
+              onClick={() => scrollToSection("#top")}
+              className="text-white/25 hover:text-brand-gold text-xs transition-colors"
+              style={{ fontFamily: "var(--font-body)" }}
             >
-              Website and growth systems by CGS
-            </a>
+              Back to top
+            </button>
           </div>
         </div>
       </div>

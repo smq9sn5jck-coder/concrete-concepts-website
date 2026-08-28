@@ -1,1 +1,5 @@
-/* /index.html 200
+# www to non-www redirect (301 permanent)
+https://www.concreteconceptsgroup.com/* https://concreteconceptsgroup.com/:splat 301
+
+# SPA fallback - serve index.html for all routes not matching a file
+/*  /index.html  200

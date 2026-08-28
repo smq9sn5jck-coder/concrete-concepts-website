@@ -1,196 +1,194 @@
 /*
-  DESIGN: Foreman's Blueprint — Navbar
-  Sticky navy bar, CCG logo left, nav links centre, gold CTA right
-  Mobile: hamburger drawer with full-width call + quote buttons
+  DESIGN: Refined Craft — Concrete Concepts Group brand
+  Navbar: Clean, minimal with logo on left, nav links center, CTA right
+  Gold accent on hover, charcoal text, transparent -> white on scroll
 */
 import { useState, useEffect } from "react";
-import { Phone, Menu, X } from "lucide-react";
-import { GOOGLE_ADS_CONVERSION_IDS } from "@/lib/google-ads";
+import { Button } from "@/components/ui/button";
+import { Menu, X, BookOpen } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Link, useLocation } from "wouter";
 
-const NAV_LINKS = [
+const navLinks = [
   { label: "Services", href: "#services" },
-  { label: "Gallery", href: "#gallery" },
-  { label: "Reviews", href: "#reviews" },
-  { label: "Service Areas", href: "#areas" },
-  { label: "FAQ", href: "#faq" },
-  { label: "Referrals", href: "/trade-referral-program" },
+  { label: "About", href: "#about" },
+  { label: "Our Work", href: "/projects", isRoute: true },
+  { label: "Before & After", href: "/gallery/before-after", isRoute: true },
+  { label: "Cost Calculator", href: "/calculator", isRoute: true },
+  { label: "Finishes", href: "/finishes", isRoute: true },
+  { label: "Areas", href: "/areas", isRoute: true },
+  { label: "Reviews", href: "/reviews", isRoute: true },
+  { label: "Blog", href: "/blog", isRoute: true },
+  { label: "AI Visualiser", href: "/visualiser", isRoute: true, badge: true },
+  { label: "Free Guide", href: "/guide", isRoute: true, badge: true },
+  { label: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [location] = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleNavClick = (href: string) => {
-    setOpen(false);
-
-    if (href.startsWith("/")) {
-      window.location.assign(href);
+  const scrollToSection = (href: string) => {
+    setMobileOpen(false);
+    // If we're not on the homepage, navigate there first
+    if (location !== "/") {
+      window.location.href = `/${href}`;
       return;
     }
-
-    if (window.location.pathname !== "/") {
-      window.location.assign(`/${href}`);
-      return;
-    }
-
     const el = document.querySelector(href);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
     <>
       <nav
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
-        style={{
-          background: scrolled ? "rgba(9,30,48,0.97)" : "#0F2A44",
-          backdropFilter: scrolled ? "blur(12px)" : "none",
-          boxShadow: scrolled ? "0 2px 24px rgba(0,0,0,0.35)" : "none",
-        }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md shadow-[0_1px_0_0_rgba(0,0,0,0.06)]"
+            : "bg-transparent"
+        }`}
       >
-        <div className="container flex items-center justify-between h-16 md:h-18">
-          {/* Logo */}
-          <a
-            href="/"
-            onClick={e => {
-              if (window.location.pathname !== "/") return;
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            }}
-            className="flex items-center gap-3 flex-shrink-0"
-          >
+        <div className="container flex items-center justify-between h-20 lg:h-24">
+          {/* Brand Logo — swap between light (transparent bg) and dark versions */}
+          <Link href="/">
             <img
-              src="/manus-storage/ccg-full-navbar_2520906a_51166f62.png"
+              src={scrolled
+                ? "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-navbar_2520906a.png"
+                : "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-hero_a3bbd489.png"
+              }
               alt="Concrete Concepts Group"
-              className="h-9 w-auto object-contain"
+              width={104}
+              height={80}
+              loading="eager"
+              decoding="sync"
+              className="h-12 lg:h-14 w-auto object-contain cursor-pointer transition-opacity duration-300"
             />
-          </a>
+          </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-7">
-            {NAV_LINKS.map(link => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={e => {
-                  e.preventDefault();
-                  handleNavClick(link.href);
-                }}
-                className="text-sm font-medium text-bone/80 hover:text-gold transition-colors duration-150"
-                style={{
-                  fontFamily: "Inter, sans-serif",
-                  letterSpacing: "0.02em",
-                }}
-              >
-                {link.label}
-              </a>
+          {/* Desktop Nav Links */}
+          <div className="hidden lg:flex items-center gap-10">
+            {navLinks.map((link) => (
+              'isRoute' in link && link.isRoute ? (
+                <Link key={link.href} href={link.href}>
+                  <span
+                    className={`text-sm font-medium tracking-wide uppercase transition-colors duration-300 cursor-pointer relative ${
+                      'badge' in link && link.badge
+                        ? scrolled ? "text-brand-gold" : "text-brand-gold"
+                        : scrolled
+                          ? "text-brand-charcoal hover:text-brand-gold"
+                          : "text-white/90 hover:text-brand-gold"
+                    }`}
+                    style={{ fontFamily: "var(--font-body)" }}
+                  >
+                    {'badge' in link && link.badge && (
+                      <span className="absolute -top-2.5 -right-3 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">NEW</span>
+                    )}
+                    {link.label}
+                  </span>
+                </Link>
+              ) : (
+                <button
+                  key={link.href}
+                  onClick={() => scrollToSection(link.href)}
+                  className={`text-sm font-medium tracking-wide uppercase transition-colors duration-300 ${
+                    scrolled
+                      ? "text-brand-charcoal hover:text-brand-gold"
+                      : "text-white/90 hover:text-brand-gold"
+                  }`}
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  {link.label}
+                </button>
+              )
             ))}
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <a
-              href="tel:0424463268"
-              className="flex items-center gap-2 text-sm font-semibold text-bone/90 hover:text-gold transition-colors"
-              onClick={() => {
-                if (typeof window !== "undefined" && (window as any).gtag) {
-                  (window as any).gtag("event", "conversion", {
-                    send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
-                  });
-                }
-              }}
-            >
-              <Phone className="w-4 h-4 text-gold" />
-              <span className="mono-stamp">0424 463 268</span>
-            </a>
-            <a
-              href="#contact"
-              onClick={e => {
-                e.preventDefault();
-                handleNavClick("#contact");
-              }}
-              className="btn-gold text-sm py-2 px-5"
-            >
-              Free Quote
-            </a>
+          <div className="hidden lg:flex items-center gap-4">
+            <Link href="/get-quote">
+              <Button
+                className="bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-semibold px-6 py-2.5 text-sm tracking-wide uppercase shadow-lg shadow-brand-gold/20 transition-all duration-300 hover:shadow-xl hover:shadow-brand-gold/30"
+                style={{ fontFamily: "var(--font-body)" }}
+              >
+                Get a Free Quote
+              </Button>
+            </Link>
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden p-2 text-bone"
-            onClick={() => setOpen(!open)}
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className={`lg:hidden p-2 transition-colors ${
+              scrolled ? "text-brand-charcoal" : "text-white"
+            }`}
             aria-label="Toggle menu"
           >
-            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile drawer */}
-      {open && (
-        <div
-          className="fixed inset-0 z-40 flex flex-col"
-          style={{ background: "#0F2A44" }}
-        >
-          <div className="h-16 flex items-center justify-between px-4">
-            <img
-              src="/manus-storage/ccg-full-navbar_2520906a_51166f62.png"
-              alt="Concrete Concepts Group"
-              className="h-9 w-auto object-contain"
-            />
-            <button className="p-2 text-bone" onClick={() => setOpen(false)}>
-              <X className="w-6 h-6" />
-            </button>
-          </div>
-          <div className="flex flex-col gap-1 px-6 py-6">
-            {NAV_LINKS.map(link => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={e => {
-                  e.preventDefault();
-                  handleNavClick(link.href);
-                }}
-                className="text-xl font-semibold text-bone py-3 border-b border-white/10 hover:text-gold transition-colors"
-                style={{ fontFamily: "Fraunces, serif" }}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-          <div className="px-6 pb-8 mt-auto flex flex-col gap-3">
-            <a
-              href="tel:0424463268"
-              className="btn-gold w-full justify-center text-base py-4"
-              onClick={() => {
-                if (typeof window !== "undefined" && (window as any).gtag) {
-                  (window as any).gtag("event", "conversion", {
-                    send_to: GOOGLE_ADS_CONVERSION_IDS.clickToCall,
-                  });
-                }
-              }}
-            >
-              <Phone className="w-5 h-5" /> Call 0424 463 268
-            </a>
-            <a
-              href="#contact"
-              onClick={e => {
-                e.preventDefault();
-                setOpen(false);
-                handleNavClick("#contact");
-              }}
-              className="btn-navy-outline w-full justify-center text-base py-4"
-            >
-              Get Free Quote
-            </a>
-          </div>
-        </div>
-      )}
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 bg-brand-charcoal pt-24"
+          >
+            <div className="flex flex-col items-center gap-8 p-8">
+              {navLinks.map((link) => (
+                'isRoute' in link && link.isRoute ? (
+                  <Link key={link.href} href={link.href}>
+                    <span
+                      onClick={() => setMobileOpen(false)}
+                      className={`text-xl font-medium tracking-wide uppercase transition-colors cursor-pointer relative ${
+                        'badge' in link && link.badge
+                          ? "text-brand-gold"
+                          : "text-white/90 hover:text-brand-gold"
+                      }`}
+                      style={{ fontFamily: "var(--font-body)" }}
+                    >
+                      {'badge' in link && link.badge && (
+                        <span className="absolute -top-2 -right-6 bg-red-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none">NEW</span>
+                      )}
+                      {link.label}
+                    </span>
+                  </Link>
+                ) : (
+                  <button
+                    key={link.href}
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-xl font-medium text-white/90 hover:text-brand-gold tracking-wide uppercase transition-colors"
+                    style={{ fontFamily: "var(--font-body)" }}
+                  >
+                    {link.label}
+                  </button>
+                )
+              ))}
+              <div className="w-16 h-px bg-brand-gold/40 my-2" />
+              <Link href="/get-quote">
+                <Button
+                  onClick={() => setMobileOpen(false)}
+                  className="bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-semibold px-8 py-3 text-base tracking-wide uppercase"
+                  style={{ fontFamily: "var(--font-body)" }}
+                >
+                  Get a Free Quote
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

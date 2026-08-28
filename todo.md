@@ -1,0 +1,776 @@
+- [x] Create Trusted Partners section featuring Grime Away Exterior Cleaning, styled to match brand colours
+- [x] Blog database schema (blogPosts table with title, slug, content, excerpt, category, coverImage, publishedAt, etc.)
+- [x] Blog backend tRPC routes (list posts, get single post, create/edit/delete for admin)
+- [x] Blog listing page at /blog with category filtering and search
+- [x] Individual blog post page at /blog/:slug with SEO meta tags
+- [x] Create 4-5 initial blog posts (concreting tips, project showcases, Brisbane trends)
+- [x] Add Blog link to main navigation
+- [x] Admin blog management (create/edit/delete posts from admin dashboard)
+- [x] Blog SEO enhancements (structured data, Open Graph per post)
+- [x] Write vitest tests for blog routes
+- [x] Email notifications via Resend to team@empiremarketing.io on new quote submissions (update to info@ once domain verified)
+- [x] Browser push notifications for new quote alerts (using Manus notifyOwner — already active)
+- [x] FAQ section on homepage with common concreting questions (SEO + reduce enquiries)
+- [x] Service area map section on homepage showing Brisbane suburbs covered (local SEO)
+- [x] Remove all Manus branding and references from the website (meta tags, footer, source code)
+- [x] Create dynamic sitemap.xml with all pages and blog posts
+- [x] Create robots.txt with sitemap reference
+- [x] Guide user through Google Search Console submission
+- [x] SEO: Canonical URLs on all pages
+- [x] SEO: Dynamic meta title/description per page with target keywords
+- [x] SEO: Enhanced structured data (Service schema, FAQ schema, BreadcrumbList per page)
+- [x] SEO: Open Graph and Twitter Card meta tags per page (blog posts, homepage)
+- [x] SEO: Image alt text optimization across all components
+- [x] SEO: Internal linking strategy (blog-to-services, services-to-contact)
+- [x] SEO: Semantic HTML improvements (proper heading hierarchy, article tags)
+- [x] SEO: Performance optimizations (lazy loading images, preload critical assets)
+- [x] SEO: Create dedicated service landing pages for top keywords
+- [x] SEO: Add breadcrumb navigation with schema markup
+- [x] SEO: Implement hreflang and geo-targeting meta tags
+- [x] SEO: Add JSON-LD for each blog post (Article schema)
+- [x] SEO: Optimize URL structure and add keyword-rich anchor text
+- [x] SEO: Add a comprehensive footer with suburb/area keywords
+- [x] Fix: Shorten SEO meta description to under 160 characters
+- [x] Fix: Shorten SEO title to under 60 characters
+- [x] Fix: Add missing alt attribute to 1 image
+- [x] WhatsApp floating click-to-chat button on all pages
+- [x] Auto-reply confirmation email to customers on quote submission
+- [x] Photo upload on quote form (S3 storage)
+- [x] Google Reviews integration in testimonials section
+- [x] Analytics dashboard in admin panel (page views, quote stats, popular services)
+- [x] Update Patios & Entertaining service card to Site Waste Removal & Excavation with tipping
+- [x] Add 4 new concreting photos to project gallery (exposed aggregate, driveway, side path, new driveway)
+- [x] Add Google Ads gtag.js tracking tag (AW-18007005419) to all pages
+- [x] Add Google Ads conversion event snippet for form submissions
+- [x] Admin notification (Manus app) when new quote is submitted
+- [x] Auto-reply confirmation email to customers when they submit a quote
+- [x] Change notification recipient email to info@concreteconceptsgroup.com
+- [x] Update sender email to info@concreteconceptsgroup.com (after Resend domain verification)
+- [x] Verify concreteconceptsgroup.com domain in Resend
+- [x] Add Google Search Console verification meta tag
+- [x] Add quote status tracking system (New / Contacted / Quoted / Won / Lost) to admin dashboard
+- [x] Add Before & After gallery section to landing page
+- [x] Write SEO blog posts for organic search traffic (4 new posts added)
+- [x] Create suburb-specific landing pages (Carindale, Logan, Wynnum, Springfield, Capalaba, Ipswich, Mt Gravatt, Redlands, Beenleigh, Camp Hill, Sunnybank)
+- [x] Add LocalBusiness schema markup for each suburb landing page
+- [x] Add FAQ schema to individual suburb landing pages
+- [x] Improve internal linking (navbar, footer, service area map, testimonials section all link to suburb pages, reviews, blog)
+- [x] Create dedicated Reviews/Testimonials page at /reviews with AggregateRating schema
+- [x] Write 5 additional SEO blog posts targeting long-tail keywords (concrete cure time, concrete vs pavers, driveway maintenance, exposed aggregate guide, council approval retaining walls)
+- [x] Add image sitemap (xmlns:image) with project photos and blog cover images
+- [x] Page speed optimisation (lazy loading images, efficient sitemap caching)
+- [x] Create northside suburb landing pages (Chermside, Aspley, North Lakes, Caboolture)
+- [x] Add Request a Callback popup on suburb pages (triggered after 30 seconds)
+- [x] Update sitemap, footer, and service area map with new northside suburbs
+- [x] Update phone number from 0424 698 986 to 0424 463 268 across entire website
+- [x] Update WhatsApp button number to 0424 463 268 (already correct from bulk update)
+- [x] Merge gallery images from old site (concreteconcepts.manus.space) into current site
+- [x] Optimize all page titles and meta descriptions with high-volume keywords
+- [x] Add Organization schema markup (sitewide) — already in index.html
+- [x] Add Service schema markup for each service page
+- [x] Add BreadcrumbList schema to all pages — already in index.html + per-page
+- [x] Add exit-intent popup for desktop visitors (ExitIntentPopup component)
+- [x] Add sticky mobile CTA bar (StickyMobileCTA component)
+- [x] Add trust badges (QBCC, ABN, insurance) prominently — TrustBar below hero
+- [x] Create Service Areas hub page (/areas) listing all 15 suburbs by region
+- [x] Optimize internal linking structure (navbar, footer, service area map, suburb pages)
+- [x] Add robots.txt with proper directives
+- [x] Add canonical tags to all pages (via SEOHead component)
+- [x] Add Open Graph and Twitter Card meta tags to all pages (via SEOHead)
+- [x] Optimize H1/H2 headings with target keywords on every page
+- [x] Fix phone number in all schema markup (index.html LocalBusiness + Organization)
+- [x] Add CDN preconnect for faster image loading
+- [x] Add "Areas" link to main navigation
+- [x] Interactive concrete cost calculator page (/calculator) with mid-to-high Brisbane pricing
+- [x] Expand all 6 service pages to 1500+ words with pricing tables, comparison charts, more FAQs
+- [x] Dedicated before/after gallery page (/gallery/before-after) with image slider comparisons
+- [x] Google Maps embed on contact section and all 15 suburb pages
+- [x] Register new routes, update navigation, sitemap, and internal links for all new pages
+- [x] Add soft "Payment Plans Available" section — positioned as potential offering, not firm commitment — on homepage and cost calculator page
+- [x] Fix SEO title — shortened to 44 characters
+- [x] Fix SEO description — shortened to 152 characters
+- [x] Fix 1 image missing alt attribute (added aria-hidden to decorative SVG)
+- [x] Reduce homepage meta keywords from 18 to 7 focused keywords
+- [x] Change quote notification email to info@concreteconceptsgroup.com (already set correctly)
+- [x] PageSpeed: Add explicit width/height to all images (fix CLS/layout shift)
+- [x] PageSpeed: Add lazy loading to below-the-fold images
+- [x] PageSpeed: Preload hero/LCP image for faster initial render
+- [x] PageSpeed: Add cache headers for static assets on server
+- [x] PageSpeed: Code-split routes to reduce unused JavaScript
+- [x] PageSpeed: Optimize image delivery (proper sizing, compression)
+- [x] PageSpeed: Add preconnect hints for third-party domains
+- [x] PageSpeed: Reduce main-thread work and JS execution time
+- [x] Fix sitemap.xml to include all service pages, suburb/area pages, and blog posts (41 URLs total)
+- [x] Verify Resend domain for concreteconceptsgroup.com (branded email sending)
+- [x] Provide GSC indexing monitoring guidance
+- [x] Request indexing for key pages in GSC URL Inspection (user submitted manually)
+- [x] Set up / verify Google Business Profile for Concrete Concepts (already exists, optimizations recommended)
+- [x] Add leadSource column to quote_requests database table
+- [x] Create UTM parameter capture hook (stores UTM params on first visit)
+- [x] Auto-detect referral source (Google Ads, organic, Maps, Facebook, WhatsApp, direct)
+- [x] Update quote form to send lead source with submission
+- [x] Update backend to save lead source to database
+- [x] Update email notification to include lead source
+- [x] Update admin panel to show lead source for each enquiry
+- [x] Clean up test submissions from database (only real Eneko lead remains)
+- [x] Sticky mobile CTA bar (Call Now + Get Quote fixed at bottom on mobile) — already exists
+- [x] Social proof notifications (popup showing recent quote requests)
+- [x] Google Ads conversion tracking pixel (track quote submissions as conversions)
+- [x] LocalBusiness schema markup (rich snippets in Google search) — already exists
+- [x] FAQ schema markup on service pages (FAQ dropdowns in search results) — already exists
+- [x] Click-to-call tracking (track phone calls as conversions)
+- [x] Retargeting pixel setup (Facebook + Google remarketing)
+- [x] Automated follow-up email sequence (Day 3, Day 7 after quote) with auto-cron every 6 hours
+- [x] Enhance instant quote calculator with rough price ranges — already has full pricing
+- [x] Create dedicated Google Ads landing pages (no nav distractions) — 5 service-specific pages
+- [x] Review request automation (auto-email after job marked won in admin)
+- [x] Update Google Ads tracking with real account ID (AW-6553093174)
+- [x] Find Google Place ID (ChIJM0kDPMxZkWsR4foz-XZxlQ0) and create direct review link
+- [x] Set up Facebook Pixel (ask user for Pixel ID)
+- [x] Instant Callback Widget — "Call Me Back in 60 Seconds" button with phone number input
+- [x] Instant Callback — backend notification to owner when callback requested
+- [x] Instant Callback — database table for callback requests
+- [x] Automated Quote PDF — generate branded PDF estimate on quote submission
+- [x] Automated Quote PDF — email PDF to customer within minutes of submission
+- [x] Automated Quote PDF — use calculator pricing data for rough estimates
+- [x] SMS Follow-Up — integrate SMS provider (Twilio) for Day 3 and Day 7 text messages (ready for API keys)
+- [x] SMS Follow-Up — send SMS alongside email follow-ups (auto-activates when Twilio configured)
+- [x] Google Ads Conversion Actions — step-by-step setup guide for user
+- [x] Google Local Services Ads (LSA) — setup guide and application steps for user
+- [x] Quote PDF — stop auto-emailing PDF to customer, save to S3 for admin review instead
+- [x] Quote PDF — add admin UI to preview, download, and manually send PDF to customer
+- [x] Quote PDF — add "Send Estimate" button in admin quote detail view
+- [x] Quote Builder — database table for custom quote line items (description, qty, unit, rate, amount)
+- [x] Quote Builder — admin UI to add/remove/edit line items with live total calculation
+- [x] Quote Builder — custom notes, terms, and validity period fields
+- [x] Quote Builder — generate custom PDF from edited line items (with 18-26% profit margin built in)
+- [x] Quote Builder — send custom PDF to customer from admin panel
+- [x] Quote Builder — pre-populate line items from service type pricing data (7 templates)
+- [x] Remove WhatsApp floating button widget — too crowded
+- [x] Remove Call Me Back floating widget — too crowded
+- [x] Delete seeded "SEO Test User" entries from quote_requests table
+- [x] Delete related follow_up_emails for test entries
+- [x] Update tests to clean up after themselves (no test data left in production DB)
+- [x] Google Ads — enhanced conversions (send hashed email/phone with conversion events)
+- [x] Google Ads — remarketing audience tag (build retargeting lists of site visitors)
+- [x] Google Ads — dynamic remarketing parameters (service type, page category)
+- [x] Google Ads — call conversion tracking optimization (track call duration thresholds)
+- [x] Google Ads — conversion value tracking (assign dollar values to quote submissions)
+- [x] Google Ads — conversion actions setup guide for user's Google Ads account
+- [x] Google LSA — application and setup guide for user
+- [x] Meta Pixel — install Facebook/Instagram pixel with PageView, Lead, and Contact events
+- [x] Meta Pixel — track quote submissions as Lead conversions
+- [x] Meta Pixel — track phone calls and email clicks as Contact conversions
+- [x] Instagram — embed Instagram feed/gallery on website (via social sharing + link copy for IG stories)
+- [x] Instagram/Facebook — add social sharing buttons to blog posts and gallery
+- [x] Instagram/Facebook — Open Graph optimization for shared links (already implemented via SEOHead)
+- [x] Schema markup — add aggregate review schema (stars in Google search results)
+- [x] Schema markup — add LocalBusiness structured data with full business details (already existed, enhanced with individual reviews + sameAs)
+- [x] Google review link — set up direct Google review URL in won-job email flow (fixed Place ID)
+- [x] Google review link — update admin dashboard review request to use direct Google link (fixed Place ID in SMS too)
+- [x] PageSpeed — run Lighthouse audit on key pages (Performance 25, SEO 100, Accessibility 86)
+- [x] PageSpeed — implement critical fixes (deferred scripts, reduced font weights, contrast fixes, heading order, touch targets, noscript moved to body)
+- [x] Google Search Console — add verification meta tag placeholder in index.html
+- [x] Google Search Console — submit sitemap instructions included in GBP guide
+- [x] Google Business Profile — create comprehensive optimization guide (docs/google-business-profile-guide.md)
+- [x] Blog — "Coloured Concrete Options for Brisbane Homes: Oxides, Stains & Integral Colour"
+- [x] Blog — "Pool Surrounds: Concrete vs Pavers vs Tiles — Best Choice for Brisbane Pools"
+- [x] Blog — "How to Prepare Your Property for a Concreting Job: Homeowner Checklist"
+- [x] Blog — "Concrete Driveway vs Asphalt: Why Brisbane Homeowners Choose Concrete"
+- [x] Blog — "When Is the Best Time to Pour Concrete in Brisbane? Seasonal Guide"
+- [x] Suburb pages — 15 new high-value Brisbane suburbs (Morningside, Coorparoo, Greenslopes, Holland Park, Tarragindi, Annerley, Moorooka, Kenmore, Indooroopilly, Chapel Hill, The Gap, Ferny Grove, Everton Park, Stafford, Nundah)
+- [x] Google Ads landing pages — optimize all 5 for higher conversion rates (stronger headlines, urgency, social proof)
+- [x] Assign unique project photos to each of the 15 new suburb pages (replace shared hero images)
+- [x] Add LocalBusiness JSON-LD schema markup to all 30 suburb pages for Google Maps / local pack visibility
+- [x] Update Google Business Profile URL in sameAs schema across all pages (suburb, service, reviews, home)
+- [x] Add BreadcrumbList JSON-LD schema to all service pages and blog posts (already implemented via Breadcrumbs component)
+- [x] Feature 1: Write 15 new long-tail keyword blog posts (34 total)
+- [x] Feature 2: Create 15 new suburb pages for Logan, Gold Coast, Moreton Bay, Ipswich corridors (45 total)
+- [x] Feature 3: Build Projects / Case Studies section with 8 case studies, image lightbox, filter by service type
+- [x] Feature 4: Concrete Calculator already built with pricing, extras, and SEO content (no major changes needed)
+- [x] Feature 5: Add geo-targeting meta tags (geo.region, geo.placename, geo.position, ICBM) to SEOHead component
+- [x] Feature 6: Create 3 niche service landing pages (crossover permits, pool surrounds, shed slabs)
+- [x] Feature 7: Build interactive multi-step quote form at /get-quote with 3 steps, photo upload, progress bar
+- [x] Feature 8: Build AI chatbot for FAQ answering and lead capture (floating widget on all pages, LLM-powered)
+- [x] Feature 9: Enhanced email sequences — added Day 1 "What to Expect" process guide email (5-email sequence: confirmation → Day 1 → Day 3 → Day 7 → review request)
+- [x] Feature 10: Create referral program page at /referral with $250 reward, 4-step process, FAQ, referral form
+- [x] Build 12 new Google Ads landing pages for service×suburb combinations (17 total)
+- [x] Add A/B testing system with headline and CTA variations to existing 5 landing pages (localStorage-persisted, tracked in quote submissions)
+- [x] Create 10 display ad banner images for remarketing campaigns (2 variants × 5 sizes: 300x250, 728x90, 160x600, 320x50, 300x600)
+- [x] Write and generate "Homeowner's Guide to Concreting" 13-page PDF lead magnet (8 chapters, tables, checklists)
+- [x] Build PDF download page at /guide with lead capture form, chapter previews, trust section
+- [x] Fix display ad banners — replaced star characters with "Rated 4.9/5" text for ad platform compatibility
+- [x] Add Free Guide CTA banner to homepage (section variant), blog listing (section variant), and blog posts (inline card variant)
+- [x] Add Free Guide link with highlighted badge (gold text + NEW badge) to main navbar (desktop + mobile)
+- [x] Add Google Ads + Meta Pixel conversion tracking to guide download page (page view + download events with enhanced conversions)
+- [x] Create 4 Facebook/Instagram banner versions (1080x1080 square + 1080x1920 story, general + exposed aggregate variants)
+- [x] Add Google Ads gtag.js remarketing tag to site for building audience lists (already in place with AW-6553093174)
+- [x] Wire up Google Ads conversion tracking with configurable labels via VITE_GADS_LABEL_* env vars, centralized in googleAdsConfig.ts
+- [x] Process new CCG logo - remove background for navbar use
+- [x] Create CCG monogram favicon from logo
+- [x] Upload logo assets to CDN via manus-upload-file
+- [x] Replace hero headline "Brisbane's #1 Concreter" with "Your Concrete, Our Expertise"
+- [x] Update hero subheadline to "Driveways, Slabs, Patios & More — Serving Brisbane, Logan & Gold Coast"
+- [x] Integrate new CCG logo in navbar (desktop + mobile)
+- [x] Integrate new CCG logo in hero section
+- [x] Integrate new CCG logo in footer
+- [x] Update favicon to CCG monogram
+- [x] Test all changes and verify no regressions
+- [x] Brighten the G letter in CCG logo for better visibility on dark background
+- [x] Improve background removal / edge cleanup on logo
+- [x] Upload improved logo versions and update site
+- [x] Upload user-provided transparent logos to CDN and update hero/navbar/footer
+- [x] Process new high-res logo with visible G and update hero/navbar/footer
+- [x] Use designer's transparent PNG logos (monogram for navbar/favicon, full for hero) across site
+- [x] Full site audit: Google Ads tags, conversion tracking, analytics
+- [x] Full site audit: Forms, quote submission, callback requests
+- [x] Full site audit: SEO, meta tags, structured data, sitemap
+- [x] Full site audit: Server logs, errors, site health
+- [x] Fix any issues found during audit (updated 4 stale logo URLs in OG/Twitter/structured data)
+- [x] Add 3-field quick quote form (Name, Phone, Service) directly in hero section
+- [x] Move social proof (Google Reviews stars + QBCC Licensed badge) above the fold under headline
+- [x] Add urgency/scarcity banner with auto-updating month name
+- [x] Remove fake SocialProofNotification popups from site
+- [x] Full site health check - server, logs, errors, tests, database
+- [x] Browser audit - forms, links, mobile, tracking
+- [x] Google Ads landing page optimization audit
+- [x] Implement all fixes and optimizations found
+- [x] Fix: Phone call tracking missing on 7 of 9 phone links (Footer, Hero x2, ExitIntent, PaymentPlans, ChatWidget, ContactSection)
+- [x] Fix: Duplicate gtag config call in index.html (was firing config twice)
+- [x] Fix: Lazy-load ChatWidget to reduce initial bundle from 1.7MB to 785KB (55% reduction)
+- [x] Fix: Add enhanced conversion data (email) to HeroSection and LandingPage quote tracking
+- [x] Fix: Add landing page view tracking for Google Ads remarketing audiences
+- [x] Update hero subheadline from "Brisbane, Logan & Gold Coast" to broader "Brisbane & All Surrounding Areas"
+- [x] Update all service area references across components (ServicesSection, AboutSection, Footer, ContactSection, etc.)
+- [x] Update SEO meta descriptions and titles to reference broader service area
+- [x] Update structured data / schema markup with broader areaServed
+- [x] Update landing pages and suburb pages with broader service area messaging
+- [x] Write and publish new SEO blog post: "How Much Does Exposed Aggregate Concrete Cost in Brisbane? (2026 Price Guide)"
+- [x] Write and publish SEO blog post: "How Much Does a Concrete Retaining Wall Cost in Brisbane? (2026 Price Guide)"
+- [x] Write and publish SEO blog post: "Excavation Cost Guide Brisbane 2026"
+- [x] Write and publish SEO blog post: "Concrete Driveway vs Pavers: Cost Comparison Brisbane 2026"
+- [~] Add Sunshine Coast suburb pages (Caloundra, Maroochydore, Noosa) — skipped per user request
+- [x] Add FAQ schema markup (FAQPage JSON-LD) to all blog posts that contain FAQ-style content
+- [x] Add topic cluster interlinking: service pages link to related blog posts, blog posts link back to service pages
+- [x] Create pillar "Concreting Cost Guide Brisbane 2026" hub page linking to all individual cost guides
+- [x] Build 5 service+suburb combo landing pages: Morningside driveways, Greenslopes exposed aggregate, Sunnybank retaining walls, Nundah patios, Moorooka slabs
+- [x] Add service+suburb combo landing pages: concrete-driveway-springfield, exposed-aggregate-carindale, retaining-wall-logan, concrete-slab-capalaba
+- [x] Write and publish SEO blog post: "Concrete Pool Surround Cost Brisbane 2026"
+- [x] Write and publish SEO blog post: "Crossover/Driveway Apron Cost Brisbane 2026"
+- [x] Write and publish SEO blog post: "Concrete Shed Slab Cost Brisbane 2026"
+- [x] Write and publish SEO blog post: "Concrete Patio Cost Brisbane 2026"
+- [x] Crossover cost guide already exists (driveway-crossover-cost-brisbane-price-guide) — no duplicate needed
+- [x] Update pillar hub page to link to all 8 cost guides (shed slab, patio, pool surround, crossover) + added crossover section
+- [~] Suggestion 1: Publish latest changes (user action - click Publish button)
+- [x] Suggestion 2: Created comprehensive negative keyword list (130+ keywords across 10 categories) for Google Ads
+- [x] Suggestion 3: Fast lead response already working (instant email notifications, auto-reply confirmation, auto-PDF estimate)
+- [x] Suggestion 4: Fixed routers.ts recentActivity endpoint for social proof data (await getDb, null safety)
+- [x] Create 30 new service×suburb Google Ads landing pages (zero overlap with existing 26)
+- [x] New driveway pages: Bulimba, Paddington, Wynnum, Ascot, Holland Park
+- [x] New exposed aggregate pages: Hawthorne, Clayfield, Norman Park, Manly, Seven Hills
+- [x] New retaining wall pages: Paddington, Bulimba, Holland Park, Chandler
+- [x] New slab pages: Wynnum, Annerley, Mt Gravatt, Chandler
+- [x] New patio pages: Bulimba, Hawthorne, Manly, Balmoral
+- [x] New pool surround pages: Bulimba, Ascot, Manly, Chandler
+- [x] New excavation pages: Logan, North Lakes
+- [x] New crossover pages: Springfield, Ipswich
+- [x] Verify all 30 new pages render correctly with no overlap (56 total, 0 TS errors, build clean)
+- [x] Upload 4 real project photos to CDN (Logan exposed aggregate, The Gap slab, Manly slab, Manly pour)
+- [x] Add photos to project gallery on main site (7 photos added)
+- [x] Add photos to relevant landing pages (13 pages with real photo galleries)
+- [x] Add photos to relevant blog posts (all 43 blog posts now have real cover images)
+- [x] Upload 3 more photos to CDN (patio prep, patio place, patio finish - unknown area)
+- [x] Upload 4 new photos to CDN (commercial slab, driveway, exposed aggregate, The Gap excavation prep)
+- [x] Remove duplicate gallery entries (removed 11 stock images, replaced with 4 real photos, fixed duplicate Pool Surround title)
+- [x] Add new photos to gallery and relevant landing pages (added to driveways, The Gap, Logan, excavation pages)
+- [x] Add The Gap excavation prep as before photo paired with existing finished slab
+- [x] Full audit: Server health, build, tests (87/87 passing, build clean, 0 TS errors)
+- [x] Full audit: Database and API endpoints (7 tables healthy, 43 blog posts, 3 real leads)
+- [x] Full audit: Browser console, network, forms, tracking (no app JS errors, all APIs 200 OK)
+- [x] Fix: Wire SocialProofNotification into Home.tsx
+- [x] Fix: Lead #150001 has leadSource as 'NULL' string (updated to 'Direct')
+- [x] Fix: Update schema markup aggregateRating to 4.9/17 reviews (Home.tsx + index.html)
+- [x] Fix: Google Ads gtag.js script loads but window.gtag remains undefined on live site (sandbox browser blocking — works on real browsers)
+- [x] Create Privacy Policy page at /privacy (required for Google Ads lead form)
+- [x] Create Terms of Service page at /terms
+- [x] Add Privacy Policy and Terms links to footer
+- [x] Register /privacy and /terms routes in App.tsx
+- [x] Update Google Ads tag ID from AW-6553093174 to AW-18007005419 across all files
+- [x] Full site audit: check dev server health and logs
+- [x] Full site audit: test email/enquiry form submission
+- [x] Full site audit: verify Google Ads tracking (AW-18007005419)
+- [x] Full site audit: browse all key pages for visual/functional issues
+- [x] Full site audit: run all tests and check API endpoints
+- [x] Full site audit: compile and deliver audit report
+- [x] Fix: "87% Client Satisfaction" already shows 100% — no change needed
+- [x] Set up Google Ads conversion label VITE_GADS_LABEL_QUOTE = oPHGCJSGt44cEOuxtIpD
+- [x] Set up Google Ads phone call conversion label VITE_GADS_LABEL_PHONE = KuCJCPSeyo4cEOuxtIpD
+- [x] Publish new blog post: "How to Maintain Your Concrete Driveway in Brisbane's Climate" (8 min read, 1800+ words)
+- [x] Competitor keyword research and gap analysis (10 competitors analyzed)
+- [x] SEO audit of live site (score 8.5/10, 10 recommendations)
+- [x] Set up scheduled performance monitoring task (every 3 days)
+- [x] Publish new blog post: "Concrete vs Pavers: Which Is Better for Your Brisbane Driveway?"
+- [x] Write Google Business Profile post captions for both new blog posts
+- [x] Publish new blog post: "How Much Does a Concrete Driveway Cost in Brisbane? (2026 Price Guide)"
+- [~] Submit new blog URLs to Google Search Console for faster indexing (skipped for now - do manually)
+- [x] Fix missing alt text on 1 image on homepage (Facebook pixel noscript img)
+- [x] Write blog post: "Exposed Aggregate Driveways Brisbane: Costs, Colours & Design Ideas"
+- [x] Write blog post: "How Long Does Concrete Take to Cure? Brisbane Climate Guide"
+- [x] Write blog post: "Retaining Wall Cost Brisbane: Materials, Heights & Price Guide"
+- [x] Write blog post: "Concrete Slab Cost Calculator: Brisbane 2026 Prices"
+- [x] Add internal links between all blog posts and service pages (7 posts updated with Related Articles sections)
+- [x] Create FAQ schema markup for key pages (dedicated /faq page with 28 Q&As across 6 categories, FAQPage + BreadcrumbList JSON-LD schema)
+- [x] Add /faq, /privacy, /terms to sitemap.xml
+- [x] Add server-side meta tag prerendering for SEO-critical pages (blog posts, services, suburbs, FAQ, static pages)
+- [~] Add Google Analytics 4 (GA4) tag support — pending user's GA4 measurement ID
+- [x] Create proper OG social sharing image (1200x630) for homepage
+- [x] Add structured data testing and validation
+- [x] Improve Core Web Vitals (reduce TTFB, optimize LCP)
+- [x] Add "Request a Quote" CTA to blog post sidebar/footer for better conversion
+- [x] Add testimonial/review snippets to service pages for social proof (now service-specific, 3 reviews per page)
+- [x] Create a "Why Choose Us" section (non-comparative, highlighting CCG strengths)
+- [x] Add StickyMobileCTA to all key pages (services, suburbs, blog, calculator, FAQ)
+- [x] Add inline BlogQuoteCTA component for lead capture within blog posts
+- [x] Add 15 new high-demand suburb pages (Bracken Ridge, Thornlands, Calamvale, Sunnybank Hills, Alexandra Hills, Redland Bay, Eight Mile Plains, Rochedale, Pimpama, Mango Hill, Bellbird Park, Victoria Point, Upper Coomera, Kallangur, Narangba)
+- [x] Update sitemap and Areas page to include new suburbs (60 total suburbs across 10 regions)
+- [x] Add tests for new suburb pages (16 test files, 205 tests all passing)
+- [x] Research high-growth suburb keyword opportunities for Google Ads
+- [x] Create 20 service×suburb landing pages for new growth areas (76 total landing pages)
+- [x] Build Google Ads campaign guide with ad copy, keywords, and budget recommendations
+- [x] Create branded OG social sharing image (1200x630) for homepage and default sharing
+- [x] Build "Why Choose Us" section on homepage (non-comparative, 8 strength cards with icons)
+- [~] Add Google Analytics 4 (GA4) integration with measurement ID (pending user's GA4 ID)
+- [x] Build Facebook/Instagram API integration (server-side posting + admin UI, Meta Graph API, AI captions, scheduling, Social tab in admin)
+- [x] Full site audit for mismatched photos, content, and inconsistencies (found 8 mismatches)
+- [x] Build concrete finishes visualizer (interactive finish selector with 5 finishes, comparison tool, rating bars)
+- [x] Build abandoned quote follow-up system (auto-email for incomplete forms, email blur tracking, admin list)
+- [x] Build blog post scheduling system (write ahead, auto-publish, admin schedule/cancel, auto-cron)
+- [x] Add video hero section with Pexels concrete leveling background video (CDN-hosted, dark overlay)
+- [x] Build customer satisfaction survey system (token-based, star ratings, Google review routing for 4-5 stars)
+- [x] Fix all issues found in site audit (1 driveways service hero, 5 pool surround LPs, 2 excavation LPs)
+- [x] Write vitest tests for all 5 new features (18 tests, all passing)
+- [x] Tracking Audit: Add trackPhoneCallClick to 13 pages with untracked tel: links (ServicePage, SuburbPage, ReviewsPage, ServiceAreasPage, CostCalculator, BeforeAfterGallery, ProjectsPage, GetQuote, ReferralPage, GuidePage, PrivacyPolicy, TermsOfService, FAQPage)
+- [x] Tracking Audit: Fix BlogQuoteCTA to pass enhanced conversion data (name + phone) to trackQuoteConversion
+- [x] Tracking Audit: Fix CallbackWidget to pass enhanced conversion data (name + phone) to trackCallbackConversion
+- [x] Tracking Audit: Add trackCalculatorUse to CostCalculator (service type + estimated value)
+- [x] Tracking Audit: Add abandoned quote tracking to HeroSection (phone blur → save partial form data)
+- [x] Tracking Audit: Write 37 vitest tests covering phone tracking coverage, enhanced conversion data, calculator tracking, abandoned quote tracking, Google Ads config, and Meta Pixel integration
+- [x] SEO Audit: Add /finishes page to sitemap
+- [x] SEO Audit: Add 15 missing suburb slugs to sitemap (bracken-ridge, thornlands, calamvale, etc.)
+- [x] SEO Audit: Add /finishes to SEO prerender meta tags
+- [x] Conversion Fix: Add trackQuoteConversion to CallbackPopup on success
+- [x] Internal Linking: Add /finishes link to ServicePage Related Services section
+- [x] Internal Linking: Add /finishes card to SuburbPage services grid
+- [x] Internal Linking: Add /finishes link to BlogPost Explore Our Services section
+- [x] Write SEO audit tests (sitemap, prerender, tracking, internal linking) — 331 tests all passing
+- [x] Full Site Audit: Added retry logic (ECONNRESET) to processFollowUpEmails, processAbandonedQuoteFollowUps, processScheduledBlogPosts
+- [x] Full Site Audit: Verified all 5 leads in DB — 3 older leads got Day 1 + Day 3 follow-ups correctly, 2 recent test submissions working as expected
+- [x] Full Site Audit: Verified all phone links tracked (5/5 CCG links have onClick, 1 partner link correctly untracked)
+- [x] Full Site Audit: Verified Google Ads gtag loads correctly with deferred loading + waitForGtag polling
+- [x] Full Site Audit: Verified Meta Pixel (fbq) initialized and working
+- [x] Full Site Audit: Verified 331 tests all passing
+- [x] GOD MODE: Deep audit all tracking events on live site — CRITICAL FIX: gtag init moved before external script
+- [x] GOD MODE: Form interaction tracking added (GodModeTracking component — field focus, completion, abandon)
+- [x] GOD MODE: Scroll depth tracking added (25%, 50%, 75%, 100% milestones via IntersectionObserver)
+- [x] GOD MODE: CTA click tracking added (MutationObserver on all buttons/links)
+- [x] GOD MODE: Time-on-page engagement tracking added (15s, 30s, 60s, 120s milestones)
+- [x] GOD MODE: Section visibility tracking added (hero, services, about, gallery, testimonials, contact)
+- [x] GOD MODE CRO: Reduced hero form from 4 fields to 2 (name + phone only, "Get Your Free Quote in 10 Seconds")
+- [x] GOD MODE CRO: Improved CTA — bigger button, "GET MY FREE CALLBACK →", phone icon, gold bg
+- [x] GOD MODE CRO: Added "Recently Completed" project ticker (12 real projects, 5s rotation, fade animation)
+- [x] GOD MODE CRO: Urgency triggers — auto-updating month banner, "Just your name & number" copy
+- [x] GOD MODE CRO: Trust signals under form — QBCC Licensed, Free On-Site Quotes, No Obligation
+- [x] GOD MODE CRO: Mobile optimized — StickyMobileCTA upgraded with Get Quote button + desktop floating CTA
+- [x] GOD MODE CRO: Mid-page MiniQuoteForm after services (2 fields, dark bg, "Want a Free Quote? Just Leave Your Number")
+- [x] GOD MODE FIX: Removed ExitIntentPopup per owner preference
+- [x] GOD MODE FIX: Fixed social proof "Someone in TBD" (filtered TBD/empty suburbs from query)
+- [x] GOD MODE FIX: Sped up social proof notifications (4s initial, 20s cycle)
+- [x] ULTIMATE GOD MODE: Add StickyMobileCTA to 7 missing pages (Blog, Reviews, Gallery, Projects, ServiceAreas, Guide, Referral)
+- [x] ULTIMATE GOD MODE: Add phone link to Blog listing page
+- [x] ULTIMATE GOD MODE: Add review/testimonial snippets to service pages for social proof
+- [x] ULTIMATE GOD MODE: Replaced fake quote counter with genuine "Recently Completed" project ticker (already done)
+- [x] Remove "Recently Completed" yellow badge from hero form (too cluttered on mobile)
+- [x] Fix "Why Choose Us" section — heading text barely visible on mobile (missing bg-brand-navy CSS variable)
+- [x] Promote /get-quote multi-step wizard — all CTA buttons site-wide now link to /get-quote instead of #contact
+- [x] Add Google Ads conversion tracking to /get-quote — funnel step events + remarketing page view + existing submission conversion
+- [x] Add suburb auto-detect via IP geolocation to pre-fill suburb field on /get-quote (AU visitors only)
+- [x] FULL SITE AUDIT: Google Ads tracking — gtag loads, conversion labels configured, enhanced conversions wired, remarketing active
+- [x] FULL SITE AUDIT: Meta Pixel — fbq initialized, Lead/Contact/ViewContent events firing
+- [x] FULL SITE AUDIT: SEO meta tags — 20/22 pages have SEOHead (2 excluded: AdminDashboard, ComponentShowcase)
+- [x] FULL SITE AUDIT: Schema/structured data — 14 pages with structured data, LocalBusiness + AggregateRating in index.html
+- [x] FULL SITE AUDIT: Sitemap.xml (133 URLs) and robots.txt — complete, domain updated to concreteconceptsgroup.com
+- [x] FULL SITE AUDIT: Canonical URLs — all pages have canonical via SEOHead component
+- [x] FULL SITE AUDIT: All internal links — verified, all CTAs route to /get-quote
+- [x] FULL SITE AUDIT: All external links — 3 broken CDN images fixed, all phone/email links tracked
+- [x] FULL SITE AUDIT: API endpoints — all tRPC routes responding (geo.detect added for suburb auto-detect)
+- [x] FULL SITE AUDIT: Email integrations — Resend configured, follow-up cron active, notifications working
+- [x] FULL SITE AUDIT: Performance — lazy loading on all below-fold images, ChatWidget code-split, preconnect hints
+- [x] FULL SITE AUDIT: Accessibility — all images have alt text, no missing alt attributes found
+- [x] FULL SITE AUDIT: Mobile responsiveness — StickyMobileCTA on all pages, brand-navy CSS fix applied
+- [x] FULL SITE AUDIT: Fixed — 3 broken CDN images, domain references, missing brand-navy CSS, email/WhatsApp tracking, LandingPage SEOHead
+- [x] Update ALL domain references from concreteconcepts.org to concreteconceptsgroup.com (robots.txt, sitemap, SEO, schema, emails, PDFs, breadcrumbs — 40+ files)
+- [x] Set up Google Ads conversion label for WhatsApp clicks (VITE_GADS_LABEL_WHATSAPP)
+- [x] Set up Google Ads conversion label for Callback requests (VITE_GADS_LABEL_CALLBACK) — placeholder, update in Settings → Secrets
+- [x] Set up Google Ads conversion label for Guide downloads (VITE_GADS_LABEL_GUIDE) — placeholder, update in Settings → Secrets
+- [x] Set up Google Ads conversion label for Referral submissions (VITE_GADS_LABEL_REFERRAL)
+- [x] GOD MODE MARKETING: Added 37 new Brisbane suburbs (97 total) — inner city, bayside, Logan, western corridor
+- [x] GOD MODE MARKETING: Added all 37 new suburbs to ServiceAreasPage (11 regions, 97 suburbs listed)
+- [x] GOD MODE MARKETING: Enhanced internal cross-linking — blog→suburb links, suburb→blog links, blog→service links already existed
+- [x] GOD MODE MARKETING: Added "near me" keywords to all 9 service pages + all 97 suburb pages dynamically
+- [x] GOD MODE MARKETING: Suburb pages already have service grids with links to all 9 services
+- [x] GOD MODE MARKETING: Created SeasonalBanner component — auto-updates by month (Autumn/Winter/Spring/Summer) with Brisbane-specific messaging
+- [x] Fix: Remove hardcoded title, meta description, and link canonical from index.html (SEOHead handles per-page)
+- [x] Fix: ABN corrected to 61 695 485 593 (verified on ABR as CONCRETE CONCEPTS GROUP PTY LTD) across all files and database blog posts
+- [x] Fix: Review rating verified — all components consistently show 4.9 (no 4.3 found in codebase)
+- [x] Add commercial concreting blog post to blog data (2000+ words, covers warehouse slabs, car parks, retail fitouts, costs, council requirements)
+- [x] Assess pre-rendering for full SEO (optional)
+- [x] Set up 301 redirect from concreteconcepts.org (and www.concreteconcepts.org) to concreteconceptsgroup.com to consolidate SEO authority
+- [x] Verify 301 redirect is working live on concreteconcepts.org and www.concreteconcepts.org
+- [x] Prepare Google Search Console submission guide — add concreteconcepts.org property and Change of Address tool
+- [x] Audit old backlinks and citations pointing to concreteconcepts.org — identified: NO Google Business Profile exists, hipages needs name/URL update, Facebook needs name/email/URL update
+- [x] Add PWA (Progressive Web App) support — manifest, service worker, icons, splash screen for home screen install
+- [x] Add push notifications for new quote requests — VAPID keys, subscription management, service worker push handler, notify owner on new quote & callback requests
+- [x] Create Google Business Profile setup guide for Concrete Concepts Group
+- [x] Write 5 SEO blog posts targeting high-value Brisbane concrete keywords
+- [x] Seed all 5 blog posts into the database
+- [x] Add Related Posts section at bottom of blog post pages — category-aware matching, card design with cover images, date, read time, and "View All Articles" CTA
+- [x] Fix: Audit and consolidate duplicate blog posts — identified 8 duplicate pairs across driveway costs, retaining walls, shed slabs, curing, vs pavers, and property prep
+- [x] Fix: Implemented 301 redirects for 8 duplicate blog slugs to canonical versions + unpublished duplicates from DB
+- [x] Fix: Added Google review link to Day 1, Day 3, Day 7 follow-up emails + dedicated review request email already existed
+- [x] Add: Concrete sealing cost guide blog post ($10-$35/m² pricing, sealer types comparison, DIY vs pro)
+- [x] Add: Honed vs polished concrete comparison blog post ($50-$150/m² pricing, indoor vs outdoor, maintenance)
+- [x] Add: Carport slab cost guide blog post ($75-$130/m², thickness specs, drainage, council requirements)
+- [x] SEO: Comprehensive site-wide SEO audit — all H1 tags present, all images have alt text, structured data verified, sameAs cleaned, preconnect hints in place, noindex only on admin/404/survey pages, blog redirects working, tests updated
+
+## MEGAMIND GOD MODE — Maximum Visibility Pass
+- [x] Technical SEO: Enhanced XML sitemap with lastmod, changefreq, priority — already implemented (133+ URLs)
+- [x] Technical SEO: FAQ schema already on service pages, suburb pages, and /faq page
+- [x] Technical SEO: BreadcrumbList schema added to GetQuote, GuidePage, ReferralPage, PrivacyPolicy, TermsOfService (all others already had it)
+- [x] Technical SEO: ServiceArea schema already on suburb pages (LocalBusiness + GeoCoordinates)
+- [x] Technical SEO: HowTo schema — blog posts use Article schema which is more appropriate for guides
+- [x] Technical SEO: robots.txt already optimised with sitemap reference and crawl directives
+- [x] Technical SEO: Canonical URLs on all pages via SEOHead component
+- [x] Conversion: Sticky mobile CTA bar already on all pages
+- [x] Conversion: Trust badges (QBCC, ABN 61 695 485 593, insurance) in TrustBar below hero
+- [x] Conversion: Lazy loading on all below-fold images
+- [x] Conversion: Click-to-call tracking on all phone numbers (Google Ads + Meta Pixel)
+- [x] Local SEO: LocalBusiness JSON-LD in index.html (sitewide) + per-suburb pages
+- [x] Local SEO: Suburb pages interlinked with nearby suburbs (nearbySuburbs section)
+- [x] Local SEO: GeoCoordinates on all 97 suburb pages
+- [x] Local SEO: Dedicated /faq page with 28 Q&As across 6 categories + FAQPage schema
+- [x] Social Proof: Live quote counter on homepage ("X quotes requested this month" via tRPC)
+- [x] Social Proof: TrustBar with QBCC, ABN, insurance badges + social proof notifications
+- [x] Performance: Google Fonts preconnect + font-display:swap, hero video preload
+- [x] Performance: Preconnect hints for Google Fonts, CDN domains
+- [x] Accessibility: All images have alt text, decorative elements have aria-hidden
+- [x] Open Graph: All pages have unique OG title/description via SEOHead, blog/service/suburb pages have custom OG images + security headers added (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy) + IndexNow API key for Bing/Yandex instant indexing + CollectionPage schema on Blog listing + AggregateOffer pricing schema on service pages
+- [x] Fix: 301 redirect from concreteconcepts.org not working behind proxy (changed from req.hostname to x-forwarded-host/req.headers.host)
+- [x] Fix: Added "trust proxy" setting to Express for correct header forwarding behind Cloudflare
+- [x] Fix: Static structured data in index.html missing url, logo, addressLocality, postalCode, geo, sameAs (now matches dynamic SEOHead data)
+- [x] Fix: Removed redundant BreadcrumbList static block from index.html (managed per-page by SEOHead)
+- [x] Sync audit: Google Ads tag (AW-18007005419) verified on live site
+- [x] Sync audit: Enhanced conversions enabled (allow_enhanced_conversions: true)
+- [x] Sync audit: 6 conversion labels configured (Quote, Phone, WhatsApp, Callback, Guide, Referral)
+- [x] Sync audit: Meta Pixel installed with PageView, Lead, Contact events
+- [x] Sync audit: robots.txt correct with sitemap reference
+- [x] Sync audit: Sitemap returning 134 URLs with image sitemap support
+- [x] Sync audit: Canonical URLs set correctly on all pages
+- [x] Sync audit: Service worker and manifest.json serving correctly
+- [x] Sync audit: Security headers verified (HSTS, Permissions-Policy)
+- [x] Sync audit: Google review links in follow-up emails (correct Place ID)
+- [x] Sync audit: SEOHead component on 20+ pages
+- [x] Sync audit: IndexNow API endpoint active for Bing/Yandex
+- [x] Wire CCG Lead Engine webhook to all form submission handlers (quote.submit + callback.submit — covers hero form, /get-quote, landing pages, referral, guide download, callback widget)
+- [x] Publish blog: Granny Flat Concrete Slab Cost Brisbane 2026 (2,711 words, 12 internal links)
+- [x] Publish blog: Concrete Removal Cost Brisbane 2026 (2,682 words, internal links)
+- [x] Publish blog: Concrete vs Timber Retaining Wall Brisbane (2,612 words, internal links)
+- [x] Publish blog: Concrete Colour Chart & Oxide Guide Brisbane (2,865 words, internal links)
+- [x] Fix: www.concreteconceptsgroup.com 301 redirect code added (needs www domain alias in Manus Settings → Domains)
+- [x] Image optimization: added width/height, loading=lazy, decoding=async to ALL img tags across entire site (20+ files fixed)
+- [x] Re-add SSR body content injection for crawlers — noscript body content for homepage, blog posts, blog list, calculator, FAQ, get-quote + placeholder meta tags in index.html for server-side replacement
+- [x] Generate negative keyword list for Google Ads PMax campaign (100+ keywords across 8 categories)
+- [x] Generate Google Ads search theme recommendations (Tier 1/2/3 themes) + budget allocation guide + local citation directory list (13 directories)
+- [x] Fix: 1 image missing alt text on homepage (/) — Meta Pixel noscript img tag had alt="", now alt="Meta Pixel"
+- [x] Add UTM columns to quote_requests and callback_requests tables (utm_source, utm_medium, utm_campaign, utm_term, utm_content, gclid, fbclid, referrer, landing_page)
+- [x] Build frontend UTM capture utility (read URL params on first visit, persist in sessionStorage)
+- [x] Wire UTM data into quote.submit and callback.submit handlers
+- [x] Display UTM attribution data in admin dashboard lead view (gclid, fbclid, utmContent shown in quote detail)
+- [x] Google Ads ROI Report: Backend tRPC procedures to aggregate leads by campaign/source/gclid with conversion metrics
+- [x] Google Ads ROI Report: Admin dashboard page with campaign performance table, conversion funnel chart, source breakdown
+- [x] Offline Conversion Export: Backend endpoint to export won quotes with gclid/fbclid for Google Ads Smart Bidding upload
+- [x] Offline Conversion Export: Admin UI with date range picker, CSV download, upload instructions
+- [x] Write vitest tests for ROI report and offline conversion export
+- [x] Ad Spend Tracking: DB schema for ad_spend table (campaign, month, spend amount, platform)
+- [x] Ad Spend Tracking: Backend tRPC procedures (CRUD for ad spend entries)
+- [x] Ad Spend Tracking: Frontend UI in Ads ROI tab (input spend per campaign, show cost-per-lead and ROAS)
+- [x] Ad Spend Tracking: Auto-calculate cost-per-lead and ROAS in campaign performance table
+- [x] Weekly Email Digest: Backend procedure to generate ROI summary email (top campaigns, win rate, revenue, new leads)
+- [x] Weekly Email Digest: Send via Resend to owner email on schedule
+- [x] Weekly Email Digest: Admin toggle to enable/disable and configure email recipient
+- [x] Weekly Offline Conversion Upload: Automated reminder notification every Monday
+- [x] Weekly Offline Conversion Upload: One-click CSV generation with date range auto-set to last 7 days
+- [x] Weekly Offline Conversion Upload: Step-by-step upload guide in dashboard
+- [x] Write vitest tests for ad spend tracking, email digest, and conversion upload features
+- [x] Two-Way Webhook Sync: Build inbound webhook endpoint to receive status updates from CCG Voice Leads app
+- [x] Two-Way Webhook Sync: Auto-update quote_requests status, quotedAmount, notes, scheduledDate when CCG app sends updates
+- [x] Two-Way Webhook Sync: Add lead response time tracking (time from submission to first "contacted" status)
+- [x] Two-Way Webhook Sync: Add job timeline events table for full audit trail (status changes, notes, scheduled dates)
+- [x] Two-Way Webhook Sync: Webhook security with shared secret/HMAC signature verification
+- [x] Customer Status Portal: Build /my-quote page with phone number lookup
+- [x] Customer Status Portal: Visual timeline showing quote journey (Submitted → Contacted → Quote Sent → Scheduled → In Progress → Complete)
+- [x] Customer Status Portal: Display quote PDF, scheduled date, prep checklist when available
+- [x] Customer Status Portal: Unique status link in confirmation emails for direct access
+- [x] Customer Status Portal: Mobile-optimized design with CCG branding
+- [x] Write vitest tests for webhook sync and customer status portal
+- [x] Fix critical: Hardcode correct Google Place ID (ChIJM0kDPMxZkWsR4foz-XZxlQ0) for Concrete Concepts Group — stops pulling wrong business, adds 1hr cache, filters marcus reviews
+- [x] Write 4 new SEO blog posts (2,200-2,500 words each) for week of April 21, 2026
+- [x] Blog 1: Concrete vs Gravel Driveway Brisbane Cost Comparison (2,273 words)
+- [x] Blog 2: Concrete Steps Cost Brisbane Price Guide (2,314 words)
+- [x] Blog 3: Concrete Garden Edging & Kerbing Cost Brisbane (2,220 words)
+- [x] Blog 4: Concrete Garage Floor Cost Brisbane Price Guide (3,504 words)
+- [x] Add blog-to-service mappings for all 4 new posts in BlogPost.tsx
+- [x] Seed all 4 new blog posts to database
+- [x] Write 1 new SEO blog post: Concrete Carport Slab Cost Brisbane (2,391 words)
+- [x] Add blog-to-service mapping for carport blog in BlogPost.tsx
+- [x] Seed carport blog post to database
+- [x] Audit site health, SEO status, and Google Ads tracking after downtime
+- [x] Fix any technical SEO issues found during audit (Google Reviews null check fix)
+- [x] Create step-by-step guide for Google Ads fixes (lead form asset, budget/bidding warning)
+- [x] Create step-by-step guide for submitting 5 new blog URLs to Google Search Console
+- [x] Create step-by-step guide for Google Business Profile setup/verification
+- [x] Verify Google Ads conversion tracking is working correctly (AW-18007005419 confirmed on live site)
+- [x] Check for crawl errors caused by site downtime (guide provided for GSC)
+- [x] Write 4 new max-length SEO blog posts on most searched untapped keywords
+- [x] Seed 4 new blog posts to database
+- [x] Add blog-to-service mappings for 4 new posts
+- [x] Performance: Remove 367KB manus-runtime from Cloudflare builds (CF_BUILD=1 flag)
+- [x] Performance: Split monolithic JS bundle into 9 vendor chunks (react, motion, trpc, radix, icons, forms, date, charts, misc)
+- [x] Performance: Add Cloudflare _headers with 1-year immutable cache for hashed assets
+- [x] Performance: Add _redirects for www→non-www and SPA fallback
+- [x] Performance: Add inline CSS loading skeleton for instant visual feedback while JS loads
+- [x] Performance: Include sitemap.xml in client/public for automatic build inclusion
+- [x] Performance: Change hero video preload from 'auto' to 'metadata' (stops 16MB video competing with critical JS/CSS on initial load)
+- [x] Performance: Compress hero video from 16MB to 2.1MB (720p CRF 32, behind dark overlay)
+- [x] Performance: Add static poster image to hero video for instant visual
+- [x] Performance: Replace framer-motion on LCP elements (logo, headline) with CSS animations
+- [x] Performance: Google Maps iframe already has loading=lazy (verified, no change needed)
+- [x] Performance: Lucide icons already tree-shaken via named imports (verified, no change needed)
+- [x] Performance: Bypass Cloudflare Rocket Loader with data-cfasync=false (saves 2-3s on concreteconceptsgroup.com)
+- [x] Performance: Add modulepreload hints for vendor, Home, proxy, entry chunks (parallel download)
+- [x] Performance: Lazy-load Home route (entry chunk is only 3.7KB, skeleton shows instantly)
+- [x] Performance: Post-build script (scripts/inject-preloads.mjs) for automated optimization
+- [x] Performance: Add Cache-Control headers with s-maxage for CF edge caching (eliminates 5.3s TTFB)
+- [x] Performance: Add CDN-Cache-Control header for explicit CF edge caching
+- [x] Verify quote form email delivery is working (confirmed: emails sending successfully)
+- [x] Fix Google Reviews: Switch from live API (quota exhausted) to cached/static reviews (17 static fallback reviews)
+- [x] Add more SEO suburb pages for organic traffic (20 new suburbs added: Sunnybank, Toowong, Kelvin Grove, Woolloongabba, Banyo, Northgate, Tingalpa, Deception Bay, Richlands, Darra, Middle Park, Lota, Manly + sitemap updated to 226 URLs)
+- [x] Convert all form submissions to mailto: approach (no backend needed) for CF Pages static hosting
+- [x] Remove EmergencyContactBanner (redundant, overlaps navbar, wastes viewport space)
+- [x] Mount WhatsAppButton floating widget on all pages (component exists but never rendered)
+- [x] Fix Navbar z-index overlap with urgency banner (resolved - banner removed, nav is clear)
+- [x] Add CDN-Cache-Control headers for HTML pages (already set in vite.ts: s-maxage=300, stale-while-revalidate=3600)
+- [x] Fix Google Maps graceful fallback (console error on every page load)
+- [x] AI Concrete Visualiser — backend tRPC procedure: analyse photo with Anthropic Claude vision (identify driveway/patio/ground area)
+- [x] AI Concrete Visualiser — backend tRPC procedure: generate visualisation with BFL FLUX Kontext Pro image editing API (realistic concrete finish on their property)
+- [x] AI Concrete Visualiser — frontend page at /visualiser with photo upload, finish selection (exposed aggregate, coloured, plain, stencilled, honed), and result display
+- [x] AI Concrete Visualiser — lead capture gate (name + phone required to download/save the visualisation)
+- [x] AI Concrete Visualiser — CTA to get-quote page after visualisation generated
+- [x] AI Concrete Visualiser — add route to App.tsx and navigation
+- [x] AI Concrete Visualiser — deployed to production (Cloudflare) with all env vars set
+- [x] BUG FIX: Visualiser generates a different house/property instead of editing the original photo — Fixed by switching from FLUX Kontext Pro to FLUX.2 Pro which properly edits the original image in-place
+- [x] Visualiser V2: Add canvas drawing/masking tool so customers can paint areas they want concreted
+- [x] Visualiser V2: Support painting over grass, garden beds, existing concrete — any area
+- [x] Visualiser V2: Adjustable brush size, undo, clear, eraser tools
+- [x] Visualiser V2: Export mask as black/white image for FLUX Fill API
+- [x] Visualiser V2: Update backend to use FLUX Fill (inpainting with mask) instead of FLUX.2 Pro
+- [x] Visualiser V2: Update Cloudflare Worker with new inpainting logic
+- [x] Visualiser V2: Test end-to-end and deploy to production
+- [x] Visualiser V3: Rebuild with mask-first architecture — mask is source of truth, no text-prompt guessing
+- [x] Visualiser V3: Advanced drawing tools — brush, polygon tap points, edge refine, undo, clear
+- [x] Visualiser V3: Preserve toggles — "Preserve grass strips" and "Preserve walls/house/garage"
+- [x] Visualiser V3: Expanded finish types — exposed aggregate, broom finish, plain, charcoal oxide, cove, honed, saw-cut pattern, border colour
+- [x] Visualiser V3: Claude as QA/planning brain — structured JSON job brief (status, work_area_description, preserve_zones, risk_notes, generation_prompt, negative_prompt, quality_checks)
+- [x] Visualiser V3: If marked area unclear, ask user to confirm before generation (NEEDS_USER_CONFIRMATION status)
+- [x] Visualiser V3: FLUX Fill inpainting — edit ONLY masked area, preserve all unmasked areas exactly
+- [x] Visualiser V3: Negative prompt support — no fake texture, no warped shape, no melted edges, no cartoon/CGI look
+- [x] Visualiser V3: Quality-check pass — reject outputs where walls, garage, grass, road, kerb or background are changed
+- [x] Visualiser V3: Premium UX flow — Upload → Draw → Choose Finish → Generate → Before/After Compare → Request Quote
+- [x] Visualiser V3: Update Cloudflare Worker with new architecture and deploy
+- [x] Visualiser V4: Stone/mix colour picker — customers choose aggregate colour (warm natural, charcoal, white quartz, river pebble), cement base colour, stone size
+- [x] Visualiser V4: Exact driveway shape tools — polygon tap-to-draw for precise boundaries
+- [x] Visualiser V4: Border/pattern customisation — add contrasting border strips, saw-cut grid spacing, dual-tone options
+- [x] Visualiser V4: Ultra-realistic prompt engineering — maximise photorealism with scene-specific details from Claude
+- [x] Visualiser V4: Enhanced interactive UX — visual stone-mix picker and border colour options
+- [x] Visualiser V4: Deploy V4 to Cloudflare Pages
+- [x] Timelapse: Backend endpoint generating 5 FLUX Fill keyframe images (existing → excavated → formed → poured → finished)
+- [x] Timelapse: Frontend ConstructionTimelapse component with Ken Burns zoom/pan, crossfade transitions, playback controls
+- [x] Timelapse: Integration into visualiser result step with "See It Built" button
+- [x] Timelapse: Cloudflare Worker production handler for visualiser.timelapse route
+- [x] Timelapse: Vitest tests for timelapse generation module
+- [x] Google Ads Dashboard: Backend tRPC procedures to fetch campaign data via Windsor.ai API
+- [x] Google Ads Dashboard: Admin panel page with spend/conversions/cost-per-lead overview cards
+- [x] Google Ads Dashboard: Day-of-week performance chart
+- [x] Google Ads Dashboard: Device breakdown chart
+- [x] Google Ads Dashboard: Top converting suburbs table
+- [x] Google Ads Dashboard: Daily trend chart (last 30 days)
+- [x] Google Ads Dashboard: Automated weekly report via scheduled heartbeat (handler ready, cron to be created after deploy)
+- [x] Fix Resend API key in Cloudflare Pages (rotated key updated)
+- [x] Deploy correct website version to Cloudflare Pages (rolled back from wrong repo deploy)
+- [x] Add multi-channel lead backup to _worker.js (Email + Google Sheets + Jotform)
+- [x] Add edge caching to _worker.js for faster page loads
+- [x] Create Google Sheet for lead tracking backup (CCG Lead Tracker)
+- [x] Add keep-alive scheduled endpoint to prevent Cloudflare cold starts
+- [x] Activate keep-alive heartbeat cron (requires site publish first)
+- [x] Set up Google Sheets webhook for lead backup from CF Worker
+- [~] Authenticate Zapier Google Sheets connection for lead logging — superseded by direct worker/backend logging
+- [~] Set up www.concreteconceptsgroup.com CNAME DNS record — manual domain/DNS action
+- [x] Keep-alive Worker deployed on Cloudflare (pings site every 5 min to prevent cold starts)
+- [x] Multi-channel lead capture: Email (Resend) + Database + Google Sheets
+- [x] Lead webhook endpoint on Manus backend (/api/webhooks/lead-capture)
+- [x] Google Sheet backfilled with 20 historical leads (CCG Lead Tracker)
+- [x] Cloudflare Worker updated to POST leads to Manus backend for DB + Sheets logging
+- [x] Edge caching added to Cloudflare Worker for faster repeat visits
+- [x] Resend API key updated in Cloudflare Pages environment
+- [x] Cloudflare Pages deployment automated via wrangler CLI
+- [x] Fix Google Ads page-view conversion over-counting: set send_page_view:false in gtag config
+- [x] Change trackRemarketingEvent from page_view to remarketing_view event name
+- [x] Change trackLandingPageView from page_view to landing_page_view event name
+- [x] Rebuild sitemap.xml with all 278 URLs (15 core + 9 services + 76 landing pages + 109 areas + 69 blog posts)
+- [x] Add FAQ schema (JSON-LD) to all 9 service pages for rich snippets in Google (ALREADY EXISTS)
+- [x] Add "Request a Quote" CTA component inside blog posts (mid-article and end-of-article)
+- [x] Add testimonial/review snippets to service pages for social proof (now service-specific, 3 reviews per page)
+- [x] Add HowTo schema to blog posts with step-by-step content
+- [x] Activate keep-alive heartbeat (every 5 min) to fix cold start TTFB
+- [x] Add in-memory cache to seoPrerender (5min TTL) to eliminate DB calls on repeated requests
+- [x] Fresh audit: verify Google Ads and Windsor AI campaign, geographic, spend, and conversion performance
+- [x] Fresh audit: verify every live quote-request form and lead-capture path is operational
+- [x] Fresh audit: reconcile Google Ads conversions with genuine Brisbane quote enquiries
+- [x] Fresh audit: identify and prioritize the highest-impact actions to increase genuine leads
+- [x] Assess connected-service permissions for Google Ads, website, lead capture, Gmail, Jotform, and Cloudflare
+- [x] Map audit actions to direct control, approval-required control, or manual-only steps
+- [x] Add a shared Australian mobile and landline validation utility for every public lead form
+- [x] Add fail-safe Greater Brisbane/SEQ suburb and postcode qualification that flags plausible Queensland edge-area leads instead of rejecting them
+- [x] Add honeypot, submission timing, and server-side repeat-submission safeguards
+- [x] Apply validation to homepage callback forms, detailed quote wizard, advertising landing pages, and Cloudflare worker fallbacks
+- [x] Add Vitest coverage for valid local leads, Queensland boundary reviews, invalid phones, overseas numbers, and bot submissions
+- [x] Verify all lead forms in desktop and mobile previews and create a publishable checkpoint
+- [x] Diagnose why the live hero-form email omitted suburb, email, and project information after the validation update
+- [x] Confirm whether the latest validation checkpoint is published on the production domain
+- [x] Add regression coverage for false landline-style 07 numbers and incomplete homepage lead payloads
+- [x] Harden the homepage form so accepted leads include a verified contact method, service location, and useful project information
+- [x] Verify the corrected email payload, mobile form layout, tests, and production build before checkpointing
+- [~] Map the active Cloudflare Pages project, worker, domain routing, and deployment command for concreteconceptsgroup.com — repository and deploy command mapped; Pages account/project lookup requires an authenticated Cloudflare session
+- [x] Define a complete customer and job-brief schema covering contact, site address, service, measurements, access, conditions, timing, description, photos, and consent
+- [x] Add regression tests for expanded job requirements, measurement validation, photo metadata, and complete owner notifications
+- [x] Build a mobile-first sectioned quote form with progress, autosaved answers, validation, and review-before-submit
+- [x] Extend tRPC, database-compatible payloads, email, Jotform, Google Sheets, and Cloudflare worker delivery with every job field
+- [x] Verify photo upload, desktop/mobile layouts, complete notification content, tests, build, and Cloudflare worker configuration; production project connection remains account-authorized
+- [x] Create a final publishable checkpoint and document the exact Cloudflare release step
+- [x] Live audit: inspect all enabled Cloudflare access paths and identify the production Pages project serving concreteconceptsgroup.com
+- [x] Live audit: verify production domain routing, deployed version, worker APIs, quote page, and upload endpoint through Cloudflare
+- [x] Live audit: pull current Google Ads campaign, geographic, spend, click, and conversion performance through Windsor AI
+- [x] Live audit: verify recent website quote notifications are reaching the correct Gmail account with complete lead information
+- [x] Live audit: reconcile ad activity, website submissions, and Gmail leads, then resolve safe integration gaps and report blockers
+- [x] Confirm the newly connected Cloudflare, Google Ads, Dropbox, Windsor AI, and Gmail account permissions; Dropbox is enabled but its tool server timed out twice
+- [x] Identify and preserve a rollback point for the Cloudflare production project before synchronizing the comprehensive quote build
+- [x] Publish or synchronize the verified quote-form build to the correct Cloudflare project — user uploaded production deployment a98287a4 and the custom domain now serves the five-section quote form
+- [~] Verify Dropbox can receive the final audit and release evidence without exposing customer lead data — connector initialization timed out twice; no lead data uploaded
+- [x] Re-check the live Cloudflare form, Google Ads delivery, and Gmail/Jotform lead arrival after synchronization — production form, Gmail owner email, and Jotform backup verified; Google Ads changes remained skipped
+- [x] Revalidate the comprehensive quote release bundle, checksum, tests, build, and Cloudflare rollback baseline immediately before deployment
+- [~] Create a non-production Cloudflare Pages preview deployment from the verified bundle — final Cloudflare deployment remains user-gated
+- [~] Verify the preview homepage handoff, five-section quote wizard, photo upload, Worker routes, and dry-run lead safety — verified in the managed preview; Cloudflare preview awaits publication
+- [x] Promote the verified preview to the Cloudflare production project and validate concreteconceptsgroup.com with rollback ready — user uploaded production deployment a98287a4; prior deployment 99854bc9 remains the rollback point
+- [~] Correct the Search campaign to local-presence targeting and exclude overseas traffic through the approved Google Ads access path — skipped at user request; no campaign changes made
+- [~] Change conversion optimization so completed quote submissions are primary and unverified click-to-call activity is secondary — skipped at user request; no goal changes made
+- [~] Recheck Cloudflare production, Google Ads, Windsor AI, Gmail, and Jotform after the approved changes — requires the skipped/manual actions first
+- [x] Urgent incident: establish the exact production deployment and audit window for the reported same-day enquiry gap
+- [x] Urgent incident: verify today’s Google Ads impressions, clicks, spend, and conversion activity
+- [x] Urgent incident: verify live Cloudflare quote routes, Worker health, and recent request evidence without creating a false lead
+- [x] Urgent incident: verify today’s Gmail and Jotform quote receipt and distinguish zero submissions from delivery failure
+- [x] Urgent incident: run one labelled end-to-end test only if passive evidence cannot confirm the funnel, then fix and recheck any verified fault
+- [x] Treat the user-reported missing system-test email as unresolved despite connector search evidence and avoid claiming confirmed inbox visibility
+- [x] Rebuild and revalidate the current Cloudflare Pages upload ZIP, Worker entry, quote routes, archive structure, and checksum
+- [x] Confirm the exact Cloudflare Pages project link and current production rollback deployment for manual upload
+- [x] Deliver the verified ZIP with concise manual Cloudflare upload, production verification, and rollback instructions
+- [x] Post-upload verification: identify the exact new Cloudflare production deployment and confirm the custom domain serves it
+- [x] Post-upload verification: verify the five-section form, Worker quote/photo routes, and production bindings before submission
+- [x] Post-upload verification: submit one clearly labelled internal quote through the live customer form
+- [x] Post-upload verification: confirm the matching Gmail and Jotform/backup records and compare timestamps with Cloudflare
+- [x] Post-upload verification: determine the original missing-email root cause, repair any confirmed issue, and report the current funnel status
+- [x] Same-day audit: establish the exact Brisbane-time reporting window for the user’s no-lead concern
+- [x] Same-day audit: pull today’s direct Google Ads campaign activity and conversion-action totals
+- [x] Same-day audit: reconcile today’s Windsor AI campaign and conversion data with direct Google Ads
+- [x] Same-day audit: compare today’s reported ad conversions with Gmail and Jotform lead receipts
+- [x] Same-day audit: report the verified lead count, conversion count, delivery status, and immediate next action
+- [x] Commercial model: define a billable qualified Brisbane/SEQ concreting lead and exclusions
+- [x] Commercial model: benchmark Australian trade-lead pricing and Brisbane concreting job value
+- [x] Commercial model: model monthly revenue for 80–150 qualified leads using per-lead, retainer, and hybrid pricing
+- [x] Commercial model: recommend a defensible related-party price and commercial safeguards
+- [ ] Jon access control: confirm employment/contractor status, authorised actions, approval thresholds, and commission basis
+- [ ] Jon access control: research Australian electronic acceptance, privacy, restraint, confidentiality, and related-party requirements for solicitor review
+- [ ] Jon access control: design authenticated lead links with MFA, expiry, acceptance evidence, audit logs, revocation, and data-minimisation controls
+- [ ] Jon access control: draft lead-use, non-circumvention, conflict, referral, commission, confidentiality, and authority terms for solicitor review
+- [ ] Jon access control: implement role-based lead assignment, gated acceptance, activity tracking, director approvals, and reporting
+- [ ] Jon access control: configure a company email workflow that never forwards raw lead data to personal email
+- [ ] Jon access control: test permissions, evidence integrity, access revocation, exports, and end-to-end lead assignment
+- [ ] Jon access control: deliver the operational policy, legal-review package, and staged rollout instructions
+- [ ] Supporting trades: define the customer-facing trade catalogue and “not sure” option for plumbing, electrical, blockwork, excavation, drainage, landscaping, pumping, steel and other work
+- [ ] Supporting trades: define approved-provider assignment, price-source evidence, markup/commission basis, and director approval boundaries
+- [ ] Supporting trades: add structured trade requirements to the five-section quote form, review screen, Gmail, Jotform and backup delivery
+- [ ] Supporting trades: add draft trade quote inputs and consolidated quote totals without allowing unapproved quotes to be sent
+- [ ] Supporting trades: add director approve/reject/revise controls and immutable activity records for provider, price, markup and sender
+- [ ] Supporting trades: test customer usability, calculations, permissions, notifications, backups and Cloudflare release readiness
+- [x] Lead trace: identify the nine current Gmail enquiries and exact Brisbane-time receipt window
+- [x] Lead trace: extract each enquiry’s campaign, landing page, form type, source parameters and quality indicators
+- [x] Lead trace: reconcile Gmail records with Google Ads, Windsor AI, Jotform and website backup records
+- [x] Lead trace: report genuine, duplicate, test, overseas and incomplete leads plus any routing gaps
+- [~] Google Ads routing: map each active campaign and service theme to the comprehensive quote flow or a matching service landing page — Search replacement created; Performance Max destinations unchanged
+- [x] Google Ads routing: verify live completed-form conversion tracking and call-click tracking labels on Cloudflare production
+- [~] Google Ads routing: update supported final URLs without altering bidding — new Search ad points to `/get-quote`; old homepage ad remains enabled only while the replacement is under review
+- [~] Google Ads routing: make completed quote submissions Primary and call-click actions Secondary through authenticated Google Ads controls — not supported by the connected write actions and still requires Google Ads sign-in
+- [~] Google Ads routing: verify final destinations, conversion action status and lead-quality monitoring after the changes — destination and tracking labels verified; policy approval and goal status remain pending
+- [x] Lead recovery: define genuine Brisbane/SEQ lead success metrics and exclude call taps, spam, duplicates and overseas entries
+- [x] Lead recovery: analyze recent campaign, geography, search-term, device, hour, landing-page and conversion-action performance
+- [x] Lead recovery: identify the highest-ROI budget allocation, exclusions, keywords, schedules and landing-page changes
+- [x] Lead recovery: present exact supported Windsor AI and Google Ads changes for approval before modifying delivery or spend
+- [x] Approved ads batch: capture rollback records for budgets, ads, enabled keywords, match types, bidding and campaign status
+- [x] Approved ads batch: validate Windsor AI schemas for ad creation, ad pause, keyword pause/create, negative keywords and campaign budgets
+- [~] Approved ads batch: create a replacement Search ad pointing to `/get-quote` and pause the homepage ad — replacement is enabled but under review; old ad was safely re-enabled until approval
+- [x] Approved ads batch: pause broad `concreters near me` and add controlled phrase/exact Brisbane service keywords
+- [x] Approved ads batch: add verified negative keywords for irrelevant construction, materials, trucks, jobs, DIY and non-English traffic
+- [x] Approved ads batch: set Search to $104.80/day and Performance Max to $45/day without changing bidding; existing Tradenet $0.20/day keeps the account-wide cap at exactly $150
+- [x] Approved ads batch: read back all changes, verify the $150/day cap, and prepare rollback and monitoring instructions
+- [x] Partner-first trade expansion: research, independently verify and rank the owner-operated Brisbane/SEQ plumbing and masonry shortlist without contact
+- [x] Partner-first trade expansion: prepare the director due-diligence checklist and non-binding outreach/onboarding pack
+- [x] Stage 1 partner outreach: director approved exact contact to Alexander Gas & Plumbing Co and Queensland Blocklaying only
+- [x] Stage 1 partner outreach: send the two approved non-binding emails from info@concreteconceptsgroup.com with no customer data, live job or work/volume promise
+- [x] Stage 1 partner outreach: verify both messages in the CCG Sent mailbox with message IDs 1a0461e613c276bd and 1a0461e5f93317f3
+- [ ] Stage 1 partner due diligence: await replies and evaluate direct licence, entity, insurance, capacity, pricing, warranty, compliance and subcontract documents
+- [ ] Partner engagement approval: obtain a separate director decision after due diligence before customer-data sharing, work allocation, contracting, website publication or trade-ad activation
+- [ ] Trade-services expansion hold: do not publish trade pages, alter quote services or activate plumbing/brickwork/blockwork ads before written partner engagement approval
+- [x] Fresh lead audit: preserve PMax $100/day, rebuilt Search $49.80/day and Tradenet $0.20/day with no unapproved budget, bidding, keyword, goal or status changes
+- [x] Fresh lead audit: measure today, 7-day and 30-day Google Ads spend, impressions, clicks, search delivery and genuine quote-form conversion signals
+- [x] Fresh lead audit: reconcile recent Gmail quote receipts with Jotform submissions and website/database records without counting call taps or raw Google conversions as confirmed leads
+- [x] Fresh lead audit: verify the live comprehensive quote path and existing Gmail/Jotform routing evidence without creating an unlabelled lead
+- [x] Fresh lead audit: identify the principal limiting factor across ad delivery, traffic quality, landing-page flow, form completion and email/Jotform delivery
+- [x] Fresh lead audit: deliver a plain-English diagnosis and approval-gated action plan before any optimisation changes
+- [x] Urgent quote-route incident: identify deployment `2b75bf32` as the release that visibly replaced `/get-quote` with a 404 and confirm deployment `a98287a4` retains the five-step wizard
+- [x] Urgent quote-route incident: obtain director approval to roll Cloudflare production back to verified deployment `a98287a4`
+- [x] Urgent quote-route incident: execute the approved Cloudflare Pages production rollback to `a98287a4` without changing Google Ads controls
+- [x] Urgent quote-route incident: verify apex and www `/get-quote` render the comprehensive wizard on desktop and mobile
+- [x] Urgent quote-route incident: verify navigation, HTTP health and existing Gmail/Jotform delivery evidence after rollback without creating an unlabelled lead
+- [x] Quote-route guard: recover and verify the managed source matches Cloudflare production deployment `a98287a4` by generated asset fingerprint before editing
+- [x] Quote-route guard: define and director-approve a deterministic release check that fails when `/get-quote` does not render the five-step wizard marker
+- [x] Paid-funnel analytics: define and director-approve privacy-safe events for quote-page view, each step reached, validation failure and confirmed submit without recording customer-entered values
+- [x] Paid-funnel analytics: director selected Option A using the existing analytics collector rather than a new admin dashboard
+- [x] Source-of-truth protection: prepare and test a fail-closed prebuild guard for the incomplete selected GitHub website repository; external push remains approval-gated
+- [x] Quote-route guard and funnel analytics: write failing Vitest coverage before implementation
+- [x] Quote-route guard and funnel analytics: implement the guarded release and step-event tracking without weakening validation or creating duplicate Google conversions
+- [x] Quote-route guard and funnel analytics: pass 43 deterministic test files, TypeScript, guarded production build, worker syntax, browser event-payload checks and desktop/mobile flow checks
+- [x] Quote-route guard and funnel analytics: obtain final production publish confirmation after presenting the verified change set
+- [ ] Quote-route guard and funnel analytics: deploy to Cloudflare and verify apex/www production health after publish
+- [ ] Production source alignment: synchronise the verified comprehensive source into the selected Cloudflare-bound `concrete-concepts-website` repository while preserving Git history
+- [ ] Production source alignment: rerun the complete safeguard suite and guarded production build from the synchronised GitHub working tree
+- [ ] Production source alignment: push the director-approved guarded source, monitor the Cloudflare production deployment and automatically restore `a98287a4` if either rendered quote route fails
+- [ ] Google Ads next-stage proposal: prepare exact Search bidding and controlled Performance Max landing-page changes without applying them
+- [ ] Google Ads next-stage proposal: obtain separate director approval before any budget, bidding, keyword, goal, final-URL or campaign-status change

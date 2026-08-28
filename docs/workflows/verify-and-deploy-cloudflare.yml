@@ -1,0 +1,83 @@
+name: Verify and deploy to Cloudflare Pages
+on:
+  workflow_dispatch:
+concurrency:
+  group: cloudflare-production
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  verify-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the approved website source
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Verify the comprehensive quote source contract
+        run: pnpm quote:verify:source
+      - name: Run deterministic tests
+        run: pnpm vitest run --exclude server/email.test.ts --exclude server/resend.test.ts --exclude server/googleAdsReport.test.ts
+      - name: Type-check
+        run: pnpm check
+      - name: Build the production bundle
+        run: pnpm build
+      - name: Verify the Cloudflare Worker bundle
+        run: node --check dist/public/_worker.js
+      - name: Capture the current working production deployment
+        id: capture-previous
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: echo "deployment_id=$(pnpm --silent quote:cloudflare canonical)" >> "$GITHUB_OUTPUT"
+      - name: Deploy the verified bundle to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ] || [ -z "$CLOUDFLARE_PAGES_PROJECT" ]; then
+            echo "::error::Cloudflare deployment settings are not connected. Add CLOUDFLARE_API_TOKEN as an Actions secret and CLOUDFLARE_ACCOUNT_ID plus CLOUDFLARE_PAGES_PROJECT as repository variables."
+            exit 1
+          fi
+          pnpm dlx wrangler@4 pages deploy dist/public \
+            --project-name="$CLOUDFLARE_PAGES_PROJECT" \
+            --branch=main \
+            --commit-hash="$GITHUB_SHA"
+      - name: Verify both live quote routes in a real browser
+        id: verify-quote-route
+        continue-on-error: true
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if pnpm quote:verify:live; then
+              exit 0
+            fi
+            echo "Live quote route not ready on attempt $attempt; retrying in 10 seconds."
+            sleep 10
+          done
+          exit 1
+      - name: Roll back a release that breaks the quote route
+        if: steps.verify-quote-route.outcome == 'failure'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_PAGES_PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
+          PREVIOUS_DEPLOYMENT_ID: ${{ steps.capture-previous.outputs.deployment_id }}
+        run: |
+          pnpm quote:cloudflare rollback "$PREVIOUS_DEPLOYMENT_ID"
+          sleep 10
+          pnpm quote:verify:live
+      - name: Fail the release after automatic rollback
+        if: steps.verify-quote-route.outcome == 'failure'
+        run: exit 1

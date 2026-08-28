@@ -76,7 +76,7 @@
 
 /// <reference types="@types/google.maps" />
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePersistFn } from "@/hooks/usePersistFn";
 import { cn } from "@/lib/utils";
 
@@ -92,18 +92,24 @@ const FORGE_BASE_URL =
   "https://forge.butterfly-effect.dev";
 const MAPS_PROXY_URL = `${FORGE_BASE_URL}/v1/maps/proxy`;
 
-function loadMapScript() {
+function loadMapScript(): Promise<boolean> {
   return new Promise(resolve => {
+    // If already loaded, resolve immediately
+    if (window.google?.maps) {
+      resolve(true);
+      return;
+    }
     const script = document.createElement("script");
     script.src = `${MAPS_PROXY_URL}/maps/api/js?key=${API_KEY}&v=weekly&libraries=marker,places,geocoding,geometry`;
     script.async = true;
     script.crossOrigin = "anonymous";
     script.onload = () => {
-      resolve(null);
+      resolve(true);
       script.remove(); // Clean up immediately
     };
     script.onerror = () => {
-      console.error("Failed to load Google Maps script");
+      console.warn("Google Maps script failed to load — showing fallback");
+      resolve(false);
     };
     document.head.appendChild(script);
   });
@@ -124,11 +130,15 @@ export function MapView({
 }: MapViewProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<google.maps.Map | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   const init = usePersistFn(async () => {
-    await loadMapScript();
+    const loaded = await loadMapScript();
+    if (!loaded || !window.google?.maps) {
+      setLoadFailed(true);
+      return;
+    }
     if (!mapContainer.current) {
-      console.error("Map container not found");
       return;
     }
     map.current = new window.google.maps.Map(mapContainer.current, {
@@ -148,6 +158,24 @@ export function MapView({
   useEffect(() => {
     init();
   }, [init]);
+
+  if (loadFailed) {
+    // Graceful fallback when Maps can't load
+    return (
+      <div className={cn("w-full h-[500px] relative bg-gradient-to-br from-[#0F2A44] to-[#1a3a5c] flex items-center justify-center rounded-lg", className)}>
+        <div className="text-center p-8">
+          <div className="w-12 h-12 rounded-full bg-brand-gold/20 flex items-center justify-center mx-auto mb-4">
+            <svg className="w-6 h-6 text-brand-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h3 className="text-white text-lg font-semibold mb-2">Servicing All of Brisbane & SEQ</h3>
+          <p className="text-white/60 text-sm">From Caboolture to the Gold Coast — 80km radius</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={mapContainer} className={cn("w-full h-[500px]", className)} />
