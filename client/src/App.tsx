@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useEffect } from "react";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Seo from "./seo/Seo";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import ConstructionGrowthSystems from "./pages/ConstructionGrowthSystems";
 import Home from "./pages/Home";
@@ -45,6 +46,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
+          <Seo />
           <Toaster />
           <Router />
         </TooltipProvider>
