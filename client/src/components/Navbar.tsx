@@ -113,7 +113,7 @@ export default function Navbar() {
           {/* Desktop CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <a
-              href="https://concreteconceptsgroup.com/trade-partners"
+              href="https://partners.concreteconceptsgroup.com/partners"
               className={`text-sm font-semibold tracking-wide uppercase transition-colors duration-300 ${
                 scrolled
                   ? "text-brand-charcoal hover:text-brand-gold"
@@ -187,7 +187,7 @@ export default function Navbar() {
                 )
               ))}
               <a
-                href="https://concreteconceptsgroup.com/trade-partners"
+                href="https://partners.concreteconceptsgroup.com/partners"
                 onClick={() => setMobileOpen(false)}
                 className="text-xl font-medium text-brand-gold hover:text-white tracking-wide uppercase transition-colors"
                 style={{ fontFamily: "var(--font-body)" }}
