@@ -137,3 +137,7 @@ Three final mobile Lighthouse runs on the live apex domain produced the followin
 | Transfer size | 5.069 MB | 1.699 MB | 66.5% lower |
 
 Every live mobile audit requested one responsive Cloudinary poster, the original CloudFront logo and the two Cloudinary service variants. None requested the hero video. The five-step lead funnel, apex/www routing and owner-approved desktop-video/mobile-still behavior therefore pass the final release safeguards. No test lead was submitted and no Google Ads setting was changed.
+
+Production was then monitored through more than 17 minutes after the final promotion. Eight repeated rounds from 16:42 to 16:50 UTC checked `/` and `/get-quote` on both apex and www; all 32 responses returned HTTP 200 with the expected application shell. A final bounded browser-rendered guard also passed both quote routes after the GitHub push, and Cloudflare still reported `65d0dde5-f4ea-4cfe-8a6e-54fcc7f57272` as canonical.
+
+The corrected release source was aligned to the fresh `smq9sn5jck-coder/concrete-concepts-website` main branch without overwriting concurrent navigation work. The aligned repository passed 547 deterministic tests across 48 files with one existing skip when the two known external Resend-dependent files were excluded, plus TypeScript, guarded build and Worker syntax. Commit `66e1dfc` (`perf: harden mobile media release`) was pushed successfully.
