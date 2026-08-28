@@ -1,5 +1,11 @@
-import { describe, expect, it } from "vitest";
-import { evaluateRenderedQuoteRoute } from "../scripts/verifyLiveQuoteRoute";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { describe, expect, it, vi } from "vitest";
+import {
+  CHROME_RENDER_TIMEOUT_MS,
+  evaluateRenderedQuoteRoute,
+  verifyLiveQuoteRoutesWithRetries,
+} from "../scripts/verifyLiveQuoteRoute";
 
 describe("rendered production quote-route contract", () => {
   const validDom = `
@@ -42,5 +48,40 @@ describe("rendered production quote-route contract", () => {
 
     expect(result.ok).toBe(false);
     expect(result.errors).toContain("Browser did not remain on /get-quote");
+  });
+
+  it("uses a bounded Chromium process timeout", () => {
+    const source = readFileSync(
+      resolve(process.cwd(), "scripts/verifyLiveQuoteRoute.ts"),
+      "utf8"
+    );
+
+    expect(CHROME_RENDER_TIMEOUT_MS).toBeLessThanOrEqual(30_000);
+    expect(source).toContain("timeout: CHROME_RENDER_TIMEOUT_MS");
+  });
+
+  it("retries both domains after a transient propagation failure", async () => {
+    const apex = "https://concreteconceptsgroup.com/get-quote";
+    const www = "https://www.concreteconceptsgroup.com/get-quote";
+    let wwwAttempts = 0;
+    const render = vi.fn((url: string) => {
+      if (url === www && ++wwwAttempts === 1) {
+        return { ok: false, errors: ["Rendered page is blank"] };
+      }
+      return { ok: true, errors: [] };
+    });
+    const wait = vi.fn(async () => undefined);
+
+    await expect(
+      verifyLiveQuoteRoutesWithRetries([apex, www], {
+        attempts: 3,
+        delayMs: 1,
+        render,
+        wait,
+      })
+    ).resolves.toEqual({ ok: true, errors: [], attemptsUsed: 2 });
+
+    expect(render).toHaveBeenCalledTimes(4);
+    expect(wait).toHaveBeenCalledOnce();
   });
 });

@@ -31,6 +31,11 @@ describe("mobile hero delivery contract", () => {
   it("does not reference either newly supplied MOV file", () => {
     expect(hero).not.toMatch(/IMG_4816\.MOV|IMG_4817\.MOV/i);
   });
+
+  it("keeps the proven original logo URL at every breakpoint", () => {
+    expect(hero).toContain("const LOGO_URL =");
+    expect(hero).not.toContain("performanceAssets.logo.standard.url");
+  });
 });
 
 describe("responsive service media contract", () => {

@@ -763,14 +763,38 @@
 - [x] Quote-route guard: define and director-approve a deterministic release check that fails when `/get-quote` does not render the five-step wizard marker
 - [x] Paid-funnel analytics: define and director-approve privacy-safe events for quote-page view, each step reached, validation failure and confirmed submit without recording customer-entered values
 - [x] Paid-funnel analytics: director selected Option A using the existing analytics collector rather than a new admin dashboard
-- [x] Source-of-truth protection: prepare and test a fail-closed prebuild guard for the incomplete selected GitHub website repository; external push remains approval-gated
+- [x] Source-of-truth protection: push the fail-closed build guard and verified comprehensive source to the selected GitHub website repository, ending at commit `be198e2`
 - [x] Quote-route guard and funnel analytics: write failing Vitest coverage before implementation
 - [x] Quote-route guard and funnel analytics: implement the guarded release and step-event tracking without weakening validation or creating duplicate Google conversions
-- [x] Quote-route guard and funnel analytics: pass 43 deterministic test files, TypeScript, guarded production build, worker syntax, browser event-payload checks and desktop/mobile flow checks
+- [x] Quote-route guard and funnel analytics: pass 44 deterministic test files and 526 tests, TypeScript, guarded production build, worker syntax, browser event-payload checks and desktop/mobile flow checks
 - [x] Quote-route guard and funnel analytics: obtain final production publish confirmation after presenting the verified change set
-- [ ] Quote-route guard and funnel analytics: deploy to Cloudflare and verify apex/www production health after publish
-- [ ] Production source alignment: synchronise the verified comprehensive source into the selected Cloudflare-bound `concrete-concepts-website` repository while preserving Git history
-- [ ] Production source alignment: rerun the complete safeguard suite and guarded production build from the synchronised GitHub working tree
-- [ ] Production source alignment: push the director-approved guarded source, monitor the Cloudflare production deployment and automatically restore `a98287a4` if either rendered quote route fails
-- [ ] Google Ads next-stage proposal: prepare exact Search bidding and controlled Performance Max landing-page changes without applying them
-- [ ] Google Ads next-stage proposal: obtain separate director approval before any budget, bidding, keyword, goal, final-URL or campaign-status change
+- [x] Quote-route guard and funnel analytics: deploy clean Cloudflare release `fb579c3b`, verify apex/www rendered health, preserve rollback releases and confirm all six funnel events in the canonical bundle
+- [x] Production source alignment: synchronise the verified comprehensive source into the selected `concrete-concepts-website` repository while preserving Git history
+- [x] Production source alignment: pass 44 deterministic files and 526 tests, TypeScript, guarded build, Worker syntax and secret scan in the synchronised GitHub working tree
+- [x] Production source alignment: push director-approved guarded source through commit `be198e2`, preserving concurrent commit `ecc3f2f`, and confirm the Pages project remains direct-upload only
+- [x] Production deployment credential: validate the refreshed `CLOUDFLARE_API_TOKEN_DEPLOY` against the existing Pages project with a live read-only Vitest check
+- [x] Production guarded upload: publish the latest verified bundle directly; both rendered quote routes passed so automatic rollback was not required
+- [x] Google Ads next-stage proposal: prepare exact Search bidding and controlled Performance Max landing-page changes without applying them
+- [x] Google Ads next-stage proposal: director approved Option A—Search bidding change plus listed Performance Max non-commercial URL exclusions only
+- [x] Approved Option A Ads batch: capture exact pre-change Search bidding, zero PMax webpage exclusions, budgets, 12 exact keywords, 38 negatives, presence-only locations and quote-only custom-goal rollback evidence
+- [x] Approved Option A Ads batch: validate Windsor’s Search bidding action and confirm PMax URL exclusions require authenticated Google Ads UI because no connected write action supports webpage criteria
+- [ ] Approved Option A Ads access recovery: establish a working authenticated Google Ads route after Windsor required a target CPA, the browser showed an ad-block warning, and the first Zapier connection link returned 403
+- [ ] Approved Option A Ads batch: switch rebuilt Search to Maximise conversions with no target while retaining $49.80/day and quote-only bidding
+- [ ] Approved Option A Ads batch: verify Search budget, status, 12 exact keywords, negatives, Brisbane/SEQ presence-only targeting and `CCG Quote Form Only`
+- [ ] Approved Option A Ads batch: add only the approved non-commercial PMax URL exclusions while retaining $100/day and current bidding
+- [ ] Approved Option A Ads batch: read back every protected setting and confirm configured enabled-account budgets remain $150/day
+- [ ] Approved Option A Ads batch: document day-3 and day-7 Gmail/Jotform genuine-lead review and rollback thresholds
+- [x] Mobile speed work: capture repeatable live baselines for homepage and `/get-quote` response time, transfer size, browser render milestones and mobile Core Web Vitals
+- [x] Mobile speed work: identify Cloudflare cache, origin, JavaScript, CSS, font, image and third-party bottlenecks without changing production
+- [x] Mobile speed work: owner initially selected a finished-project phone still; three existing CCG images and one optimised driveway crop were compared before the final choice changed
+- [x] Mobile speed work: owner’s final choice is the original hero-video poster as a static phone image, with the original video retained on tablets and desktops
+- [x] Mobile speed work: present and director-approve the original-poster responsive-media design and measurable performance budgets before implementation
+- [x] Mobile speed work: write failing regression tests and build-size/performance-budget checks before source changes
+- [x] Mobile speed work: implement only approved optimisations without weakening five-step validation, Gmail/Jotform routing, analytics privacy or Google Ads tracking
+- [x] Mobile speed work: pass 543 deterministic tests, TypeScript, guarded build, Worker syntax, desktop/mobile quote flow, matched quote-page A/B control and directional homepage targets
+- [x] Mobile speed work: final production confirmation received and release `ab052b9f` deployed; required phone visual check found a broken responsive asset and automatically restored working release `fb579c3b`
+- [x] Mobile speed repair: replace the unavailable Forge storage proxy with stable public CDN URLs for the seven already approved responsive assets
+- [x] Mobile speed repair: write failing tests requiring CDN-only media and removal of the unnecessary Worker and Express storage proxies
+- [x] Mobile speed repair: reverify all tests, guarded build, asset delivery, phone/desktop visuals, quote flow and performance before republishing
+- [x] Mobile speed repair: republish only if every safeguard passes, with `fb579c3b` retained as rollback and apex/www/mobile checks required
+- [x] Cloudflare release guard: prevent indefinite Chromium hangs and require bounded, wait-aware apex/www retries before accepting or rolling back a new deployment

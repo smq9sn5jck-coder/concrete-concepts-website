@@ -567,60 +567,6 @@ async function storagePut(env, relKey, data, contentType) {
   return { url: result.url };
 }
 
-const PERFORMANCE_ASSET_KEYS = new Set([
-  "hero-poster-mobile-480x854_e42a361f.webp",
-  "hero-poster-mobile-960x1708_af6574b1.webp",
-  "project-troweling-480_f279bc87.webp",
-  "project-troweling-800_ad1d3719.webp",
-  "new-gallery-4-480_f54f9734.webp",
-  "new-gallery-4-800_de16f626.webp",
-  "ccg-full-hero-480_4996102e.webp",
-]);
-
-async function handleStorageProxy(env, key) {
-  if (!key || !/^[A-Za-z0-9._-]+$/.test(key) || !PERFORMANCE_ASSET_KEYS.has(key)) {
-    return new Response("Invalid storage key", { status: 400 });
-  }
-
-  const baseUrl = env.BUILT_IN_FORGE_API_URL || "https://forge.manus.ai";
-  const apiKey = env.BUILT_IN_FORGE_API_KEY;
-  if (!apiKey) {
-    return new Response("Storage proxy not configured", { status: 500 });
-  }
-
-  const normalizedBase = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-  const presignUrl = new URL("v1/storage/presign/get", normalizedBase);
-  presignUrl.searchParams.set("path", key);
-  const presignResponse = await fetch(presignUrl, {
-    headers: { Authorization: `Bearer ${apiKey}` },
-  });
-  if (!presignResponse.ok) {
-    return new Response("Storage backend error", { status: 502 });
-  }
-
-  const payload = await presignResponse.json();
-  if (!payload.url) {
-    return new Response("Empty signed URL from backend", { status: 502 });
-  }
-
-  const upstreamResponse = await fetch(payload.url);
-  if (!upstreamResponse.ok) {
-    return new Response("Storage object unavailable", { status: 502 });
-  }
-  const upstreamType = upstreamResponse.headers.get("content-type") || "";
-  if (!upstreamType.startsWith("image/")) {
-    return new Response("Unsupported storage object", { status: 415 });
-  }
-
-  const headers = new Headers();
-  headers.set("Content-Type", upstreamType);
-  headers.set("Cache-Control", "public, max-age=31536000, immutable");
-  headers.set("X-Content-Type-Options", "nosniff");
-  const etag = upstreamResponse.headers.get("etag");
-  if (etag) headers.set("ETag", etag);
-  return new Response(upstreamResponse.body, { status: 200, headers });
-}
-
 // ═══════════════════════════════════════════════════════════════
 // ROUTE HANDLERS
 // ═══════════════════════════════════════════════════════════════
@@ -964,17 +910,6 @@ export default {
     // Handle CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders() });
-    }
-
-    if (request.method === "GET" && path.startsWith("/manus-storage/")) {
-      const key = decodeURIComponent(path.slice("/manus-storage/".length));
-      const cache = caches.default;
-      const cacheKey = new Request(url.toString(), { method: "GET" });
-      const cached = await cache.match(cacheKey);
-      if (cached) return cached;
-      const response = await handleStorageProxy(env, key);
-      if (response.ok) ctx.waitUntil(cache.put(cacheKey, response.clone()));
-      return response;
     }
 
     // Static assets: use CF Cache API to avoid cold-start penalty on repeat visits

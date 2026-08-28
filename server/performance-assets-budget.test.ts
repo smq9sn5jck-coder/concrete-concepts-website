@@ -17,7 +17,6 @@ type Asset = {
 type Manifest = {
   mobileHero: { standard: Asset; highDensity: Asset };
   services: Record<string, { standard: Asset; highDensity: Asset }>;
-  logo: { standard: Asset };
 };
 
 describe("mobile performance asset budgets", () => {
@@ -31,7 +30,6 @@ describe("mobile performance asset budgets", () => {
 
     expect(manifest.mobileHero.standard.bytes).toBeLessThan(60_000);
     expect(manifest.mobileHero.highDensity.bytes).toBeLessThan(125_000);
-    expect(manifest.logo.standard.bytes).toBeLessThan(40_000);
 
     for (const variants of Object.values(manifest.services)) {
       expect(variants.standard.bytes).toBeLessThan(100_000);
@@ -39,13 +37,12 @@ describe("mobile performance asset budgets", () => {
     }
   });
 
-  it("uses web-hosted non-MOV assets with explicit intrinsic dimensions", () => {
+  it("uses versioned Cloudinary CDN assets with explicit intrinsic dimensions", () => {
     if (!existsSync(manifestPath)) return;
     const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as Manifest;
     const assets = [
       manifest.mobileHero.standard,
       manifest.mobileHero.highDensity,
-      manifest.logo.standard,
       ...Object.values(manifest.services).flatMap((variants) => [
         variants.standard,
         variants.highDensity,
@@ -53,11 +50,16 @@ describe("mobile performance asset budgets", () => {
     ];
 
     for (const asset of assets) {
-      expect(asset.url).toMatch(/^\/manus-storage\//);
+      expect(asset.url).toMatch(
+        /^https:\/\/res\.cloudinary\.com\/d92cmzyo\/image\/upload\/v\d+\/ccg-mobile-speed-2026-08-28\/[A-Za-z0-9._/-]+\.webp$/
+      );
+      expect(asset.url).not.toContain("/manus-storage/");
       expect(asset.url).not.toMatch(/\.mov(?:\?|$)/i);
       expect(asset.width).toBeGreaterThan(0);
       expect(asset.height).toBeGreaterThan(0);
       expect(asset.bytes).toBeGreaterThan(0);
     }
+
+    expect(manifest).not.toHaveProperty("logo");
   });
 });

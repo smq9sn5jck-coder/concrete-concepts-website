@@ -2,6 +2,10 @@ import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+export const CHROME_RENDER_TIMEOUT_MS = 30_000;
+const DEFAULT_ATTEMPTS = 3;
+const DEFAULT_RETRY_DELAY_MS = 15_000;
+
 export interface LiveRouteCheck {
   ok: boolean;
   errors: string[];
@@ -60,7 +64,12 @@ export function renderQuoteRoute(url: string, chromeCommand = availableChromeCom
       "--virtual-time-budget=12000",
       url,
     ],
-    { encoding: "utf8", maxBuffer: 20 * 1024 * 1024 }
+    {
+      encoding: "utf8",
+      maxBuffer: 20 * 1024 * 1024,
+      timeout: CHROME_RENDER_TIMEOUT_MS,
+      killSignal: "SIGKILL",
+    }
   );
 
   if (rendered.status !== 0 || !rendered.stdout) {
@@ -80,25 +89,78 @@ export function verifyLiveQuoteRoutes(urls: string[]) {
   return { ok: errors.length === 0, errors };
 }
 
+type RouteRenderer = (url: string) => LiveRouteCheck;
+
+export interface LiveRouteRetryOptions {
+  attempts?: number;
+  delayMs?: number;
+  render?: RouteRenderer;
+  wait?: (delayMs: number) => Promise<void>;
+}
+
+export async function verifyLiveQuoteRoutesWithRetries(
+  urls: string[],
+  options: LiveRouteRetryOptions = {}
+) {
+  const attempts = Math.max(1, options.attempts ?? DEFAULT_ATTEMPTS);
+  const delayMs = Math.max(0, options.delayMs ?? DEFAULT_RETRY_DELAY_MS);
+  const render = options.render ?? ((url: string) => renderQuoteRoute(url));
+  const wait = options.wait ?? ((durationMs: number) => new Promise<void>((resolve) => {
+    setTimeout(resolve, durationMs);
+  }));
+  let errors: string[] = [];
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    errors = [];
+    for (const url of urls) {
+      try {
+        const check = render(url);
+        check.errors.forEach((error) => errors.push(`${url}: ${error}`));
+      } catch (error) {
+        errors.push(
+          `${url}: ${error instanceof Error ? error.message : "Unknown browser verification error"}`
+        );
+      }
+    }
+
+    if (errors.length === 0) {
+      return { ok: true, errors: [], attemptsUsed: attempt };
+    }
+    if (attempt < attempts) await wait(delayMs);
+  }
+
+  return { ok: false, errors, attemptsUsed: attempts };
+}
+
 const isMain = process.argv[1]
   ? fileURLToPath(import.meta.url) === resolve(process.argv[1])
   : false;
 
 if (isMain) {
   const urls = process.argv.slice(2);
-  const check = verifyLiveQuoteRoutes(
+  verifyLiveQuoteRoutesWithRetries(
     urls.length
       ? urls
       : [
           "https://concreteconceptsgroup.com/get-quote",
           "https://www.concreteconceptsgroup.com/get-quote",
         ]
-  );
-  if (!check.ok) {
-    console.error("Live quote-route verification failed:");
-    check.errors.forEach((error) => console.error(`- ${error}`));
-    process.exitCode = 1;
-  } else {
-    console.log("Live quote-route verification passed.");
-  }
+  )
+    .then((check) => {
+      if (!check.ok) {
+        console.error(
+          `Live quote-route verification failed after ${check.attemptsUsed} attempt(s):`
+        );
+        check.errors.forEach((error) => console.error(`- ${error}`));
+        process.exitCode = 1;
+      } else {
+        console.log(
+          `Live quote-route verification passed after ${check.attemptsUsed} attempt(s).`
+        );
+      }
+    })
+    .catch((error) => {
+      console.error(error instanceof Error ? error.message : error);
+      process.exitCode = 1;
+    });
 }

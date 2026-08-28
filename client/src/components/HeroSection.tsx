@@ -149,10 +149,7 @@ export default function HeroSection() {
         <div className="grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <div className="mb-6 animate-fade-in-scale lg:mb-8">
-              <picture>
-                <source media="(max-width: 767px)" srcSet={performanceAssets.logo.standard.url} type="image/webp" />
-                <img src={LOGO_URL} alt="Concrete Concepts Group Brisbane concreting services" width={768} height={512} loading="eager" decoding="sync" fetchPriority="high" className="h-auto w-[220px] object-contain sm:w-[280px] md:w-[340px] lg:w-[400px]" />
-              </picture>
+              <img src={LOGO_URL} alt="Concrete Concepts Group Brisbane concreting services" width={768} height={512} loading="eager" decoding="sync" fetchPriority="high" className="h-auto w-[220px] object-contain sm:w-[280px] md:w-[340px] lg:w-[400px]" />
             </div>
             <h1 className="mb-4 animate-fade-in-up text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-5xl xl:text-6xl" style={{ animationDelay: "0.3s" }}>
               Your Concrete, <span className="italic text-brand-gold">Our Expertise</span>
