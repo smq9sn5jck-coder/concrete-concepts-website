@@ -11,6 +11,7 @@ describe("quote release package scripts", () => {
     expect(packageJson.scripts["quote:verify:source"]).toContain("quoteReleaseGuard.ts source");
     expect(packageJson.scripts["quote:verify:build"]).toContain("quoteReleaseGuard.ts build");
     expect(packageJson.scripts.build).toContain("pnpm quote:verify:source");
+    expect(packageJson.scripts.build).toContain("CF_BUILD=1 vite build");
     expect(packageJson.scripts.build).toContain("pnpm quote:verify:build");
   });
 

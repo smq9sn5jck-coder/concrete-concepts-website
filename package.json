@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
-    "build": "pnpm quote:verify:source && vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && pnpm quote:verify:build",
+    "build": "pnpm quote:verify:source && CF_BUILD=1 vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && pnpm quote:verify:build",
     "start": "NODE_ENV=production node dist/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
