@@ -798,3 +798,9 @@
 - [x] Mobile speed repair: reverify all tests, guarded build, asset delivery, phone/desktop visuals, quote flow and performance before republishing
 - [x] Mobile speed repair: republish only if every safeguard passes, with `fb579c3b` retained as rollback and apex/www/mobile checks required
 - [x] Cloudflare release guard: prevent indefinite Chromium hangs and require bounded, wait-aware apex/www retries before accepting or rolling back a new deployment
+- [x] CCG Trade Partner portal release: run the public site partner-link tests, full suite, TypeScript, guarded production build, and quote-route release checks from commit `9c3a79e`.
+- [x] CCG Trade Partner portal release: direct-upload only the verified `dist/public` artifact to Cloudflare Pages project `concrete-concepts-group`, retaining canonical deployment `65d0dde5-f4ea-4cfe-8a6e-54fcc7f57272` as the immediate rollback point.
+- [x] CCG Trade Partner portal release: verify live desktop, mobile, and footer Trade Partners links target `https://partners.concreteconceptsgroup.com/partners` without a quote-conversion callback, and automatically roll back if either quote route fails.
+- [x] CCG Trade Partner portal release: make the pre-existing Google Ads report tests deterministic by arranging their own Windsor/Resend conditions instead of depending on live shell secrets or external API state, then rerun the complete suite.
+- [x] CCG Trade Partner portal release: correct the direct-upload manifest to Wrangler-compatible leading-slash paths, finalize the uploaded BLAKE3 hashes, and prove the artifact on a preview deployment before any second production attempt.
+- [x] CCG Trade Partner portal release: record failed deployment `aefdfd60-41aa-4a07-abc5-dc2bde73553f`, automatic rollback to `65d0dde5-f4ea-4cfe-8a6e-54fcc7f57272`, stale apex cache purge, and successful post-rollback apex/`www` quote-route verification.

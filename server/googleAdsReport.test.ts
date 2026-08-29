@@ -1,4 +1,34 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+
+beforeEach(() => {
+  vi.resetModules();
+  vi.stubEnv("WINDSOR_API_KEY", "test-windsor-key");
+  vi.stubEnv("RESEND_API_KEY", "test-resend-key");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: string | URL | Request) => {
+      const url = String(input);
+      if (url.startsWith("https://connectors.windsor.ai/google_ads")) {
+        return new Response(JSON.stringify({ data: [] }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      if (url === "https://api.resend.com/emails") {
+        return new Response(JSON.stringify({ id: "test-report-email" }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+      throw new Error(`Unexpected external request in test: ${url}`);
+    })
+  );
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+  vi.unstubAllGlobals();
+});
 
 // Test that the googleAds module exports the expected functions
 describe("Google Ads Module", () => {
@@ -15,7 +45,6 @@ describe("Google Ads Module", () => {
 
   it("isWindsorConfigured returns true when WINDSOR_API_KEY is set", async () => {
     const mod = await import("./googleAds");
-    // WINDSOR_API_KEY should be set in the test env (from webdev_request_secrets)
     expect(mod.isWindsorConfigured()).toBe(true);
   });
 
