@@ -29,6 +29,25 @@ interface FormData {
   jobBrief?: ComprehensiveQuote;
 }
 
+interface CallbackFallbackData {
+  name: string;
+  phone: string;
+  suburb?: string;
+  page?: string;
+  source?: string;
+  website?: string;
+  formStartedAt?: number;
+}
+
+interface GuideFallbackData {
+  name: string;
+  email: string;
+  phone?: string;
+  source?: string;
+  website?: string;
+  formStartedAt?: number;
+}
+
 type FallbackResult = {
   success: boolean;
   method: "api" | "mailto";
@@ -131,6 +150,137 @@ export async function submitFormFallback(data: FormData): Promise<FallbackResult
   }
 }
 
+/** Submit a callback lead without presenting it as a completed quote request. */
+export async function submitCallbackFallback(data: CallbackFallbackData): Promise<FallbackResult> {
+  const phoneValidation = validateAustralianPhone(data.phone);
+  if (!phoneValidation.valid) throw new Error(phoneValidation.error);
+
+  const serviceArea = classifyServiceArea(data.suburb || "Not specified");
+  if (!serviceArea.canSubmit) throw new Error(serviceArea.message);
+
+  const submissionSignals = assessSubmissionSignals({
+    honeypot: data.website,
+    startedAt: data.formStartedAt,
+  });
+  if (!submissionSignals.allowed) {
+    throw new Error("We couldn't submit that request. Please check the form and try again.");
+  }
+
+  const normalizedData: CallbackFallbackData = {
+    ...data,
+    phone: phoneValidation.normalized,
+    suburb: serviceArea.normalized,
+  };
+
+  try {
+    const response = await fetch("/api/callback-submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: normalizedData.name,
+        phone: normalizedData.phone,
+        suburb: normalizedData.suburb,
+        page: normalizedData.page || window.location.pathname,
+        leadSource: normalizedData.source || "callback-form",
+        landingPage: window.location.pathname,
+        website: normalizedData.website || "",
+        formStartedAt: normalizedData.formStartedAt,
+      }),
+    });
+
+    if (response.ok) return { success: true, method: "api" };
+
+    let apiError = `Delivery endpoint returned ${response.status}`;
+    try {
+      const body = await response.json();
+      apiError = body.error || body.message || apiError;
+    } catch {
+      // Preserve the status-based message for non-JSON responses.
+    }
+
+    if (response.status === 400 || response.status === 422 || response.status === 429) {
+      throw new Error(apiError);
+    }
+
+    openCallbackMailtoFallback(normalizedData);
+    return { success: false, method: "mailto", error: apiError };
+  } catch (err) {
+    if (
+      err instanceof Error &&
+      /Australian phone number|Australian mobile number|South East Queensland|too many|already received|check the form/i.test(err.message)
+    ) {
+      throw err;
+    }
+
+    openCallbackMailtoFallback(normalizedData);
+    return {
+      success: false,
+      method: "mailto",
+      error: err instanceof Error ? err.message : "Delivery service unavailable",
+    };
+  }
+}
+
+/** Submit a guide lead through the dedicated Cloudflare route. */
+export async function submitGuideFallback(data: GuideFallbackData): Promise<FallbackResult> {
+  if (data.name.trim().length < 2) throw new Error("Please enter your name.");
+  if (!/^\S+@\S+\.\S+$/.test(data.email.trim())) throw new Error("Please enter a valid email address.");
+
+  let phone = "";
+  if (data.phone?.trim()) {
+    const phoneValidation = validateAustralianPhone(data.phone);
+    if (!phoneValidation.valid) throw new Error(phoneValidation.error);
+    phone = phoneValidation.normalized;
+  }
+
+  const submissionSignals = assessSubmissionSignals({
+    honeypot: data.website,
+    startedAt: data.formStartedAt,
+  });
+  if (!submissionSignals.allowed) {
+    throw new Error("We couldn't submit that request. Please check the form and try again.");
+  }
+
+  try {
+    const response = await fetch("/api/guide-submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: data.name.trim(),
+        email: data.email.trim(),
+        phone: phone || undefined,
+        leadSource: data.source || "guide-download",
+        landingPage: window.location.pathname,
+        website: data.website || "",
+        formStartedAt: data.formStartedAt,
+      }),
+    });
+
+    if (response.ok) return { success: true, method: "api" };
+
+    let apiError = `Delivery endpoint returned ${response.status}`;
+    try {
+      const body = await response.json();
+      apiError = body.error || body.message || apiError;
+    } catch {
+      // Preserve status-based message.
+    }
+    if (response.status === 400 || response.status === 422 || response.status === 429) {
+      throw new Error(apiError);
+    }
+    return { success: false, method: "mailto", error: apiError };
+  } catch (err) {
+    if (err instanceof Error && /valid email|Australian phone|too many|already received|check the form/i.test(err.message)) {
+      throw err;
+    }
+    return {
+      success: false,
+      method: "mailto",
+      error: err instanceof Error ? err.message : "Delivery service unavailable",
+    };
+  }
+}
+
 /** Opens a pre-filled email draft. The customer must still press Send. */
 export function openMailtoFallback(data: FormData) {
   const subject = encodeURIComponent(
@@ -154,6 +304,22 @@ export function openMailtoFallback(data: FormData) {
       `Thank you.`,
     ].join("\n")
   );
+  window.location.href = `mailto:${BUSINESS_EMAIL}?subject=${subject}&body=${body}`;
+}
+
+/** Opens a pre-filled callback email draft. The customer must still press Send. */
+export function openCallbackMailtoFallback(data: CallbackFallbackData) {
+  const subject = encodeURIComponent(`Callback Request: ${data.name}`);
+  const body = encodeURIComponent([
+    "Hi Concrete Concepts Group,",
+    "",
+    "Please call me back about a concreting project.",
+    "",
+    `Name: ${data.name}`,
+    `Phone: ${data.phone}`,
+    `Suburb: ${data.suburb || "Not specified"}`,
+    `Page: ${data.page || "Website"}`,
+  ].join("\n"));
   window.location.href = `mailto:${BUSINESS_EMAIL}?subject=${subject}&body=${body}`;
 }
 

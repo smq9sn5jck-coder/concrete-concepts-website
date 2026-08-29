@@ -21,7 +21,7 @@ import SEOHead from "@/components/SEOHead";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trpc } from "@/lib/trpc";
 import { useLeadSource } from "@/hooks/useLeadSource";
-import { trackQuoteConversion } from "@/components/ConversionTracking";
+import { trackVisualiserLeadConversion } from "@/components/ConversionTracking";
 import {
   assessSubmissionSignals,
   classifyServiceArea,
@@ -223,7 +223,7 @@ export default function Visualiser() {
   const submitLead = trpc.quote.submit.useMutation({
     onSuccess: () => {
       setLeadCaptured(true);
-      trackQuoteConversion({ phone: phone.trim(), name: name.trim() });
+      trackVisualiserLeadConversion({ phone: phone.trim(), name: name.trim() });
     },
     onError: (mutationError) => {
       setError(mutationError.message || "We couldn't confirm your enquiry. Please check your details and try again.");

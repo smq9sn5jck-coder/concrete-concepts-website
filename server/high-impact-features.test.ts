@@ -200,8 +200,9 @@ describe("BlogQuoteCTA component file exists", () => {
     expect(fs.existsSync(filePath)).toBe(true);
     const content = fs.readFileSync(filePath, "utf-8");
     expect(content).toContain("export default function BlogQuoteCTA");
-    expect(content).toContain("trpc.quote.submit.useMutation");
-    expect(content).toContain("trackQuoteConversion");
+    expect(content).toContain("trpc.callback.submit.useMutation");
+    expect(content).toContain("trackCallbackConversion");
+    expect(content).not.toContain("trackQuoteConversion");
     expect(content).toContain("trackPhoneCallClick");
   });
 });

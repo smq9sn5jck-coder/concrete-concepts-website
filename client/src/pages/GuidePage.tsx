@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { trpc } from "@/lib/trpc";
 import { useLeadSource } from "@/hooks/useLeadSource";
+import { submitGuideFallback } from "@/lib/formFallback";
 import { trackGuideDownload, trackGuidePageView, trackPhoneCallClick } from "@/components/ConversionTracking";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { assessSubmissionSignals, validateAustralianPhone } from "@shared/leadValidation";
@@ -92,12 +93,37 @@ export default function GuidePage() {
   const leadSource = useLeadSource();
   const submitGuide = trpc.guide.submit.useMutation({
     onSuccess: () => {
+      trackGuideDownload({
+        email: email.trim(),
+        phone: phone.trim() || undefined,
+        name: name.trim(),
+      });
       setSubmitted(true);
     },
-    onError: (mutationError) => {
-      // Still allow download even if submission fails
+    onError: async (mutationError) => {
       console.warn("[Guide] Lead capture unavailable:", mutationError.message);
-      setSubmitted(true);
+      try {
+        const result = await submitGuideFallback({
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || undefined,
+          source: "guide-download",
+          website,
+          formStartedAt: formStartedAt.current,
+        });
+        if (result.success) {
+          trackGuideDownload({
+            email: email.trim(),
+            phone: phone.trim() || undefined,
+            name: name.trim(),
+          });
+          setSubmitted(true);
+          return;
+        }
+        setError("We couldn't confirm delivery. Please call 0424 463 268 and we'll send the guide.");
+      } catch (fallbackError) {
+        setError(fallbackError instanceof Error ? fallbackError.message : "We couldn't confirm delivery. Please call 0424 463 268.");
+      }
     },
   });
 
@@ -125,13 +151,6 @@ export default function GuidePage() {
       setError("Please check the form and try again.");
       return;
     }
-
-    // Fire conversion tracking with enhanced data
-    trackGuideDownload({
-      email: email.trim(),
-      phone: phone.trim() || undefined,
-      name: name.trim(),
-    });
 
     // Submit through the email-first guide endpoint; phone remains optional.
     submitGuide.mutate({

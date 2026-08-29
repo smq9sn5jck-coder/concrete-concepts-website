@@ -1,0 +1,26 @@
+{
+  "/": {
+    "title": "Concrete Concepts Group | Brisbane Concreting & Concrete Services",
+    "robots": "index, follow"
+  },
+  "/get-quote": {
+    "title": "Get a Free Concrete Quote | Brisbane & SEQ | Concrete Concepts",
+    "robots": "index, follow"
+  },
+  "/services/concrete-driveways-brisbane": {
+    "title": "Concrete Driveways Brisbane | Detailed Quotes from CCG",
+    "robots": "index, follow"
+  },
+  "/areas/carindale": {
+    "title": "Concreting Carindale | Local Concrete Quotes from CCG",
+    "robots": "index, follow"
+  },
+  "/blog/concrete-driveway-cost-brisbane": {
+    "title": "Concrete Driveway Cost Brisbane | CCG Brisbane Concreting Guide",
+    "robots": "index, follow"
+  },
+  "/lp/concrete-driveway-ascot": {
+    "title": "Concrete Driveway Ascot | Concrete Concepts Group",
+    "robots": "noindex, follow"
+  }
+}

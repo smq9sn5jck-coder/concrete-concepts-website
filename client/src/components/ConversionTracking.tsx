@@ -162,6 +162,43 @@ export function trackWhatsAppClick() {
   }
 }
 
+/** Track SMS composer opens as a secondary contact-intent event. */
+export function trackTextMessageClick() {
+  waitForGtag(() => {
+    window.gtag!("event", "conversion", {
+      send_to: CONVERSION_LABELS.SMS,
+      value: 1,
+      currency: "AUD",
+    });
+  });
+
+  if (typeof window !== "undefined" && window.fbq) {
+    window.fbq("track", "Contact", {
+      content_name: "SMS Click",
+    });
+  }
+}
+
+/** Track delivered visualiser leads separately from complete quote submissions. */
+export function trackVisualiserLeadConversion(userData?: EnhancedConversionData) {
+  if (userData) pushEnhancedConversionData(userData);
+
+  waitForGtag(() => {
+    window.gtag!("event", "conversion", {
+      send_to: CONVERSION_LABELS.VISUALISER,
+      value: 1,
+      currency: "AUD",
+      transaction_id: `VL-${Date.now()}`,
+    });
+  });
+
+  if (typeof window !== "undefined" && window.fbq) {
+    window.fbq("track", "Contact", {
+      content_name: "AI Visualiser Lead",
+    });
+  }
+}
+
 /**
  * Track calculator usage — high-intent engagement signal
  */
@@ -401,13 +438,11 @@ export function trackReferralSubmission(userData?: EnhancedConversionData) {
   }
 
   waitForGtag(() => {
-    window.gtag!("event", "conversion", {
-      send_to: CONVERSION_LABELS.REFERRAL,
-      value: 250,
-      currency: "AUD",
-      transaction_id: `RF-${Date.now()}`,
+    window.gtag!("event", "referral_submission", {
+      event_category: "referral_program",
+      event_label: "delivered_referral",
     });
-    console.log("[Tracking] Google Ads referral conversion fired");
+    console.log("[Tracking] Referral analytics event fired");
   });
 
   if (typeof window !== "undefined" && window.fbq) {

@@ -132,11 +132,11 @@ describe("Enhanced Conversion Data", () => {
     expect(content).not.toContain("trackQuoteConversion");
   });
 
-  it("BlogQuoteCTA passes enhanced data to trackQuoteConversion", () => {
+  it("BlogQuoteCTA records delivered callback data without claiming a full quote", () => {
     const content = readComponent("components/BlogQuoteCTA.tsx");
-    // Should pass name and phone (no email field in this form)
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*name:/);
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*phone:/);
+    expect(content).toMatch(/trackCallbackConversion\(\s*\{[^}]*name:/);
+    expect(content).toMatch(/trackCallbackConversion\(\s*\{[^}]*phone:/);
+    expect(content).not.toContain("trackQuoteConversion");
   });
 
   it("CallbackWidget passes enhanced data to trackCallbackConversion", () => {
@@ -199,13 +199,15 @@ describe("Google Ads Configuration", () => {
     expect(indexHtml).toContain("allow_enhanced_conversions");
   });
 
-  it("conversion labels are configurable via env vars", () => {
+  it("uses configurable primary labels and verified secondary labels", () => {
     const config = readComponent("lib/googleAdsConfig.ts");
     expect(config).toContain("VITE_GADS_LABEL_QUOTE");
     expect(config).toContain("VITE_GADS_LABEL_PHONE");
-    expect(config).toContain("VITE_GADS_LABEL_CALLBACK");
-    expect(config).toContain("VITE_GADS_LABEL_GUIDE");
-    expect(config).toContain("VITE_GADS_LABEL_REFERRAL");
+    expect(config).toContain("NL8kCPSE_ekcEOuxtIpD");
+    expect(config).toContain("weRUCPeE_ekcEOuxtIpD");
+    expect(config).toContain("26ZACIWn9OkcEOuxtIpD");
+    expect(config).toContain("MyywCIin9OkcEOuxtIpD");
+    expect(config).toContain("nv9wCKed_ekcEOuxtIpD");
   });
 
   it("ConversionTracking normalizes AU phone numbers for enhanced conversions", () => {

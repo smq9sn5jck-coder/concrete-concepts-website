@@ -9,9 +9,9 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Phone, Send, Loader2, CheckCircle, Shield, Star, Users } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { submitFormFallback, CONTACT_INFO } from "@/lib/formFallback";
+import { submitCallbackFallback, CONTACT_INFO } from "@/lib/formFallback";
 import { useLeadSource } from "@/hooks/useLeadSource";
-import { trackQuoteConversion, trackPhoneCallClick } from "@/components/ConversionTracking";
+import { trackCallbackConversion, trackPhoneCallClick } from "@/components/ConversionTracking";
 import { trackFormFieldFocus, trackFormFieldComplete, trackCTAClick } from "@/components/GodModeTracking";
 import { toast } from "sonner";
 import {
@@ -29,9 +29,9 @@ export default function MiniQuoteForm() {
   const [website, setWebsite] = useState("");
   const formStartedAt = useRef(Date.now());
 
-  const submitQuote = trpc.quote.submit.useMutation({
+  const submitCallback = trpc.callback.submit.useMutation({
     onSuccess: () => {
-      trackQuoteConversion({ phone, name });
+      trackCallbackConversion({ phone, name });
       setSubmitted(true);
       toast.success("We'll call you within 24 hours!");
     },
@@ -42,17 +42,17 @@ export default function MiniQuoteForm() {
       }
       console.warn("[MiniForm] Backend unavailable, trying fallback:", error.message);
       try {
-        const result = await submitFormFallback({
+        const result = await submitCallbackFallback({
           name: name.trim(),
           phone: phone.trim(),
           suburb,
-          service: "General Enquiry (Mini Form)",
+          page: window.location.pathname,
           source: "mini-quote-form",
           website,
           formStartedAt: formStartedAt.current,
         });
         if (result.success) {
-          trackQuoteConversion({ phone, name });
+          trackCallbackConversion({ phone, name });
           setSubmitted(true);
           toast.success("We'll call you within 24 hours!");
         } else if (result.method === "mailto") {
@@ -86,13 +86,11 @@ export default function MiniQuoteForm() {
       toast.error("Please check the form and try again.");
       return;
     }
-    submitQuote.mutate({
+    submitCallback.mutate({
       name: name.trim(),
       phone: phoneValidation.normalized,
-      email: "not-provided@via-mini-form.com",
       suburb: serviceArea.normalized,
-      service: "General Enquiry",
-      details: "Quick quote from mid-page mini form — follow up for full details",
+      page: window.location.pathname,
       website,
       formStartedAt: formStartedAt.current,
       leadSource: leadSource.leadSource,
@@ -202,11 +200,11 @@ export default function MiniQuoteForm() {
               />
               <Button
                 type="submit"
-                disabled={submitQuote.isPending}
+                disabled={submitCallback.isPending}
                 className="bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-bold px-6 py-3.5 text-sm tracking-wide uppercase shadow-lg shadow-brand-gold/20 transition-all duration-300 hover:shadow-xl whitespace-nowrap"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                {submitQuote.isPending ? (
+                {submitCallback.isPending ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
                 ) : (
                   <>

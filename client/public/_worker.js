@@ -1,3 +1,6 @@
+// Metadata source: seo-manifest.json is generated from the same verified route map.
+import { applySeoMetadata, filterPublicSitemap } from "./seo-manifest.js";
+
 /**
  * Cloudflare Pages Worker for Concrete Concepts Group
  * AI Concrete Visualiser V3 — Mask-First Architecture
@@ -806,6 +809,79 @@ async function backupToJotform(env, formData) {
   }
 }
 
+// Handle guide downloads separately from complete quote requests.
+async function handleGuideSubmit(env, formData) {
+  const now = Date.now();
+  const name = String(formData.name || "").trim();
+  const email = String(formData.email || "").trim().toLowerCase();
+  let phone = String(formData.phone || "").trim();
+
+  if (String(formData.website || "").trim()) return { success: false, error: "Please check the form and try again.", status: 400 };
+  if (Number.isFinite(formData.formStartedAt) && now - formData.formStartedAt < 1500) {
+    return { success: false, error: "Please check the form and try again.", status: 400 };
+  }
+  if (name.length < 2) return { success: false, error: "Please enter your name.", status: 400 };
+  if (!/^\S+@\S+\.\S+$/.test(email)) return { success: false, error: "Please enter a valid email address.", status: 400 };
+  if (phone) {
+    phone = normalizeWorkerPhone(phone);
+    if (!/^04\d{8}$/.test(phone) && !/^0[2378]\d{8}$/.test(phone)) {
+      return { success: false, error: "Enter an Australian phone number, for example 0424 463 268.", status: 400 };
+    }
+  }
+  if (!consumeWorkerRateLimit(`guide:${email}`, 10 * 60_000, 1, now)) {
+    return { success: false, error: "We've already received this guide request. Please check your email or try again later.", status: 429 };
+  }
+
+  const resendApiKey = env.RESEND_API_KEY;
+  const guideUrl = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/homeowners-guide-to-concreting_0d96d3e2.pdf";
+  const guideData = {
+    name,
+    email,
+    phone,
+    suburb: "Not specified",
+    service: "Homeowner Guide Download",
+    details: "Requested the Homeowner's Guide to Concreting PDF.",
+    leadSource: formData.leadSource || "guide-download",
+  };
+
+  const ownerEmail = resendApiKey ? fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: "Concrete Concepts <info@concreteconceptsgroup.com>",
+      to: ["info@concreteconceptsgroup.com"],
+      subject: `Guide Download: ${name}`,
+      html: `<h2>Homeowner Guide Download</h2><p><strong>Name:</strong> ${escapeWorkerHtml(name)}</p><p><strong>Email:</strong> ${escapeWorkerHtml(email)}</p><p><strong>Phone:</strong> ${escapeWorkerHtml(phone || "Not provided")}</p>`,
+    }),
+  }) : Promise.resolve(null);
+
+  const customerEmail = resendApiKey ? fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      from: "Concrete Concepts <info@concreteconceptsgroup.com>",
+      to: [email],
+      subject: "Your Homeowner's Guide to Concreting",
+      html: `<h2>Thanks ${escapeWorkerHtml(name)}</h2><p>Your guide is ready.</p><p><a href="${guideUrl}">Download the Homeowner's Guide</a></p><p>For help with a Brisbane or SEQ project, call <a href="tel:0424463268">0424 463 268</a>.</p>`,
+    }),
+  }) : Promise.resolve(null);
+
+  const [ownerRes, customerRes, manusRes] = await Promise.allSettled([
+    ownerEmail,
+    customerEmail,
+    backupToManusBackend(env, guideData),
+  ]);
+  const channels = {
+    email: ownerRes.status === "fulfilled" && ownerRes.value?.ok ? "sent" : "failed",
+    customer: customerRes.status === "fulfilled" && customerRes.value?.ok ? "sent" : "failed",
+    sheets: manusRes.status === "fulfilled" && manusRes.value ? "logged" : "failed",
+  };
+  const delivered = channels.email === "sent" || channels.customer === "sent" || channels.sheets === "logged";
+  return delivered
+    ? { success: true, message: "Guide request submitted", channels }
+    : { success: false, error: "We couldn't confirm delivery. Please call 0424 463 268.", status: 503, channels };
+}
+
 // Handle quote form submission — multi-channel: Email + Google Sheets + Jotform
 async function handleQuoteSubmit(env, formData) {
   const resendApiKey = env.RESEND_API_KEY;
@@ -889,6 +965,93 @@ async function handleQuoteSubmit(env, formData) {
   }
 }
 
+// Handle callback requests separately from complete quote submissions.
+async function handleCallbackSubmit(env, formData) {
+  const now = Date.now();
+  const name = String(formData.name || "").trim();
+  if (String(formData.website || "").trim()) {
+    return { success: false, status: 400, error: "Please check the form and try again." };
+  }
+  if (Number.isFinite(formData.formStartedAt) && now - formData.formStartedAt < 1500) {
+    return { success: false, status: 400, error: "Please check the form and try again." };
+  }
+  if (name.length < 2) {
+    return { success: false, status: 400, error: "Please enter your name." };
+  }
+
+  const phone = normalizeWorkerPhone(formData.phone);
+  if (!/^04\d{8}$/.test(phone) && !/^0[2378]\d{8}$/.test(phone)) {
+    return { success: false, status: 400, error: "Enter an Australian phone number, for example 0424 463 268 or (07) 3123 4567." };
+  }
+
+  const serviceArea = workerServiceArea(formData.suburb || "Not specified");
+  if (!serviceArea.allowed) {
+    return { success: false, status: 400, error: "We currently service Brisbane and surrounding South East Queensland areas." };
+  }
+
+  const leadKey = `callback:${phone}|${serviceArea.normalized.toLowerCase()}|${name.toLowerCase()}`;
+  const addressKey = `callback-address:${formData._clientAddress || "unknown"}`;
+  if (!consumeWorkerRateLimit(leadKey, 2 * 60_000, 1, now)) {
+    return { success: false, status: 429, error: "We've already received this callback request. Please wait a moment before trying again." };
+  }
+  if (!consumeWorkerRateLimit(addressKey, 10 * 60_000, 8, now)) {
+    return { success: false, status: 429, error: "Too many requests were received. Please wait a few minutes and try again." };
+  }
+
+  const source = String(formData.leadSource || "callback-form");
+  const page = String(formData.page || formData.landingPage || "Homepage");
+  const callbackData = {
+    ...formData,
+    name,
+    phone,
+    suburb: serviceArea.normalized,
+    email: "callback@request.com",
+    service: "Callback Request",
+    details: `Callback requested from ${page}. No email or full job brief was collected.`,
+    leadSource: source,
+  };
+
+  const notificationHtml = `
+    <h2>Callback Request</h2>
+    <p><strong>This is a callback lead, not a completed quote request.</strong></p>
+    <table style="border-collapse:collapse;width:100%">
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Name</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(name)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Phone</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(phone)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Suburb</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(serviceArea.normalized)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Page</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(page)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Lead Source</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(source)}</td></tr>
+    </table>
+  `;
+
+  const results = { email: "pending", sheets: "pending", jotform: "pending" };
+  try {
+    const [emailRes, manusRes, jotformRes] = await Promise.allSettled([
+      env.RESEND_API_KEY ? fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "Concrete Concepts <info@concreteconceptsgroup.com>",
+          to: ["info@concreteconceptsgroup.com"],
+          subject: `Callback Request - ${serviceArea.normalized} (${name})`,
+          html: notificationHtml,
+        }),
+      }) : Promise.resolve(null),
+      backupToManusBackend(env, callbackData),
+      backupToJotform(env, callbackData),
+    ]);
+
+    results.email = emailRes.status === "fulfilled" && emailRes.value?.ok ? "sent" : "failed";
+    results.sheets = manusRes.status === "fulfilled" && manusRes.value ? "logged" : "failed";
+    results.jotform = jotformRes.status === "fulfilled" && jotformRes.value ? "logged" : "failed";
+    const delivered = results.email === "sent" || results.sheets === "logged" || results.jotform === "logged";
+    return delivered
+      ? { success: true, message: "Callback request submitted", channels: results, serviceAreaStatus: serviceArea.status }
+      : { success: false, status: 503, error: "We couldn't confirm delivery. Please call 0424 463 268.", channels: results };
+  } catch (err) {
+    return { success: false, status: 500, error: err.message || "Callback delivery failed" };
+  }
+}
+
 // Parse tRPC batch request body
 function parseTrpcBody(body) {
   if (body && typeof body === "object") {
@@ -896,6 +1059,35 @@ function parseTrpcBody(body) {
     if (body.json) return body.json;
   }
   return body;
+}
+
+async function prepareStaticResponse(response, url, path, method) {
+  if (method === "GET" && path === "/sitemap.xml" && response.ok) {
+    const xml = filterPublicSitemap(await response.text());
+    const headers = new Headers(response.headers);
+    headers.set("Content-Type", "application/xml; charset=utf-8");
+    headers.delete("Content-Length");
+    return new Response(xml, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  }
+
+  if (method === "GET" && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
+    const html = applySeoMetadata(await response.text(), url.pathname);
+    const headers = new Headers(response.headers);
+    headers.set("Content-Type", "text/html; charset=utf-8");
+    headers.delete("Content-Length");
+    if (path.startsWith("/lp/")) headers.set("X-Robots-Tag", "noindex, follow");
+    return new Response(html, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
+  }
+
+  return response;
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -919,6 +1111,7 @@ export default {
       let response = await cache.match(cacheKey);
       if (!response) {
         response = await env.ASSETS.fetch(request);
+        response = await prepareStaticResponse(response, url, path, request.method);
         // Cache HTML for 60s at the edge, stale-while-revalidate for 5 min
         if (response.ok && response.headers.get("content-type")?.includes("text/html")) {
           const cached = new Response(response.body, response);
@@ -958,6 +1151,19 @@ export default {
           : trpcErrorResponse(result.error || "Quote submission failed", result.status || 500);
       }
 
+      // Route: Homeowner guide lead (email-first, phone optional)
+      if (path === "/api/trpc/guide.submit" || path === "/api/guide-submit") {
+        const body = await request.json();
+        const formData = parseTrpcBody(body);
+        const result = await handleGuideSubmit(env, formData);
+        if (path === "/api/trpc/guide.submit") {
+          return result.success
+            ? trpcResponse(result)
+            : trpcErrorResponse(result.error || "Guide request failed", result.status || 500);
+        }
+        return jsonResponse(result, result.success ? 200 : result.status || 500);
+      }
+
       // Route: Photo upload
       if (path === "/api/upload-photo") {
         const body = await request.json();
@@ -993,15 +1199,16 @@ export default {
       if (path === "/api/trpc/callback.submit" || path === "/api/callback-submit") {
         const body = await request.json();
         const formData = parseTrpcBody(body);
-        const result = await handleQuoteSubmit(env, {
+        const result = await handleCallbackSubmit(env, {
           ...formData,
           _clientAddress: request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "unknown",
-          service: "Callback Request",
-          details: `Callback requested: ${formData.name} - ${formData.phone}`,
         });
-        return result.success
-          ? trpcResponse(result)
-          : trpcErrorResponse(result.error || "Callback submission failed", result.status || 500);
+        if (path === "/api/trpc/callback.submit") {
+          return result.success
+            ? trpcResponse(result)
+            : trpcErrorResponse(result.error || "Callback submission failed", result.status || 500);
+        }
+        return jsonResponse(result, result.success ? 200 : result.status || 500);
       }
 
       // Legacy: visualiser.analyse (redirect to QA)
@@ -1017,7 +1224,8 @@ export default {
       return jsonResponse({ error: err.message || "Internal server error" }, 500);
     }
 
-    // Fall through to static assets
-    return env.ASSETS.fetch(request);
+    // Unknown POST API routes fall through without being cached.
+    const response = await env.ASSETS.fetch(request);
+    return prepareStaticResponse(response, url, path, request.method);
   },
 };

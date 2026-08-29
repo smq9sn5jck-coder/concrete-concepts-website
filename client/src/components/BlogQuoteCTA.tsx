@@ -8,9 +8,9 @@
 import { useRef, useState } from "react";
 import { Phone, ArrowRight, CheckCircle, Loader2, Shield, Star } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { submitFormFallback, CONTACT_INFO } from "@/lib/formFallback";
+import { submitCallbackFallback, CONTACT_INFO } from "@/lib/formFallback";
 import { useLeadSource } from "@/hooks/useLeadSource";
-import { trackQuoteConversion, trackPhoneCallClick } from "@/components/ConversionTracking";
+import { trackCallbackConversion, trackPhoneCallClick } from "@/components/ConversionTracking";
 import { toast } from "sonner";
 import {
   assessSubmissionSignals,
@@ -34,10 +34,10 @@ export default function BlogQuoteCTA({ serviceContext, variant = "mid-article" }
   const [website, setWebsite] = useState("");
   const formStartedAt = useRef(Date.now());
 
-  const submitQuote = trpc.quote.submit.useMutation({
+  const submitCallback = trpc.callback.submit.useMutation({
     onSuccess: () => {
       setSubmitted(true);
-      trackQuoteConversion({ name: name.trim(), phone: phone.trim() });
+      trackCallbackConversion({ name: name.trim(), phone: phone.trim() });
       toast.success("We'll call you within 24 hours!");
     },
     onError: async (error) => {
@@ -46,18 +46,18 @@ export default function BlogQuoteCTA({ serviceContext, variant = "mid-article" }
         return;
       }
       try {
-        const result = await submitFormFallback({
+        const result = await submitCallbackFallback({
           name: name.trim(),
           phone: phone.trim(),
           suburb,
-          service: serviceContext || "Blog Enquiry",
+          page: window.location.pathname,
           source: "blog-quote-cta",
           website,
           formStartedAt: formStartedAt.current,
         });
         if (result.success) {
           setSubmitted(true);
-          trackQuoteConversion({ name: name.trim(), phone: phone.trim() });
+          trackCallbackConversion({ name: name.trim(), phone: phone.trim() });
           toast.success("We'll call you within 24 hours!");
         } else if (result.method === "mailto") {
           toast.info("Your email app has opened. Please press Send to complete the enquiry.");
@@ -89,13 +89,11 @@ export default function BlogQuoteCTA({ serviceContext, variant = "mid-article" }
       toast.error("Please check the form and try again.");
       return;
     }
-    submitQuote.mutate({
+    submitCallback.mutate({
       name: name.trim(),
       phone: phoneValidation.normalized,
-      email: "not-provided@blog-enquiry.local",
       suburb: serviceArea.normalized,
-      service: serviceContext || "Blog Enquiry",
-      details: `Enquiry from blog post${serviceContext ? ` (${serviceContext})` : ""}`,
+      page: `${window.location.pathname}${serviceContext ? ` (${serviceContext})` : ""}`,
       website,
       formStartedAt: formStartedAt.current,
       leadSource: leadSource.leadSource || "Blog CTA",
@@ -193,11 +191,11 @@ export default function BlogQuoteCTA({ serviceContext, variant = "mid-article" }
           />
           <button
             type="submit"
-            disabled={submitQuote.isPending}
+            disabled={submitCallback.isPending}
             className="bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-semibold px-6 py-3 rounded-lg text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-70"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            {submitQuote.isPending ? (
+            {submitCallback.isPending ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
               <>

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, expect, it } from "vitest";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -25,49 +25,36 @@ const NEW_LANDING_PAGES = [
   "pool-surround-upper-coomera",
 ];
 
-describe("Growth suburb landing pages", () => {
-  const lpPath = path.resolve(
-    import.meta.dirname,
-    "../client/src/pages/LandingPage.tsx"
+describe("Paid suburb landing pages", () => {
+  const root = path.resolve(import.meta.dirname, "..");
+  const landing = fs.readFileSync(path.join(root, "client/src/pages/LandingPage.tsx"), "utf-8");
+  const app = fs.readFileSync(path.join(root, "client/src/App.tsx"), "utf-8");
+  const sitemap = fs.readFileSync(path.join(root, "client/public/sitemap.xml"), "utf-8");
+  const paidSlugs = Array.from(
+    sitemap.matchAll(/<loc>https:\/\/concreteconceptsgroup\.com\/lp\/([^<]+)<\/loc>/g),
+    match => match[1]
   );
-  const lpContent = fs.readFileSync(lpPath, "utf-8");
 
-  it("has all 20 new landing page entries", () => {
-    for (const slug of NEW_LANDING_PAGES) {
-      expect(lpContent).toContain(`"${slug}"`);
-    }
+  it("keeps the 76 paid URLs reachable through the generic noindex route", () => {
+    expect(app).toContain('path={"/lp/:slug"}');
+    expect(paidSlugs).toHaveLength(76);
+    expect(new Set(paidSlugs).size).toBe(76);
   });
 
-  it("has 75 total landing pages (55 existing + 20 new)", () => {
-    const matches = lpContent.match(/^\s+"[a-z][a-z0-9-]+": \{$/gm);
-    expect(matches).not.toBeNull();
-    expect(matches!.length).toBe(75);
+  it("retains every approved growth slug without hardcoded customer claims", () => {
+    for (const slug of NEW_LANDING_PAGES) expect(paidSlugs).toContain(slug);
+    expect(landing).toContain("SERVICE_PATTERNS");
+    expect(landing).toContain("getLandingConfig");
+    expect(landing).toContain("saveQuoteDraft");
+    expect(landing).toContain("/get-quote");
+    expect(landing).not.toMatch(/testimonial|priceFrom|urgencyLine|guaranteed/i);
   });
 
-  for (const slug of NEW_LANDING_PAGES) {
-    it(`${slug} has required fields (headline, service, benefits, testimonials, processSteps)`, () => {
-      const entryStart = lpContent.indexOf(`"${slug}": {`);
-      expect(entryStart).toBeGreaterThan(-1);
-
-      const chunk = lpContent.slice(entryStart, entryStart + 3000);
-      expect(chunk).toContain("headline:");
-      expect(chunk).toContain("subheadline:");
-      expect(chunk).toContain("service:");
-      expect(chunk).toContain("benefits:");
-      expect(chunk).toContain("priceFrom:");
-      expect(chunk).toContain("heroImage:");
-      expect(chunk).toContain("trustPoints:");
-      expect(chunk).toContain("urgencyLine:");
-      expect(chunk).toContain("testimonials:");
-      expect(chunk).toContain("processSteps:");
-    });
-  }
-
-  it("no duplicate landing page slugs", () => {
-    const slugMatches = lpContent.match(/^\s+"[a-z][a-z0-9-]+": \{$/gm);
-    expect(slugMatches).not.toBeNull();
-    const slugs = slugMatches!.map((m) => m.trim().replace(/": \{$/, "").replace(/^"/, ""));
-    const uniqueSlugs = new Set(slugs);
-    expect(slugs.length).toBe(uniqueSlugs.size);
+  it("keeps paid pages noindex and requires complete contact prefill", () => {
+    expect(landing).toContain("noindex");
+    expect(landing).toContain("validateAustralianPhone");
+    expect(landing).toContain("classifyServiceArea");
+    expect(landing).toContain('type="email"');
+    expect(landing).not.toContain("trackQuoteConversion");
   });
 });

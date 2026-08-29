@@ -778,12 +778,12 @@
 - [x] Google Ads next-stage proposal: director approved Option A—Search bidding change plus listed Performance Max non-commercial URL exclusions only
 - [x] Approved Option A Ads batch: capture exact pre-change Search bidding, zero PMax webpage exclusions, budgets, 12 exact keywords, 38 negatives, presence-only locations and quote-only custom-goal rollback evidence
 - [x] Approved Option A Ads batch: validate Windsor’s Search bidding action and confirm PMax URL exclusions require authenticated Google Ads UI because no connected write action supports webpage criteria
-- [ ] Approved Option A Ads access recovery: establish a working authenticated Google Ads route after Windsor required a target CPA, the browser showed an ad-block warning, and the first Zapier connection link returned 403
-- [ ] Approved Option A Ads batch: switch rebuilt Search to Maximise conversions with no target while retaining $49.80/day and quote-only bidding
-- [ ] Approved Option A Ads batch: verify Search budget, status, 12 exact keywords, negatives, Brisbane/SEQ presence-only targeting and `CCG Quote Form Only`
+- [x] Approved Option A Ads access recovery: establish a working authenticated Google Ads route after Windsor required a target CPA, the browser showed an ad-block warning, and the first Zapier connection link returned 403
+- [x] Approved Option A Ads batch: no-target proposal superseded by the director-approved 300% target ROAS; retain $49.80/day and quote-only bidding
+- [x] Approved Option A Ads batch: verify Search budget, status, 12 exact keywords, negatives, Brisbane/SEQ presence-only targeting and `CCG Quote Form Only`
 - [ ] Approved Option A Ads batch: add only the approved non-commercial PMax URL exclusions while retaining $100/day and current bidding
-- [ ] Approved Option A Ads batch: read back every protected setting and confirm configured enabled-account budgets remain $150/day
-- [ ] Approved Option A Ads batch: document day-3 and day-7 Gmail/Jotform genuine-lead review and rollback thresholds
+- [x] Approved Option A Ads batch: read back every protected setting and confirm configured enabled-account budgets remain $150/day
+- [x] Approved Option A Ads batch: document day-3 and day-7 Gmail/Jotform genuine-lead review and rollback thresholds
 - [x] Mobile speed work: capture repeatable live baselines for homepage and `/get-quote` response time, transfer size, browser render milestones and mobile Core Web Vitals
 - [x] Mobile speed work: identify Cloudflare cache, origin, JavaScript, CSS, font, image and third-party bottlenecks without changing production
 - [x] Mobile speed work: owner initially selected a finished-project phone still; three existing CCG images and one optimised driveway crop were compared before the final choice changed
@@ -798,6 +798,65 @@
 - [x] Mobile speed repair: reverify all tests, guarded build, asset delivery, phone/desktop visuals, quote flow and performance before republishing
 - [x] Mobile speed repair: republish only if every safeguard passes, with `fb579c3b` retained as rollback and apex/www/mobile checks required
 - [x] Cloudflare release guard: prevent indefinite Chromium hangs and require bounded, wait-aware apex/www retries before accepting or rolling back a new deployment
+- [x] Approved Option A retry: confirm the active Google Ads account and authenticated read/write paths before any mutation
+- [x] Approved Option A retry: capture Search and PMax bidding, budgets, locations, conversion goals and current URL exclusions
+- [x] Approved Option A retry: no-target proposal superseded by and safely executed as the director-approved 300% target ROAS while preserving $49.80/day
+- [ ] Approved Option A retry: add only the approved non-commercial PMax URL exclusions while preserving $100/day and current bidding
+- [x] Approved Option A retry: read back all protected settings and document verified changes or exact access blockers
+- [x] Same-day readiness audit: verify both live domains, homepage assets, five-step quote route and Cloudflare canonical deployment without submitting a lead
+- [x] Same-day readiness audit: confirm production lead validation and Gmail/Jotform delivery configuration, then check today’s genuine inbox and form evidence
+- [x] Same-day readiness audit: read Google Ads status, budgets, bidding, locations, goals, today’s spend, clicks and conversions for all funded campaigns
+- [x] Same-day readiness audit: cross-check Ads activity against genuine leads and document an evidence-based ready/not-ready verdict for today
+- [x] Search bidding repair: reconfirm the rebuilt Search campaign’s 920% target ROAS and recent quote-conversion evidence immediately before mutation
+- [x] Search bidding repair: select and document a defensible lower target without changing any campaign budget, location, keyword, negative-keyword or conversion-goal setting
+- [x] Search bidding repair: apply only the authorized target-ROAS change through a verified authenticated Google Ads write path
+- [x] Search bidding repair: read back bidding, budgets, presence-only targeting and quote-form-only goals, then define day-3 and day-7 monitoring thresholds
+- [x] Trade-partner URL audit: identify the two new partner/lead URLs and confirm their live, sitemap, robots and indexing status
+- [x] Trade-partner URL audit: inspect site links, routing, analytics events and conversion firing for any impact on the main CCG quote funnel
+- [x] Trade-partner URL audit: check Google Ads landing-page, final-URL expansion and conversion data for traffic involving either partner URL
+- [x] Trade-partner URL audit: document whether the URLs affect main Ads or lead attribution and define any required exclusions or safeguards
+- [x] PMax click-decline audit: identify Google’s comparison period and quantify daily impressions, clicks, spend and conversions before treating the 45% notification as a fault
+- [x] PMax click-decline audit: check policy limits, budget delivery, location quality, landing URLs, device mix and search demand for the cause
+- [x] PMax click-decline audit: implement no budget or bidding change unless the evidence identifies a safe correction and the director approves the exact action
+- [x] Search conversion audit: capture the rebuilt campaign’s current bidding, budget, goals, ad groups, ads, assets and recent performance baseline
+- [x] Search conversion audit: evaluate keyword-level delivery, quality signals, actual search terms, match types, negatives and local commercial intent
+- [x] Search conversion audit: evaluate responsive-search-ad copy, asset coverage, policy/strength status and `/get-quote` message match
+- [x] Search conversion audit: prioritize evidence-based conversion improvements with exact keep/add/pause/copy recommendations for director approval
+- [x] Approved Search mutation: reconfirm campaign `24184424558`, current 920% target ROAS, protected settings and authenticated write access
+- [x] Approved Search mutation: change only target ROAS to 300% and apply the reviewed 15-headline/four-description responsive Search ad package
+- [x] Approved Search mutation: verify the live ad contains exactly the approved assets and enters Google review without disabling the prior serving ad
+- [x] Approved Search mutation: read back the $49.80/day budget, Presence-only targeting, 12 exact keywords, 38 negatives and quote-form-only goal
+- [x] Approved Search mutation: document the change timestamp, pre-change baseline and seven-day/30-click monitoring gate
+- [x] Cloudflare status check: confirm the current canonical production deployment and direct `pages.dev` deployment URL
+- [x] Cloudflare status check: verify homepage and five-step quote route rendering on apex, www and direct Pages URLs without submitting a lead
+- [x] Cloudflare status check: report whether the latest verified mobile-speed site remains live and loading correctly
+- [x] Fresh full audit: map every active `.com`, `pages.dev`, Manus and `.org` domain to its deployment and verify no extra URL has displaced or duplicated the CCG production funnel
+- [x] Fresh full audit: verify desktop/mobile homepage, media, five-step quote route, validation, conversion safeguards and production Worker without submitting a lead
+- [x] Fresh full audit: reconcile today’s genuine website enquiries across Gmail and Jotform and distinguish zero submissions from delivery failure
+- [x] Fresh full audit: verify PMax, rebuilt Search and Tradenet status, budgets, bidding, geography, landing URLs, policy health, conversions and new-RSA review
+- [x] Fresh full audit: cross-check paid clicks against genuine lead records and document a definitive working/limited/failing verdict with immediate actions
+- [ ] Ads control correction pending director confirmation: restore PMax from $160/day to the protected $100/day after the 29 August mobile-app increase
+- [ ] Ads control correction pending director confirmation: disable rebuilt Search content-network expansion and the recommendation auto-apply category that enabled it
+- [x] Full lead session: inventory every live quote, callback, referral, visualiser, guide, blog and paid-landing form plus every phone, SMS and WhatsApp CTA
+- [x] Full lead session: verify each form’s validation, confirmed-submit conversion event, Gmail/Jotform/backup destinations and failure behavior without creating an unlabelled lead
+- [x] Full lead session: audit all Google Ads conversion actions and campaign goal assignments; keep genuine submitted quotes primary and classify calls/texts by verified lead quality
+- [x] Full lead session: audit sitemap URLs, robots, canonicals, structured data, indexability, service/suburb coverage, internal links and duplicate/thin-page risks
+- [x] Full lead session: design approval-ready high-impact conversion and SEO changes without page-view or tap inflation, budget increases, partner-trade publication or exit-intent popups
+- [x] Full lead session: implement approved website, tracking and SEO improvements test-first while preserving the five-step quote funnel, SEQ validation and delivery safeguards
+- [x] Release 1 form integrity: add failing contracts that distinguish full quotes from callback, visualiser, guide and referral leads and prohibit non-quote paths from firing the primary quote label
+- [x] Release 1 form integrity: reclassify homepage mini, blog and timed popup submissions as delivered callbacks while preserving AU phone, SEQ and anti-spam checks
+- [x] Release 1 form-integrity bug: replace the callback route’s strict full-quote handler so email-free callback leads can be delivered and tracked as callbacks on Cloudflare
+- [x] Release 1 messaging: add accessible mobile Text alongside Call, WhatsApp and Quote with real secondary conversion labels and no primary tap inflation
+- [x] Release 1 conversion bug: stop referral submissions from sending an invalid Google Ads conversion label; keep referral analytics non-biddable
+- [x] Release 1 guide: add a Cloudflare-compatible delivered guide route and fire guide tracking only after confirmed delivery or truthful fallback
+- [x] Release 1 SEO: reduce sitemap to indexable routes only, remove self-review schema and add route-specific Cloudflare title/description/canonical/robots output
+- [x] Release 1 SEO bug: define and test the canonical site origin used by the edge manifest so route metadata cannot throw at runtime
+- [x] Release 1 SEO bug: move sitemap and HTML metadata rewrites into the Worker’s actual GET/static response path so they are not bypassed by the early cache return
+- [x] Release 1 SEO bug: constrain the paid-page sitemap filter so it removes only 76 `/lp/` blocks and preserves all 202 valid public URLs
+- [x] Release 1 content integrity: remove unverified paid-page testimonials and qualify unsupported absolute compliance, guarantee or property-value claims
+- [x] Full lead session: verify the complete suite, guarded build, Worker, mobile/desktop UX, candidate form runtimes, Ads goal read-back and SEO output before publication
+- [x] Full lead session: publish only after explicit approval, retain rollback and monitor genuine Gmail/Jotform leads against Google Ads conversions
+- [ ] Release 1 concurrent-change repair: restore the previously approved external Trade Partners links in desktop/mobile navigation and footer without adding partner services, customer-data sharing, trade advertising or quote conversions
 - [x] CCG Trade Partner portal release: run the public site partner-link tests, full suite, TypeScript, guarded production build, and quote-route release checks from commit `9c3a79e`.
 - [x] CCG Trade Partner portal release: direct-upload only the verified `dist/public` artifact to Cloudflare Pages project `concrete-concepts-group`, retaining canonical deployment `65d0dde5-f4ea-4cfe-8a6e-54fcc7f57272` as the immediate rollback point.
 - [x] CCG Trade Partner portal release: verify live desktop, mobile, and footer Trade Partners links target `https://partners.concreteconceptsgroup.com/partners` without a quote-conversion callback, and automatically roll back if either quote route fails.

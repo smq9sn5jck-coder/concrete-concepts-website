@@ -1,7 +1,7 @@
 /*
   CallbackPopup: "Request a Callback" popup for suburb landing pages
   Appears after 30 seconds on page, slides up from bottom-right
-  Collects name + phone, submits via tRPC quote mutation
+  Collects name + phone, submits via the dedicated callback mutation
   Brand-consistent: gold accent, charcoal, clean typography
 */
 import { useState, useEffect, useCallback, useRef } from "react";
@@ -9,8 +9,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Phone, X, CheckCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/lib/trpc";
-import { submitFormFallback } from "@/lib/formFallback";
-import { trackQuoteConversion } from "@/components/ConversionTracking";
+import { submitCallbackFallback } from "@/lib/formFallback";
+import { trackCallbackConversion } from "@/components/ConversionTracking";
 import { useLeadSource } from "@/hooks/useLeadSource";
 import {
   assessSubmissionSignals,
@@ -35,10 +35,10 @@ export default function CallbackPopup({ suburbName, delay = 30000 }: CallbackPop
   const [website, setWebsite] = useState("");
   const formStartedAt = useRef(Date.now());
 
-  const submitQuote = trpc.quote.submit.useMutation({
+  const submitCallback = trpc.callback.submit.useMutation({
     onSuccess: () => {
       setSubmitted(true);
-      trackQuoteConversion({ phone: phone.trim() });
+      trackCallbackConversion({ phone: phone.trim() });
     },
     onError: async (mutationError) => {
       if (mutationError.data?.code === "BAD_REQUEST" || mutationError.data?.code === "TOO_MANY_REQUESTS") {
@@ -46,18 +46,18 @@ export default function CallbackPopup({ suburbName, delay = 30000 }: CallbackPop
         return;
       }
       try {
-        const result = await submitFormFallback({
+        const result = await submitCallbackFallback({
           name: name.trim(),
           phone: phone.trim(),
-          service: `Callback Request (${suburbName} page)`,
           suburb: suburbName,
+          page: window.location.pathname,
           source: "callback-popup",
           website,
           formStartedAt: formStartedAt.current,
         });
         if (result.success) {
           setSubmitted(true);
-          trackQuoteConversion({ phone: phone.trim() });
+          trackCallbackConversion({ phone: phone.trim() });
         } else {
           setError("Your email app has opened. Please press Send to complete the enquiry.");
         }
@@ -110,13 +110,11 @@ export default function CallbackPopup({ suburbName, delay = 30000 }: CallbackPop
         return;
       }
 
-      submitQuote.mutate({
+      submitCallback.mutate({
         name: name.trim(),
         phone: phoneValidation.normalized,
-        email: "callback@request.com", // placeholder — phone callback
         suburb: serviceArea.normalized,
-        service: "Callback Request",
-        details: `Callback requested from ${suburbName} suburb page popup.`,
+        page: window.location.pathname,
         website,
         formStartedAt: formStartedAt.current,
         leadSource: leadSource.leadSource || "suburb-popup",
@@ -131,7 +129,7 @@ export default function CallbackPopup({ suburbName, delay = 30000 }: CallbackPop
         landingPage: leadSource.landingPage || undefined,
       });
     },
-    [name, phone, suburbName, submitQuote, leadSource, website]
+    [name, phone, suburbName, submitCallback, leadSource, website]
   );
 
   if (dismissed || !visible) return null;
@@ -234,11 +232,11 @@ export default function CallbackPopup({ suburbName, delay = 30000 }: CallbackPop
 
                 <Button
                   type="submit"
-                  disabled={submitQuote.isPending}
+                  disabled={submitCallback.isPending}
                   className="w-full bg-brand-gold hover:bg-brand-gold-dark text-brand-charcoal font-bold py-2.5 text-sm tracking-wide uppercase transition-all"
                   style={{ fontFamily: "var(--font-body)" }}
                 >
-                  {submitQuote.isPending ? (
+                  {submitCallback.isPending ? (
                     <Loader2 className="w-4 h-4 animate-spin" />
                   ) : (
                     <>

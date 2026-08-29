@@ -61,12 +61,13 @@ describe("SEO prerender meta tags", () => {
 describe("CallbackPopup conversion tracking", () => {
   const callbackPopup = readFile("client/src/components/CallbackPopup.tsx");
 
-  it("imports trackQuoteConversion", () => {
-    expect(callbackPopup).toContain("trackQuoteConversion");
+  it("imports trackCallbackConversion", () => {
+    expect(callbackPopup).toContain("trackCallbackConversion");
   });
 
-  it("fires trackQuoteConversion on success", () => {
-    expect(callbackPopup).toContain("trackQuoteConversion(");
+  it("fires only the callback conversion on success", () => {
+    expect(callbackPopup).toContain("trackCallbackConversion(");
+    expect(callbackPopup).not.toContain("trackQuoteConversion");
   });
 });
 
