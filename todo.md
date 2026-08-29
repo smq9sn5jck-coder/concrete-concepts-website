@@ -864,3 +864,12 @@
 - [x] CCG Trade Partner portal release: make the pre-existing Google Ads report tests deterministic by arranging their own Windsor/Resend conditions instead of depending on live shell secrets or external API state, then rerun the complete suite.
 - [x] CCG Trade Partner portal release: correct the direct-upload manifest to Wrangler-compatible leading-slash paths, finalize the uploaded BLAKE3 hashes, and prove the artifact on a preview deployment before any second production attempt.
 - [x] CCG Trade Partner portal release: record failed deployment `aefdfd60-41aa-4a07-abc5-dc2bde73553f`, automatic rollback to `65d0dde5-f4ea-4cfe-8a6e-54fcc7f57272`, stale apex cache purge, and successful post-rollback apex/`www` quote-route verification.
+- [x] Same-day no-lead recheck: establish the exact Brisbane-time window and verify canonical homepage, five-step quote route and live delivery endpoints without submitting a lead
+- [x] Same-day no-lead recheck: measure today’s Google Ads impressions, clicks, spend and genuine submitted-quote conversion signals without changing campaign settings
+- [x] Same-day no-lead recheck: reconcile today’s CCG Gmail and Jotform receipts, excluding labelled tests, replies, duplicates and older thread matches
+- [x] Same-day no-lead recheck: identify the evidence-based limiting factor and report the safest next action in plain English
+- [x] Search budget review: capture the rebuilt Search campaign’s live budget, bidding, goal, location, keyword and recent performance baseline without changing settings
+- [x] Search budget review: analyse keyword and search-term intent, clicks, cost and genuine submitted-quote conversion performance
+- [x] Search budget review: recommend one exact daily budget with evidence and obtain director confirmation before changing spend
+- [x] Search budget review: apply only the confirmed Search budget and independently read back all protected settings
+- [x] Search budget review: document the mutation, rollback amount and monitoring thresholds in plain English
