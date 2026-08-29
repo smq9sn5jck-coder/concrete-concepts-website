@@ -857,6 +857,7 @@
 - [x] Full lead session: verify the complete suite, guarded build, Worker, mobile/desktop UX, candidate form runtimes, Ads goal read-back and SEO output before publication
 - [x] Full lead session: publish only after explicit approval, retain rollback and monitor genuine Gmail/Jotform leads against Google Ads conversions
 - [x] Release 1 concurrent-change repair: restore the previously approved external Trade Partners links in desktop/mobile navigation and footer without adding partner services, customer-data sharing, trade advertising or quote conversions
+- [x] Release 1 desktop navigation repair: keep all approved navigation, Trade Partners and quote actions readable and reachable without wrapping, clipping or banner overlap at 1280×720 while preserving conversion behavior
 - [x] CCG Trade Partner portal release: run the public site partner-link tests, full suite, TypeScript, guarded production build, and quote-route release checks from commit `9c3a79e`.
 - [x] CCG Trade Partner portal release: direct-upload only the verified `dist/public` artifact to Cloudflare Pages project `concrete-concepts-group`, retaining canonical deployment `65d0dde5-f4ea-4cfe-8a6e-54fcc7f57272` as the immediate rollback point.
 - [x] CCG Trade Partner portal release: verify live desktop, mobile, and footer Trade Partners links target `https://partners.concreteconceptsgroup.com/partners` without a quote-conversion callback, and automatically roll back if either quote route fails.
