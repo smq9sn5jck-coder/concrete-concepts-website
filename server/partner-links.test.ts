@@ -19,6 +19,12 @@ describe("CCG partner portal links", () => {
     expect(navbar).not.toContain("https://concreteconceptsgroup.com/trade-partners");
   });
 
+  it("keeps the fixed mobile menu vertically scrollable on phone screens", () => {
+    expect(navbar).toMatch(
+      /fixed inset-0 z-40 bg-brand-charcoal pt-24[^"\n]*overflow-y-auto/,
+    );
+  });
+
   it("keeps a restrained partner-program link in the global footer", () => {
     expect(footer).toContain(portalUrl);
     expect(footer).not.toContain("https://concreteconceptsgroup.com/trade-partners");
