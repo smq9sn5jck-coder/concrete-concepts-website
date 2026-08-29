@@ -885,6 +885,7 @@
 - [x] Retaining-wall landing release: pass focused and deterministic tests, TypeScript, guarded production build and Worker syntax checks
 - [x] Retaining-wall landing release: publish the verified site candidate with rollback protection and complete production monitoring
 - [x] Retaining-wall Search routing: create a dedicated retaining-wall ad group and matching RSA only after site acceptance
+- [x] Retaining-wall Search routing: run automatic approval checks for up to 24 hours and keep the existing keyword serving until the final RSA is approved
 - [ ] Retaining-wall Search routing: route only the retaining-wall ad group to the verified paid page while preserving the $60 Search budget, 300% target ROAS, Presence-only targeting and quote-only primary goal
 - [ ] Retaining-wall Search routing: independently read back the new ad group, final URL, keyword, negatives, budgets, bidding, geography and conversion classifications
 - [ ] Retaining-wall landing release: align verified source and evidence to GitHub, checkpoint the accepted state and document 7/14/30-day monitoring gates

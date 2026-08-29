@@ -15,6 +15,8 @@ All live operations must first pass `validateOnly: true`. Protected campaign bud
 
 Google’s `GoogleAdsService.Mutate` supports grouped operations across different resource types and temporary negative resource IDs. The new ad group, its exact keyword and its RSA can therefore be validated and created as one all-or-nothing package. Temporary names must be defined before they are referenced and cannot be reused. The dedicated package will initially create the ad group **paused** so it cannot compete with the serving mixed ad group while the new RSA is under policy review. Routing will switch only after an independent readback confirms the new ad is approved and eligible.
 
+The first RSA’s only disapproved asset was the description containing `0424 463 268`, classified by Google as `PHONE_NUMBER_IN_AD_TEXT`. No routing switch had occurred. A replacement RSA removed the phone number and used: `Start online to discuss a concrete retaining wall for your Brisbane or SEQ property.` The replacement and pause of the superseded RSA were both validated before the live two-operation mutation. Replacement RSA resource: `customers/6553093174/adGroupAds/198409264974~822669462910`. Superseded paused RSA: `customers/6553093174/adGroupAds/198409264974~822626109720`.
+
 ## References
 
 [1]: https://developers.google.com/google-ads/api/docs/campaigns/create-ad-groups "Create Ad Groups | Google Ads API"
