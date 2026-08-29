@@ -49,7 +49,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed left-0 right-0 z-50 transition-all duration-500 ${location === "/" && !scrolled ? "top-[60px] sm:top-10" : "top-0"} ${
           scrolled
             ? "bg-white/95 backdrop-blur-md shadow-[0_1px_0_0_rgba(0,0,0,0.06)]"
             : "bg-transparent"
@@ -73,7 +73,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden 2xl:flex items-center gap-4 whitespace-nowrap">
             {navLinks.map((link) => (
               'isRoute' in link && link.isRoute ? (
                 <Link key={link.href} href={link.href}>
@@ -111,7 +111,7 @@ export default function Navbar() {
           </div>
 
           {/* Desktop CTA */}
-          <div className="hidden lg:flex items-center gap-4">
+          <div className="hidden 2xl:flex items-center gap-3 whitespace-nowrap">
             <a
               href="https://partners.concreteconceptsgroup.com/partners"
               className={`text-sm font-semibold tracking-wide uppercase transition-colors duration-300 ${
@@ -136,7 +136,7 @@ export default function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className={`lg:hidden p-2 transition-colors ${
+            className={`2xl:hidden p-2 transition-colors ${
               scrolled ? "text-brand-charcoal" : "text-white"
             }`}
             aria-label="Toggle menu"
