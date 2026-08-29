@@ -873,3 +873,18 @@
 - [x] Search budget review: recommend one exact daily budget with evidence and obtain director confirmation before changing spend
 - [x] Search budget review: apply only the confirmed Search budget and independently read back all protected settings
 - [x] Search budget review: document the mutation, rollback amount and monitoring thresholds in plain English
+- [x] Retaining-wall quality audit: map the exact keyword, live ad assets, search terms, final URL and device/network delivery without changing Ads
+- [x] Retaining-wall quality audit: inspect the actual landing page at mobile and desktop sizes for render health, speed, metadata and technical relevance
+- [x] Retaining-wall quality audit: evaluate ad-to-page message match, retaining-wall content depth, trust signals, CTA clarity and conversion friction
+- [x] Retaining-wall quality audit: rank fixes by likely quality-score and lead impact with measurable acceptance criteria
+- [x] Retaining-wall quality audit: deliver an approval-ready implementation plan without changing the production site or campaign
+- [x] Retaining-wall landing release: capture the current site, Cloudflare and Search campaign rollback baselines before implementation
+- [x] Retaining-wall landing release: add failing contracts for GCLID/UTM persistence, mobile form order, semantic labels and sticky Quote targeting
+- [x] Retaining-wall landing release: implement attribution-safe quote handoff, mobile-first form order, form-targeted Quote action and accessible controls
+- [x] Retaining-wall landing release: verify primary quote conversion integrity, AU mobile/SEQ qualification, paid-page noindex/canonical/sitemap controls and responsive UX
+- [x] Retaining-wall landing release: pass focused and deterministic tests, TypeScript, guarded production build and Worker syntax checks
+- [x] Retaining-wall landing release: publish the verified site candidate with rollback protection and complete production monitoring
+- [x] Retaining-wall Search routing: create a dedicated retaining-wall ad group and matching RSA only after site acceptance
+- [ ] Retaining-wall Search routing: route only the retaining-wall ad group to the verified paid page while preserving the $60 Search budget, 300% target ROAS, Presence-only targeting and quote-only primary goal
+- [ ] Retaining-wall Search routing: independently read back the new ad group, final URL, keyword, negatives, budgets, bidding, geography and conversion classifications
+- [ ] Retaining-wall landing release: align verified source and evidence to GitHub, checkpoint the accepted state and document 7/14/30-day monitoring gates
