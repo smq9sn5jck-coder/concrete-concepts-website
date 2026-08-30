@@ -37,6 +37,34 @@ const CORE_METADATA = {
     title: "Free Homeowner's Guide to Concreting | Concrete Concepts Group",
     description: "Download CCG's Brisbane homeowner guide covering concrete finishes, project planning, costs, approvals, maintenance and common mistakes.",
   },
+  "/calculator": {
+    title: "Concrete Cost Calculator Brisbane | CCG",
+    description: "Estimate a starting range for a Brisbane concrete project, compare common options and request a detailed site-specific quote from Concrete Concepts Group.",
+  },
+  "/faq": {
+    title: "Concreting FAQs Brisbane | Concrete Concepts Group",
+    description: "Find practical answers about Brisbane concrete quotes, preparation, access, finishes, curing, approvals, maintenance and project planning.",
+  },
+  "/finishes": {
+    title: "Concrete Finishes Brisbane | Compare Options with CCG",
+    description: "Compare plain, coloured, exposed aggregate, honed and patterned concrete finishes for Brisbane and South East Queensland projects.",
+  },
+  "/gallery/before-after": {
+    title: "Concrete Before & After Gallery Brisbane | CCG",
+    description: "View before-and-after examples of concrete driveways, slabs, paths, patios and outdoor areas completed across Brisbane and surrounding SEQ.",
+  },
+  "/projects": {
+    title: "Brisbane Concrete Projects | Concrete Concepts Group",
+    description: "Explore selected Concrete Concepts Group driveway, slab, path, patio, pool surround and retaining wall projects across Brisbane and SEQ.",
+  },
+  "/referral": {
+    title: "Concrete Project Referrals Brisbane | CCG",
+    description: "Read how Concrete Concepts Group handles suitable concrete project referrals across Brisbane and surrounding South East Queensland areas.",
+  },
+  "/reviews": {
+    title: "Concrete Concepts Group Reviews | Brisbane Projects",
+    description: "Read published customer feedback about Concrete Concepts Group projects and request a detailed quote for concrete work in Brisbane and SEQ.",
+  },
   "/privacy": {
     title: "Privacy Policy | Concrete Concepts Group",
     description: "Read how Concrete Concepts Group handles website enquiries and customer information.",
@@ -57,6 +85,11 @@ const SERVICE_METADATA = {
   "/services/footpaths-brisbane": ["Concrete Footpaths Brisbane | CCG", "Request a quote for concrete footpaths, pedestrian access and property pathways across Brisbane and surrounding SEQ."],
   "/services/concrete-steps-stairs": ["Concrete Steps & Stairs Brisbane | CCG", "Plan concrete steps and stairs for sloping, split-level or raised Brisbane properties with site-specific quote information."],
   "/services/concrete-repairs-brisbane": ["Concrete Repairs Brisbane | CCG", "Request an assessment for suitable concrete repairs across Brisbane and SEQ, including damaged paths, slabs, edges and surfaces."],
+  "/services/concrete-patios-brisbane": ["Concrete Patios Brisbane | Detailed Quotes from CCG", "Plan a Brisbane concrete patio or outdoor entertaining area with site-specific access, preparation, drainage and finish details for a CCG quote."],
+  "/services/crossover-permits-brisbane": ["Driveway Crossover Permits Brisbane | CCG", "Understand common Brisbane driveway crossover planning and permit considerations, then request a detailed site-specific quote from CCG."],
+  "/services/excavation-brisbane": ["Site Excavation Brisbane | Concrete Concepts Group", "Request a detailed quote for suitable excavation, site clearing and concrete preparation work across Brisbane and surrounding SEQ."],
+  "/services/pool-surrounds-brisbane": ["Concrete Pool Surrounds Brisbane | CCG", "Plan a Brisbane concrete pool surround with practical finish, access, drainage and site-preparation information for a detailed CCG quote."],
+  "/services/shed-slabs-brisbane": ["Concrete Shed Slabs Brisbane | CCG Quotes", "Request a detailed quote for a Brisbane or SEQ shed slab with dimensions, site access, preparation and intended-use information."],
 };
 
 function titleCaseSlug(slug) {

@@ -7,6 +7,13 @@ function readFile(relativePath: string): string {
   return readFileSync(resolve(__dirname, "..", relativePath), "utf-8");
 }
 
+function createConfirmedD1() {
+  const run = vi.fn(async () => ({ success: true, meta: { changes: 1 } }));
+  const bind = vi.fn(() => ({ run }));
+  const prepare = vi.fn(() => ({ bind }));
+  return { database: { prepare }, prepare, bind, run };
+}
+
 describe("Release 1 lead classification", () => {
   const callbacks = [
     "client/src/components/MiniQuoteForm.tsx",
@@ -113,6 +120,7 @@ describe("Release 1 Worker lead delivery runtime", () => {
 
   it("delivers an email-free callback through owner email, backup and Jotform without quote semantics", async () => {
     const requests: Array<{ url: string; body: string }> = [];
+    const d1 = createConfirmedD1();
     vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       requests.push({ url: String(input), body: String(init?.body ?? "") });
       return new Response('{"ok":true}', { status: 200, headers: { "Content-Type": "application/json" } });
@@ -134,8 +142,8 @@ describe("Release 1 Worker lead delivery runtime", () => {
       }),
     }), {
       RESEND_API_KEY: "test-resend-key",
-      MANUS_BACKEND_URL: "https://backup.example.test",
       JOTFORM_FORM_ID: "test-jotform-id",
+      LEAD_BACKUP_DB: d1.database,
     }, { waitUntil: (_promise: Promise<unknown>) => undefined });
 
     expect(response.status).toBe(200);
@@ -146,12 +154,14 @@ describe("Release 1 Worker lead delivery runtime", () => {
       channels: { email: "sent", sheets: "logged", jotform: "logged" },
     });
     expect(requests.some(request => request.url.includes("api.resend.com") && request.body.includes("Callback Request"))).toBe(true);
-    expect(requests.some(request => request.url.includes("/api/webhooks/lead-capture") && request.body.includes('"service":"Callback Request"'))).toBe(true);
+    expect(d1.prepare).toHaveBeenCalledOnce();
+    expect(d1.bind.mock.calls[0]).toContain("Callback Request");
     expect(requests.some(request => request.url.includes("submit.jotform.com") && request.body.includes("Callback+Request"))).toBe(true);
   });
 
   it("delivers the guide to owner, customer and backup before returning success", async () => {
     const requests: Array<{ url: string; body: string }> = [];
+    const d1 = createConfirmedD1();
     vi.stubGlobal("fetch", vi.fn(async (input: string | URL | Request, init?: RequestInit) => {
       requests.push({ url: String(input), body: String(init?.body ?? "") });
       return new Response('{"ok":true}', { status: 200, headers: { "Content-Type": "application/json" } });
@@ -172,7 +182,7 @@ describe("Release 1 Worker lead delivery runtime", () => {
       }),
     }), {
       RESEND_API_KEY: "test-resend-key",
-      MANUS_BACKEND_URL: "https://backup.example.test",
+      LEAD_BACKUP_DB: d1.database,
     }, { waitUntil: (_promise: Promise<unknown>) => undefined });
 
     expect(response.status).toBe(200);
@@ -185,7 +195,8 @@ describe("Release 1 Worker lead delivery runtime", () => {
     expect(requests.filter(request => request.url.includes("api.resend.com"))).toHaveLength(2);
     expect(requests.some(request => request.body.includes('"to":["info@concreteconceptsgroup.com"]'))).toBe(true);
     expect(requests.some(request => request.body.includes('"to":["runtime-guide@example.com"]'))).toBe(true);
-    expect(requests.some(request => request.url.includes("/api/webhooks/lead-capture") && request.body.includes('"service":"Homeowner Guide Download"'))).toBe(true);
+    expect(d1.prepare).toHaveBeenCalledOnce();
+    expect(d1.bind.mock.calls[0]).toContain("Homeowner Guide Download");
   });
 });
 

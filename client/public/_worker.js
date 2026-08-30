@@ -740,35 +740,56 @@ async function handleTimelapse(env, input) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// LEAD BACKUP: Manus Backend (saves to Database + Google Sheets)
+// LEAD BACKUP: Cloudflare D1 (verified database record)
 // ═══════════════════════════════════════════════════════════════
 async function backupToManusBackend(env, formData) {
-  const backendUrl = env.MANUS_BACKEND_URL || "https://concreteconceptsgroup.manus.space";
+  if (!env.LEAD_BACKUP_DB?.prepare) {
+    console.error("Cloudflare D1 lead backup failed: LEAD_BACKUP_DB binding unavailable");
+    return null;
+  }
+
+  const service = String(formData.service || "");
+  const leadType = service === "Callback Request"
+    ? "callback"
+    : service === "Homeowner Guide Download"
+      ? "guide"
+      : "quote";
+  const recordId = `lead_${crypto.randomUUID()}`;
+  const requestedTimestamp = new Date(formData.timestamp || Date.now());
+  const createdAt = Number.isNaN(requestedTimestamp.getTime())
+    ? new Date().toISOString()
+    : requestedTimestamp.toISOString();
+
   try {
-    const response = await fetch(`${backendUrl}/api/webhooks/lead-capture`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        timestamp: new Date().toISOString(),
-        name: formData.name || "",
-        phone: formData.phone || "",
-        email: formData.email || "",
-        service: formData.service || "",
-        suburb: formData.suburb || "",
-        details: formData.details || "",
-        leadSource: formData.leadSource || "Direct",
-        photoUrls: formData.photoUrls || [],
-        jobBrief: formData.jobBrief || null,
-      }),
-    });
-    if (!response.ok) {
-      console.error("Manus backend backup failed:", response.status);
-      return false;
+    const result = await env.LEAD_BACKUP_DB.prepare(`
+      INSERT INTO lead_backups (
+        id, lead_type, created_at, name, phone, email, service, suburb,
+        details, lead_source, photo_urls_json, job_brief_json
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      recordId,
+      leadType,
+      createdAt,
+      String(formData.name || ""),
+      String(formData.phone || ""),
+      String(formData.email || ""),
+      service,
+      String(formData.suburb || ""),
+      String(formData.details || ""),
+      String(formData.leadSource || "Direct"),
+      JSON.stringify(Array.isArray(formData.photoUrls) ? formData.photoUrls : []),
+      formData.jobBrief ? JSON.stringify(formData.jobBrief) : null,
+    ).run();
+
+    if (result?.success !== true || Number(result?.meta?.changes) !== 1) {
+      console.error("Cloudflare D1 lead backup failed: insert was not confirmed");
+      return null;
     }
-    return true;
+
+    return { recordId };
   } catch (e) {
-    console.error("Manus backend backup failed:", e.message);
-    return false;
+    console.error("Cloudflare D1 lead backup failed:", e.message);
+    return null;
   }
 }
 
@@ -874,7 +895,7 @@ async function handleGuideSubmit(env, formData) {
   const channels = {
     email: ownerRes.status === "fulfilled" && ownerRes.value?.ok ? "sent" : "failed",
     customer: customerRes.status === "fulfilled" && customerRes.value?.ok ? "sent" : "failed",
-    sheets: manusRes.status === "fulfilled" && manusRes.value ? "logged" : "failed",
+    sheets: manusRes.status === "fulfilled" && manusRes.value?.recordId ? "logged" : "failed",
   };
   const delivered = channels.email === "sent" || channels.customer === "sent" || channels.sheets === "logged";
   return delivered
@@ -939,7 +960,7 @@ async function handleQuoteSubmit(env, formData) {
       results.email = "failed";
       console.error("Resend error:", emailRes.reason || "non-ok response");
     }
-    results.sheets = manusRes.status === "fulfilled" && manusRes.value ? "logged" : "failed";
+    results.sheets = manusRes.status === "fulfilled" && manusRes.value?.recordId ? "logged" : "failed";
     results.jotform = jotformRes.status === "fulfilled" && jotformRes.value ? "logged" : "failed";
 
     // Auto-reply to customer (non-blocking)
@@ -1041,7 +1062,7 @@ async function handleCallbackSubmit(env, formData) {
     ]);
 
     results.email = emailRes.status === "fulfilled" && emailRes.value?.ok ? "sent" : "failed";
-    results.sheets = manusRes.status === "fulfilled" && manusRes.value ? "logged" : "failed";
+    results.sheets = manusRes.status === "fulfilled" && manusRes.value?.recordId ? "logged" : "failed";
     results.jotform = jotformRes.status === "fulfilled" && jotformRes.value ? "logged" : "failed";
     const delivered = results.email === "sent" || results.sheets === "logged" || results.jotform === "logged";
     return delivered

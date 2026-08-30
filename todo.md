@@ -925,3 +925,11 @@
 - [x] Full production audit: read back Google Ads campaigns, budgets, bidding, geography, networks, search terms, URLs, exclusions and conversion-goal classifications without changing settings
 - [x] Full production audit: reconcile paid clicks and reported conversions with genuine delivered enquiries, identify the limiting factors and rank only evidence-supported fixes
 - [x] Full production audit: run focused source tests, TypeScript, guarded build, Worker syntax and final live health checks, then document the complete audit and rollback-safe recommendations
+- [x] Backup reliability repair: capture the active lead webhook, database and Cloudflare Worker baseline with a rollback point
+- [x] Backup reliability repair: add failing tests proving that an HTML HTTP 200 or a response without a created record cannot count as successful backup storage
+- [x] Backup reliability repair: require the backup endpoint to return verified JSON identifying the created record, while preserving Gmail/Resend and Jotform delivery
+- [x] Backup reliability repair: validate the detailed quote, callback and guide backup paths, then release and monitor the correction with a clearly labelled synthetic record only if passive verification is insufficient
+- [x] Twelve-page noindex correction: add failing sitemap/indexability parity tests for every affected public route
+- [x] Twelve-page noindex correction: add all 12 intended public routes to the authoritative edge SEO metadata manifest with truthful route-specific metadata
+- [x] Twelve-page noindex correction: verify sitemap, robots, canonicals, rendered headings and index directives locally and in production without changing paid landing-page noindex controls
+- [ ] Release closure: monitor both repairs, align evidence to GitHub, preserve rollback details and confirm the customer funnel and Google Ads destinations remain unchanged
