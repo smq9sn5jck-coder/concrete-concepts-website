@@ -915,3 +915,13 @@
 - [x] Legacy URL 404 audit: separate genuine outdated partner/customer links from bots, probes, malformed paths and one-off typos
 - [x] Legacy URL 404 audit: validate any redirect candidate against current customer routes, the five-step quote funnel, paid landing pages and the retained Partner Portal
 - [x] Legacy URL 404 audit: document ranked findings and recommend only redirect rules supported by repeat traffic or known historical links
+- [x] Full production audit: capture current Cloudflare deployments, domains, DNS, Worker routes, redirects and rollback baselines without changing production
+- [x] Full production audit: crawl every public sitemap URL plus core direct, legacy and paid routes for status, redirects, titles, canonicals, robots and soft 404s
+- [x] Full production audit: check all internal and external links, navigation, mobile menus, images, media and responsive layouts for broken or misleading destinations
+- [x] Full production audit: verify the detailed five-step quote funnel, AU mobile and Brisbane/SEQ qualification, photo handoff, anti-spam and primary-conversion isolation without submitting an unlabelled lead
+- [x] Full production audit: verify callback, guide, visualiser, phone, SMS and WhatsApp paths remain secondary and use the correct CCG phone number
+- [x] Full production audit: reconcile recent genuine quote/callback evidence across Gmail, Jotform and available backups without counting tests, taps or page views as leads
+- [x] Full production audit: inspect technical SEO, sitemap, robots, structured data, metadata, indexability, duplicate/thin content and legacy-domain consolidation
+- [x] Full production audit: read back Google Ads campaigns, budgets, bidding, geography, networks, search terms, URLs, exclusions and conversion-goal classifications without changing settings
+- [x] Full production audit: reconcile paid clicks and reported conversions with genuine delivered enquiries, identify the limiting factors and rank only evidence-supported fixes
+- [x] Full production audit: run focused source tests, TypeScript, guarded build, Worker syntax and final live health checks, then document the complete audit and rollback-safe recommendations
