@@ -932,4 +932,5 @@
 - [x] Twelve-page noindex correction: add failing sitemap/indexability parity tests for every affected public route
 - [x] Twelve-page noindex correction: add all 12 intended public routes to the authoritative edge SEO metadata manifest with truthful route-specific metadata
 - [x] Twelve-page noindex correction: verify sitemap, robots, canonicals, rendered headings and index directives locally and in production without changing paid landing-page noindex controls
-- [ ] Release closure: monitor both repairs, align evidence to GitHub, preserve rollback details and confirm the customer funnel and Google Ads destinations remain unchanged
+- [x] Release closure: monitor both repairs, align evidence to GitHub, preserve rollback details and confirm the customer funnel and Google Ads destinations remain unchanged
+- [ ] Google Ads budget review: confirm whether to retain the Search budget changed in the Google Ads mobile app from the approved A$60/day to A$110/day, or explicitly authorize restoration to A$60/day
