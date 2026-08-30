@@ -886,6 +886,21 @@
 - [x] Retaining-wall landing release: publish the verified site candidate with rollback protection and complete production monitoring
 - [x] Retaining-wall Search routing: create a dedicated retaining-wall ad group and matching RSA only after site acceptance
 - [x] Retaining-wall Search routing: run automatic approval checks for up to 24 hours and keep the existing keyword serving until the final RSA is approved
-- [ ] Retaining-wall Search routing: route only the retaining-wall ad group to the verified paid page while preserving the $60 Search budget, 300% target ROAS, Presence-only targeting and quote-only primary goal
-- [ ] Retaining-wall Search routing: independently read back the new ad group, final URL, keyword, negatives, budgets, bidding, geography and conversion classifications
+- [x] Retaining-wall Search routing: route only the retaining-wall ad group to the verified paid page while preserving the $60 Search budget, 300% target ROAS, Presence-only targeting and quote-only primary goal
+- [x] Retaining-wall Search routing: independently read back the new ad group, final URL, keyword, negatives, budgets, bidding, geography and conversion classifications
 - [ ] Retaining-wall landing release: align verified source and evidence to GitHub, checkpoint the accepted state and document 7/14/30-day monitoring gates
+- [x] Today’s Search traffic review: capture campaign, keyword and actual search-term metrics for the current Brisbane day without changing settings
+- [x] Today’s Search traffic review: analyse device, network, location, landing-page and genuine conversion signals
+- [x] Today’s Search traffic review: classify every reported term by local commercial intent, ambiguity and waste risk
+- [x] Today’s Search traffic review: deliver a plain-English quality verdict and approval-gated recommendations while preserving the retaining-wall review gate
+- [x] Account interference audit: map every enabled and paused campaign, ad group, budget, bidding strategy and current serving state
+- [x] Account interference audit: trace all ad, keyword, sitelink, asset-group and paid landing URLs for partner/referral/trade or cross-page leakage
+- [x] Account interference audit: verify custom goals and every conversion action remain correctly isolated as primary or secondary across campaigns
+- [x] Account interference audit: assess PMax final-URL expansion, URL exclusions, Search Display Expansion and partner/referral destination risk
+- [x] Account interference audit: deliver an evidence-based verdict and exact approval-gated corrections without changing Ads or production
+- [x] Approved interference correction: reconfirm the live Ads and scheduled retaining-wall gate baselines and prepare validate-only rollback-safe requests
+- [~] Approved interference correction: permanently remove the 84 `.org`-only PMax assets — declined in favour of reversible Option B because Google provides no validate-only removal mode; retain all automatically created assets
+- [x] Approved interference correction: add exact PMax exclusions for legacy domains plus `/admin`, `/referral`, `/survey/`, `/my-quote`, `/privacy`, `/terms` and `/lp/` while preserving useful service, area, calculator and quote routes
+- [x] Approved interference correction: disable only rebuilt Search Content Network expansion while preserving the $60 budget, 300% target ROAS, Search Network, keywords, negatives, geography and quote-only goal
+- [x] Approved interference correction: independently read back PMax asset groups, URL controls, Search network settings, budgets, geography, goals and the retaining-wall review gate
+- [x] Approved interference correction: document every mutation, rollback path and monitoring result in plain English
