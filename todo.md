@@ -911,3 +911,7 @@
 - [x] Main-domain partner-content incident: apply only the smallest rollback-safe correction while preserving the five-step quote funnel and separate partner portal
 - [x] Main-domain partner-content incident: verify customer homepage, quote route, paid landing pages, partner portal and Google Ads destinations across all hosts
 - [x] Main-domain partner-content incident: monitor the correction, align source/evidence, checkpoint and provide a plain-English explanation
+- [x] Legacy URL 404 audit: collect recent Cloudflare and application 404 evidence without changing production
+- [x] Legacy URL 404 audit: separate genuine outdated partner/customer links from bots, probes, malformed paths and one-off typos
+- [x] Legacy URL 404 audit: validate any redirect candidate against current customer routes, the five-step quote funnel, paid landing pages and the retained Partner Portal
+- [x] Legacy URL 404 audit: document ranked findings and recommend only redirect rules supported by repeat traffic or known historical links
