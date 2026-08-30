@@ -904,3 +904,10 @@
 - [x] Approved interference correction: disable only rebuilt Search Content Network expansion while preserving the $60 budget, 300% target ROAS, Search Network, keywords, negatives, geography and quote-only goal
 - [x] Approved interference correction: independently read back PMax asset groups, URL controls, Search network settings, budgets, geography, goals and the retaining-wall review gate
 - [x] Approved interference correction: document every mutation, rollback path and monitoring result in plain English
+- [x] Main-domain partner-content incident: capture the current Cloudflare deployment, aliases, DNS, redirects and screenshot-reported mobile state before changing production
+- [x] Main-domain partner-content incident: reproduce apex, www, partner-subdomain and Trade Partners link behavior with raw HTTP and a true mobile browser
+- [x] Main-domain partner-content incident: identify whether the cause is deployment aliasing, DNS, redirect rules, cache or an incorrect navigation destination
+- [x] Main-domain partner-content incident: preserve the newer `partners.` portal and redirect both `concreteconceptsgroup.com/trade-partners*` and `trade.concreteconceptsgroup.com/*` to it with a reversible Cloudflare change
+- [x] Main-domain partner-content incident: apply only the smallest rollback-safe correction while preserving the five-step quote funnel and separate partner portal
+- [x] Main-domain partner-content incident: verify customer homepage, quote route, paid landing pages, partner portal and Google Ads destinations across all hosts
+- [x] Main-domain partner-content incident: monitor the correction, align source/evidence, checkpoint and provide a plain-English explanation
