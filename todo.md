@@ -945,3 +945,8 @@
 - [x] Quote success sharing: implement a secondary Share CCG action only on the verified-success screen
 - [x] Quote success sharing: verify mobile and desktop behavior, clipboard failure handling, accessibility and unchanged quote delivery contracts
 - [x] Quote success sharing: release to Cloudflare with rollback protection, monitor production and align source/evidence to GitHub
+- [x] Quote success sharing 404 incident: reproduce the reported failure across apex, www, stable Pages and immutable deployment URLs
+- [x] Quote success sharing 404 incident: identify whether deployment routing, SPA fallback, cache or an incorrect shared URL caused the 404
+- [x] Quote success sharing 404 incident: restore the immediate accepted rollback if any customer quote route is broken — no rollback required because every customer route remained healthy
+- [x] Quote success sharing 404 incident: verify homepage, five-step quote funnel, paid landing, partner redirect and shared homepage destination on mobile and desktop
+- [ ] Quote success sharing 404 incident: monitor, align evidence, checkpoint and report the exact working link in plain English
