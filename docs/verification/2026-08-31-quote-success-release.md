@@ -21,4 +21,6 @@ Immediate raw acceptance returned HTTP 200 with the expected titles for the immu
 
 The closing production sample ran at `2026-08-31T02:59:42Z`, more than 15 minutes after the upload. The immutable quote route, apex and www quote routes, customer homepage, retaining-wall paid page, public sitemap and retained Partner Portal all returned HTTP 200. No production lead was submitted, and no Google Ads campaign, budget, bidding, location or conversion-goal setting changed.
 
+A final corrected production proof explicitly selected `Not sure — measure on site`, intercepted the single `quote.submit` request, blocked advertising network endpoints and replaced browser tracking functions with local collectors before submission. It returned `submitRequests: 1`, focused `quote-success-heading`, one status region, one success heading, the personalised thank-you, SMS summary, all three next steps, `tel:0424463268`, and equal 390-pixel viewport and scroll widths. Three funnel/tracking calls were captured locally and none left the browser; no email, Jotform submission, D1 record or external conversion request was created.
+
 **Release verdict:** accepted. Rollback remains the prior Cloudflare Pages production deployment `09a1e236-1c78-45a9-98b2-b6af353c1644`.
