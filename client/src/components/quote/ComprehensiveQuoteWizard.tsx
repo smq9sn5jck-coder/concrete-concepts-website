@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import QuoteSuccessShare from "./QuoteSuccessShare";
 import { trpc } from "@/lib/trpc";
 import { submitFormFallback } from "@/lib/formFallback";
 import {
@@ -587,6 +588,7 @@ export default function ComprehensiveQuoteWizard() {
             <Phone aria-hidden="true" className="mr-2 h-5 w-5" />
             Need help sooner? Call 0424 463 268
           </a>
+          <QuoteSuccessShare />
           <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">You can safely close this page. A confirmation copy is also sent when email delivery is available.</p>
         </div>
       </motion.section>

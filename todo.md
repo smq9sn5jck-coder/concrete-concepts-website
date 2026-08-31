@@ -940,3 +940,8 @@
 - [x] Quote success experience: verify keyboard/screen-reader semantics, mobile/desktop layout, retry/error separation and unchanged Gmail/Jotform/D1 delivery contracts
 - [x] Quote success experience: release to Cloudflare with rollback protection, monitor production and align source/evidence to GitHub
 - [x] Quote success Option A: show an animated green check, “Quote request received”, personalised thank-you, preferred-contact summary, three next steps and the CCG Call button after verified delivery
+- [x] Quote success sharing: choose a clear share destination and preserve the receipt, Call action and single primary-conversion behavior
+- [x] Quote success sharing: add failing tests for native Web Share, copy-link fallback, accessible feedback and no lead/conversion inflation
+- [x] Quote success sharing: implement a secondary Share CCG action only on the verified-success screen
+- [x] Quote success sharing: verify mobile and desktop behavior, clipboard failure handling, accessibility and unchanged quote delivery contracts
+- [ ] Quote success sharing: release to Cloudflare with rollback protection, monitor production and align source/evidence to GitHub
