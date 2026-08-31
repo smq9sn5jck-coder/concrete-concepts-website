@@ -934,3 +934,9 @@
 - [x] Twelve-page noindex correction: verify sitemap, robots, canonicals, rendered headings and index directives locally and in production without changing paid landing-page noindex controls
 - [x] Release closure: monitor both repairs, align evidence to GitHub, preserve rollback details and confirm the customer funnel and Google Ads destinations remain unchanged
 - [x] Google Ads budget review: director confirmed the Google Ads mobile-app Search budget change from A$60/day to A$110/day should be retained; no Ads mutation required
+- [x] Quote success experience: document the current post-submit state and preserve five-step validation, verified delivery and single primary-conversion behavior
+- [x] Quote success experience: add failing tests for an accessible confirmation heading, receipt message, next steps, reduced-motion support and no duplicate conversion firing
+- [x] Quote success experience: implement the responsive confirmation state and restrained animation only after the server confirms successful delivery
+- [x] Quote success experience: verify keyboard/screen-reader semantics, mobile/desktop layout, retry/error separation and unchanged Gmail/Jotform/D1 delivery contracts
+- [x] Quote success experience: release to Cloudflare with rollback protection, monitor production and align source/evidence to GitHub
+- [x] Quote success Option A: show an animated green check, “Quote request received”, personalised thank-you, preferred-contact summary, three next steps and the CCG Call button after verified delivery

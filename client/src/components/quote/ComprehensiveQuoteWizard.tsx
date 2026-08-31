@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,6 +11,7 @@ import {
   ImagePlus,
   Loader2,
   MapPin,
+  Phone,
   Ruler,
   ShieldCheck,
   Trash2,
@@ -139,6 +140,12 @@ const inputClass =
   "w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-base text-slate-900 outline-none transition focus:border-brand-yellow focus:ring-2 focus:ring-brand-yellow/25";
 const labelClass = "mb-2 block text-sm font-bold text-slate-800";
 
+const PREFERRED_CONTACT_LABELS: Record<NonNullable<QuoteDraftData["preferredContact"]>, string> = {
+  sms: "SMS",
+  phone: "phone",
+  email: "email",
+};
+
 function optionalNumber(value?: string) {
   if (!value?.trim()) return undefined;
   const number = Number(value);
@@ -176,6 +183,10 @@ export default function ComprehensiveQuoteWizard() {
   const [fallbackSubmitting, setFallbackSubmitting] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const successHeadingRef = useRef<HTMLHeadingElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const customerFirstName = data.name?.trim().split(/\s+/)[0] || "there";
+  const preferredContactLabel = PREFERRED_CONTACT_LABELS[data.preferredContact ?? "sms"];
 
   useEffect(() => {
     const saved = loadQuoteDraft();
@@ -207,6 +218,15 @@ export default function ComprehensiveQuoteWizard() {
   }, [step, tracker, trafficClass]);
 
   useEffect(() => () => photos.forEach((photo) => URL.revokeObjectURL(photo.preview)), [photos]);
+
+  useEffect(() => {
+    if (!submitted) return;
+    const animationFrame = window.requestAnimationFrame(() => {
+      successHeadingRef.current?.focus();
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+    });
+    return () => window.cancelAnimationFrame(animationFrame);
+  }, [submitted, prefersReducedMotion]);
 
   const update = <K extends keyof QuoteDraftData>(key: K, value: QuoteDraftData[K]) => {
     setData((current) => ({ ...current, [key]: value }));
@@ -495,26 +515,81 @@ export default function ComprehensiveQuoteWizard() {
 
   if (submitted) {
     return (
-      <div className="mx-auto max-w-2xl rounded-3xl border border-emerald-200 bg-white p-8 text-center shadow-xl md:p-12">
-        <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-emerald-100">
-          <CheckCircle2 className="h-11 w-11 text-emerald-600" />
+      <motion.section
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-labelledby="quote-success-heading"
+        initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, y: 20, scale: 0.985 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: prefersReducedMotion ? 0 : 0.42, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto max-w-2xl overflow-hidden rounded-3xl border border-emerald-200 bg-white shadow-xl"
+      >
+        <div className="relative overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-amber-50 px-6 pb-8 pt-9 text-center sm:px-10 md:pb-10 md:pt-12">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-emerald-500 via-brand-yellow to-emerald-500" />
+          <motion.div
+            aria-hidden="true"
+            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, scale: 0.7 }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { opacity: 1, scale: [0.7, 1.08, 1] }}
+            transition={{ duration: prefersReducedMotion ? 0 : 0.58, delay: prefersReducedMotion ? 0 : 0.08 }}
+            className="relative mx-auto mb-6 flex h-24 w-24 items-center justify-center"
+          >
+            <motion.span
+              animate={prefersReducedMotion ? { opacity: 1 } : { opacity: [0.35, 0.7, 0.35], scale: [0.94, 1.12, 0.94] }}
+              transition={{ duration: prefersReducedMotion ? 0 : 1.3, repeat: prefersReducedMotion ? 0 : 1, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-full bg-emerald-200"
+            />
+            <span className="relative flex h-20 w-20 items-center justify-center rounded-full border-4 border-white bg-emerald-600 shadow-lg shadow-emerald-900/15">
+              <CheckCircle2 className="h-11 w-11 text-white" strokeWidth={2.4} />
+            </span>
+          </motion.div>
+
+          <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-emerald-700">Sent successfully</p>
+          <h2
+            ref={successHeadingRef}
+            id="quote-success-heading"
+            tabIndex={-1}
+            className="mt-2 scroll-mt-6 text-3xl font-black tracking-tight text-slate-950 outline-none sm:text-4xl"
+          >
+            Quote request received
+          </h2>
+          <p className="mx-auto mt-4 max-w-xl text-lg leading-relaxed text-slate-700">
+            Thanks, {customerFirstName}. Your detailed quote request has been sent to Concrete Concepts Group.
+          </p>
+          <div className="mx-auto mt-5 flex max-w-xl items-start gap-3 rounded-2xl border border-emerald-200 bg-white/85 p-4 text-left shadow-sm">
+            <ShieldCheck aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
+            <div>
+              <p className="font-bold text-slate-950">We have your project brief</p>
+              <p className="mt-1 text-sm leading-relaxed text-slate-600">Your measurements, site notes and uploaded photos are safely included. We'll contact you by {preferredContactLabel} using the details you provided.</p>
+            </div>
+          </div>
         </div>
-        <h2 className="mb-3 text-3xl font-bold text-slate-950">Your complete quote request is in</h2>
-        <p className="text-lg text-slate-600">
-          Thanks {data.name?.split(" ")[0]}. We received your job details and will contact you using your preferred method.
-        </p>
-        <div className="mt-6 rounded-2xl bg-slate-50 p-5 text-left text-sm text-slate-700">
-          <p className="font-bold text-slate-950">What happens next</p>
-          <p className="mt-2">We review the measurements, access notes and photos, confirm whether a site visit is required, then contact you to discuss the quote.</p>
+
+        <div className="border-t border-slate-100 px-6 py-7 sm:px-10 md:py-9">
+          <h3 className="text-center text-xl font-black text-slate-950">What happens next</h3>
+          <ol className="mx-auto mt-5 grid max-w-xl gap-3 text-left">
+            {[
+              "We review your project details",
+              "We confirm whether a site visit is needed",
+              "We contact you to discuss your quote",
+            ].map((item, index) => (
+              <li key={item} className="flex items-center gap-3 rounded-2xl bg-slate-50 px-4 py-3.5 text-sm font-semibold text-slate-800">
+                <span aria-hidden="true" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brand-yellow font-black text-slate-950">{index + 1}</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+          <a
+            href="tel:0424463268"
+            onClick={() => trackPhoneCallClick()}
+            className="mx-auto mt-7 flex min-h-12 w-full max-w-sm items-center justify-center rounded-xl bg-brand-yellow px-6 py-3.5 text-center font-black text-slate-950 shadow-lg transition hover:bg-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-yellow focus-visible:ring-offset-2"
+          >
+            <Phone aria-hidden="true" className="mr-2 h-5 w-5" />
+            Need help sooner? Call 0424 463 268
+          </a>
+          <p className="mt-4 text-center text-xs leading-relaxed text-slate-500">You can safely close this page. A confirmation copy is also sent when email delivery is available.</p>
         </div>
-        <a
-          href="tel:0424463268"
-          onClick={() => trackPhoneCallClick()}
-          className="mt-6 inline-flex items-center justify-center rounded-xl bg-brand-charcoal px-6 py-3 font-bold text-brand-yellow transition hover:bg-slate-800"
-        >
-          Need help sooner? Call 0424 463 268
-        </a>
-      </div>
+      </motion.section>
     );
   }
 
