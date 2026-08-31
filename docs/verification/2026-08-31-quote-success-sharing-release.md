@@ -1,7 +1,7 @@
 # Quote Success Sharing Release
 
 **Date:** 31 August 2026
-**Status:** Released and monitored; source alignment in progress
+**Status:** Released, monitored and source aligned
 
 ## Approved Scope
 
@@ -49,9 +49,15 @@ The intercepted submit count remained one and the captured tracking count remain
 - [x] Verify apex, www, stable Pages host and immutable deployment URL.
 - [x] Repeat the success-screen proof with network interception on the production host.
 - [x] Monitor production health for at least 15 minutes.
-- [ ] Copy only the focused source, test, design, evidence and checklist changes to the GitHub production repository, then validate and push.
-- [ ] Confirm the direct-upload Cloudflare deployment remains canonical after the GitHub push.
+- [x] Copy only the focused source, test, design, evidence and checklist changes to the GitHub production repository, then validate and push.
+- [x] Confirm the direct-upload Cloudflare deployment remains canonical after the GitHub push.
 
 ## Production Monitoring
 
 At `2026-08-31T09:53:47Z`, **16 minutes after deployment creation**, the bounded real-browser quote-route guard passed on its first attempt. Apex and www homepages and `/get-quote`, the paid retaining-wall landing, the immutable deployment `/get-quote` and the retained Trade Partners redirect all returned HTTP 200 at their expected destinations. No regression was found, so rollback was not required and deployment `87b75159-1bdf-47a9-8a1d-dfd93f4ca209` remains accepted.
+
+## Source Alignment
+
+Only the sharing component, two-line verified-success integration, sharing regression test, approved design, completed release evidence and appended checklist history were copied to `smq9sn5jck-coder/concrete-concepts-website`. The repository passed the focused suites, the complete deterministic suite, TypeScript, guarded production build, compiled share-marker checks, Worker syntax, diff hygiene and credential-keyword review. Conventional Commit **`3503d13`** (`feat(quote): add success sharing`) was pushed to `main`.
+
+Cloudflare readback after the GitHub push still reported `87b75159-1bdf-47a9-8a1d-dfd93f4ca209`, created at the original direct-upload time, as the successful canonical deployment for both customer aliases. The GitHub push therefore caused no unintended Pages release.

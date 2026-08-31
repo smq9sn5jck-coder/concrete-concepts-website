@@ -944,4 +944,4 @@
 - [x] Quote success sharing: add failing tests for native Web Share, copy-link fallback, accessible feedback and no lead/conversion inflation
 - [x] Quote success sharing: implement a secondary Share CCG action only on the verified-success screen
 - [x] Quote success sharing: verify mobile and desktop behavior, clipboard failure handling, accessibility and unchanged quote delivery contracts
-- [ ] Quote success sharing: release to Cloudflare with rollback protection, monitor production and align source/evidence to GitHub
+- [x] Quote success sharing: release to Cloudflare with rollback protection, monitor production and align source/evidence to GitHub
