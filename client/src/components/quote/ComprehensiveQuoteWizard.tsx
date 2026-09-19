@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import QuoteSuccessBooking from "./QuoteSuccessBooking";
 import QuoteSuccessShare from "./QuoteSuccessShare";
 import { trpc } from "@/lib/trpc";
 import { submitFormFallback } from "@/lib/formFallback";
@@ -181,6 +182,7 @@ export default function ComprehensiveQuoteWizard() {
   const [photos, setPhotos] = useState<QuotePhoto[]>([]);
   const [website, setWebsite] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [bookingDeliveryToken, setBookingDeliveryToken] = useState<string | null>(null);
   const [fallbackSubmitting, setFallbackSubmitting] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -437,10 +439,11 @@ export default function ComprehensiveQuoteWizard() {
   };
 
   const submitQuote = trpc.quote.submit.useMutation({
-    onSuccess: () => {
+    onSuccess: (result) => {
       clearQuoteDraft();
       tracker.submitConfirmed("primary", trafficClass);
       trackQuoteConversion({ email: data.email, phone: data.mobile, name: data.name });
+      setBookingDeliveryToken(result.bookingDeliveryToken ?? null);
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
@@ -463,6 +466,7 @@ export default function ComprehensiveQuoteWizard() {
           jobBrief,
         });
         if (!result.success) throw new Error(result.error || "Fallback delivery failed");
+        setBookingDeliveryToken(null);
         clearQuoteDraft();
         tracker.submitConfirmed("fallback", trafficClass);
         trackQuoteConversion({ email: data.email, phone: data.mobile, name: data.name });
@@ -580,6 +584,12 @@ export default function ComprehensiveQuoteWizard() {
               </li>
             ))}
           </ol>
+          <QuoteSuccessBooking
+            customerName={data.name ?? ""}
+            customerEmail={data.email ?? ""}
+            customerMobile={data.mobile ?? ""}
+            deliveryToken={bookingDeliveryToken}
+          />
           <a
             href="tel:0424463268"
             onClick={() => trackPhoneCallClick()}
