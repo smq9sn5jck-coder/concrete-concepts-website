@@ -16,6 +16,9 @@ interface Partner {
   website?: string;
 }
 
+const CCG_LOGO_URL =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-navbar_2520906a.png";
+
 const partners: Partner[] = [
   {
     name: "Grime Away Exterior Cleaning",
@@ -86,14 +89,15 @@ export default function TrustedPartners() {
                 <div className="p-8 md:p-10">
                   {/* Partner Header */}
                   <div className="flex flex-col sm:flex-row items-start gap-6 mb-6">
-                    {/* Logo placeholder with initials */}
+                    {/* CCG master-brand mark used until an approved partner logo is supplied. */}
                     <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-brand-gold/20 to-brand-gold/5 border border-brand-gold/30 flex items-center justify-center flex-shrink-0 transition-all duration-500 group-hover:from-brand-gold/30 group-hover:to-brand-gold/10">
-                      <span
-                        className="text-brand-gold text-2xl font-bold tracking-tight"
-                        style={{ fontFamily: "var(--font-heading)" }}
-                      >
-                        GA
-                      </span>
+                      <img
+                        src={CCG_LOGO_URL}
+                        alt="Concrete Concepts Group"
+                        width={90}
+                        height={60}
+                        className="h-12 w-auto object-contain"
+                      />
                     </div>
 
                     <div className="flex-1">
@@ -103,6 +107,12 @@ export default function TrustedPartners() {
                       >
                         {partner.name}
                       </h3>
+                      <span
+                        className="block text-xs text-brand-silver-light/80 uppercase tracking-[0.15em] font-semibold mb-1"
+                        style={{ fontFamily: "var(--font-body)" }}
+                      >
+                        CCG Trusted Partner
+                      </span>
                       <span
                         className="inline-block text-sm text-brand-gold uppercase tracking-[0.15em] font-semibold"
                         style={{ fontFamily: "var(--font-body)" }}
