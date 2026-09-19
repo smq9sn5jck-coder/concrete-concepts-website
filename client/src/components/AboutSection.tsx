@@ -3,44 +3,14 @@
   About: Asymmetric two-column layout with real action photo
   Stats counters, gold accents, charcoal background section
 */
-import { motion, useInView } from "framer-motion";
-import { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const TEAM_PHOTO = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-troweling_06ff9a7c.jpeg";
 
-function AnimatedCounter({ target, suffix = "" }: { target: number; suffix?: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    if (!isInView) return;
-    let start = 0;
-    const duration = 2000;
-    const increment = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [isInView, target]);
-
-  return (
-    <span ref={ref}>
-      {count}{suffix}
-    </span>
-  );
-}
-
-const stats = [
-  { value: 200, suffix: "+", label: "Projects Completed" },
-  { value: 100, suffix: "%", label: "Client Satisfaction" },
-  { value: 6, suffix: "+", label: "Years Combined Experience" },
+const businessFacts = [
+  { value: "15299707", label: "QBCC licence" },
+  { value: "Brisbane & SEQ", label: "Service area" },
+  { value: "5 steps", label: "Detailed quote flow" },
 ];
 
 export default function AboutSection() {
@@ -97,8 +67,8 @@ export default function AboutSection() {
 
             <div className="space-y-4 mb-10" style={{ fontFamily: "var(--font-body)" }}>
               <p className="text-brand-silver-light/80 text-lg leading-relaxed">
-                Concrete Concepts Group is a QBCC Licensed concreting company 
-                servicing Brisbane and all surrounding areas across South East Queensland. 
+                Concrete Concepts Group is a QBCC licensed concreting company
+                servicing Brisbane and selected areas across South East Queensland.
                 We specialise in concrete driveways, slabs, retaining walls, 
                 exposed aggregate, patios, and excavation.
               </p>
@@ -110,25 +80,24 @@ export default function AboutSection() {
                 concrete job with the same commitment to quality and professionalism.
               </p>
               <p className="text-brand-silver-light/70 leading-relaxed">
-                Based in South East Queensland, we service Brisbane and all surrounding 
-                suburbs and regions. As a QBCC Licensed concreter (Licence #15299707), 
-                we are fully insured and GST-registered — giving you complete peace of mind 
-                for your next concreting project.
+                Based in South East Queensland, we assess each project location, access,
+                measurements and scope before confirming suitability. CCG operates under
+                QBCC licence 15299707 and is GST registered.
               </p>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
-              {stats.map((stat) => (
-                <div key={stat.label}>
-                  <div className="text-3xl lg:text-4xl font-bold text-brand-gold mb-1">
-                    <AnimatedCounter target={stat.value} suffix={stat.suffix} />
+              {businessFacts.map((fact) => (
+                <div key={fact.label}>
+                  <div className="text-xl lg:text-2xl font-bold text-brand-gold mb-1">
+                    {fact.value}
                   </div>
                   <div
                     className="text-sm text-brand-silver-light/60"
                     style={{ fontFamily: "var(--font-body)" }}
                   >
-                    {stat.label}
+                    {fact.label}
                   </div>
                 </div>
               ))}

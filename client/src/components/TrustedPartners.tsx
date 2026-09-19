@@ -63,8 +63,8 @@ export default function TrustedPartners() {
             className="text-brand-silver-light/80 max-w-2xl mx-auto text-lg"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            We work alongside the best in the business to deliver complete
-            solutions for your project.
+            This section lists an established business contact for the specific
+            service described below.
           </p>
         </motion.div>
 

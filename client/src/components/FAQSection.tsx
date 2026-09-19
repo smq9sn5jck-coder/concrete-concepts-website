@@ -16,52 +16,52 @@ const faqs: FAQItem[] = [
   {
     question: "How much does a concrete driveway cost in Brisbane?",
     answer:
-      "Concrete driveway costs in Brisbane typically range from $65 to $150 per square metre, depending on the finish you choose. Standard grey concrete is the most affordable, while exposed aggregate and decorative finishes sit at the higher end. Factors like site access, slope, drainage requirements, and demolition of existing surfaces also affect the final price. We provide free, no-obligation quotes so you know exactly what to expect before any work begins.",
+      "Driveway pricing depends on dimensions, concrete thickness, reinforcement, finish, access, slope, drainage, pumping and any demolition or excavation. Use the detailed quote form to provide the site information CCG needs to assess the project and prepare a written scope.",
   },
   {
     question: "What types of concrete finishes do you offer?",
     answer:
-      "We offer a full range of concrete finishes to suit every style and budget. Our most popular options include plain (broom or steel-trowel) finish, exposed aggregate with a variety of stone blends, honed and polished concrete, coloured concrete using oxide pigments, and stamped or stencilled patterns. Each finish has different durability, slip-resistance, and maintenance characteristics — we're happy to walk you through samples and help you choose the best option for your project.",
+      "Depending on the project, options may include plain broom or trowel finishes, exposed aggregate, coloured concrete and other decorative treatments. CCG will confirm which finishes are suitable for the intended use, access, slope and maintenance requirements.",
   },
   {
     question: "How long does a concrete project take from start to finish?",
     answer:
-      "Most residential projects — driveways, patios, and paths — take between 2 to 5 days of on-site work, depending on size and complexity. After pouring, concrete needs at least 7 days of curing before light foot traffic and 28 days before vehicles can drive on it. We'll give you a clear timeline during the quoting process so you can plan accordingly. Weather can occasionally cause short delays, but we always keep you informed.",
+      "The programme depends on project size, access, preparation, reinforcement, weather, concrete supply and the selected finish. CCG confirms the proposed work sequence during quoting and provides project-specific curing and use guidance after the pour.",
   },
   {
     question: "Do I need council approval for concreting work?",
     answer:
-      "In most cases, standard residential concreting (driveways, patios, paths) does not require council approval in Brisbane. However, if your project involves changes to stormwater drainage, building near boundaries, or work on a heritage-listed property, you may need permits. Crossover (vehicle crossing) work connecting your driveway to the street typically requires council approval. We can advise you on what's needed during our initial site inspection.",
+      "Approval requirements vary by council, property and scope. Crossovers, stormwater changes, boundary work, easements and heritage controls can require additional checks. Property owners should confirm requirements with the relevant council or qualified certifier; CCG can identify project details that may need clarification.",
   },
   {
-    question: "Are you licensed and insured?",
+    question: "What licence and project documents can I review?",
     answer:
-      "Absolutely. Concrete Concepts Group is fully licensed under the Queensland Building and Construction Commission (QBCC), which means we meet strict financial and technical standards. We also carry comprehensive public liability insurance and workers' compensation coverage. This protects you, your property, and our team on every job. We're happy to provide our licence and insurance details on request.",
+      "Concrete Concepts Group operates under QBCC licence 15299707. Before accepting a quote, customers can ask the team for the proposed written scope, contract details and current licence information relevant to the project.",
   },
   {
     question: "What areas do you service?",
     answer:
-      "We service Brisbane and all surrounding areas across South East Queensland — including Ipswich, Logan, Moreton Bay, Redlands, the Gold Coast, Sunshine Coast, Caboolture, Springfield, and more. Whether you're in the inner suburbs or further out, we're happy to come to you for a free quote. If you're unsure whether your area is covered, just give us a call or submit an enquiry through our website.",
+      "CCG reviews projects across Brisbane and selected South East Queensland areas, including parts of Logan, Ipswich, Moreton Bay, Redlands and the Gold Coast. Enter the project suburb or postcode in the detailed quote so the team can confirm coverage and access suitability.",
   },
   {
     question: "How do I maintain my new concrete?",
     answer:
-      "Concrete is low-maintenance, but a little care goes a long way. We recommend sealing your concrete every 2 to 3 years to protect against staining, moisture, and UV damage. Regular sweeping and occasional pressure washing will keep it looking fresh. Avoid using harsh chemicals or de-icing salts. For exposed aggregate, a quality penetrating sealer will enhance the stone colour and provide long-lasting protection. We provide aftercare instructions with every completed project.",
+      "Maintenance depends on the concrete mix, finish, exposure and any sealer used. Follow the project-specific curing and aftercare information supplied for the finished surface, and ask before using pressure washing, chemicals, vehicles or resealing products.",
   },
   {
     question: "Can you remove and replace my old concrete?",
     answer:
-      "Yes, we handle the full process from demolition of your existing concrete through to the new pour and finish. Our team uses professional equipment to break up and remove old slabs, prepare the sub-base, and install new concrete to current standards. We also handle responsible disposal of old materials. If your existing concrete is cracked, sinking, or just outdated, a full replacement is often the best long-term investment.",
+      "Removal of existing concrete, material disposal, sub-base preparation and replacement can be assessed as part of the project scope where site access and conditions are suitable. Include photos and access notes so CCG can review what equipment and preparation may be required.",
   },
   {
     question: "What is the difference between exposed aggregate and plain concrete?",
     answer:
-      "Plain concrete has a smooth or broom-finished surface and is the most cost-effective option. Exposed aggregate reveals the natural stones within the concrete mix by washing away the top layer before it fully sets, creating a textured, decorative surface. Exposed aggregate offers better slip resistance, hides minor imperfections, and comes in a wide range of stone colours and blends. It costs more than plain concrete but adds significant visual appeal and value to your property.",
+      "Plain concrete commonly uses a broom or trowel finish. Exposed aggregate reveals the selected stones within the mix to create a more textured decorative surface. Mix, finish, slope, intended use and maintenance should all be considered when comparing options.",
   },
   {
     question: "Do you offer free quotes?",
     answer:
-      "Yes! We offer completely free, no-obligation quotes for all concreting work. Simply fill out our online quote form or give us a call, and we'll arrange a convenient time to visit your property. During the site visit, we'll discuss your requirements, measure up, assess site conditions, and provide a detailed written quote — usually within 24 to 48 hours. There's no pressure and no hidden costs.",
+      "You can request a free initial quote review through the five-step form or call 0424 463 268. If a site visit is required, CCG will arrange it subject to location and scheduling before preparing the applicable written scope and price.",
   },
 ];
 

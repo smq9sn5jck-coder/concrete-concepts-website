@@ -69,6 +69,22 @@ describe("New suburb pages - ServiceAreasPage regions", () => {
     expect(slugMatches).not.toBeNull();
     expect(slugMatches!.length).toBeGreaterThanOrEqual(60);
   });
+
+  it("uses clean suburb names in the directory and ItemList schema", () => {
+    expect(areasPageContent).not.toContain("Concreter {suburb.name}");
+    expect(areasPageContent).not.toContain("name: `Concreter ${suburb.name}`");
+    expect(areasPageContent).toContain("{suburb.name}");
+    expect(areasPageContent).toContain("name: suburb.name");
+  });
+
+  it("keeps the directory factual and avoids a duplicate Home breadcrumb", () => {
+    expect(areasPageContent).not.toContain('{ label: "Home", href: "/" }');
+    expect(areasPageContent).not.toMatch(
+      /Fully Insured|public liability insurance|no hidden fees|We Still Cover It|projects anywhere|all surrounding areas/i
+    );
+    expect(areasPageContent).toMatch(/selected\s+South East Queensland areas/i);
+    expect(areasPageContent).toMatch(/Ask Us to Check Your Location/i);
+  });
 });
 
 describe("New suburb pages - SEO prerendering", () => {

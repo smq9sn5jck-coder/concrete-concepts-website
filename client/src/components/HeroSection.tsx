@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Clock, FileText, MapPin, Phone, Shield, Star } from "lucide-react";
+import { ArrowRight, FileText, MapPin, Phone, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/lib/trpc";
 import { saveQuoteDraft } from "@/lib/quoteDraft";
 import { trackPhoneCallClick } from "@/components/ConversionTracking";
 import { trackCTAClick, trackFormFieldComplete, trackFormFieldFocus } from "@/components/GodModeTracking";
@@ -66,35 +65,6 @@ const SERVICES = [
   ["other", "Other"],
 ] as const;
 
-function getUrgencyText() {
-  const month = new Intl.DateTimeFormat("en-AU", { month: "long" }).format(new Date());
-  return `${month} Bookings Almost Full — Get Your Free Quote Before Slots Fill`;
-}
-
-function QuoteCounter() {
-  const { data } = trpc.quote.monthlyCount.useQuery(undefined, {
-    staleTime: 5 * 60 * 1_000,
-    refetchOnWindowFocus: false,
-  });
-  if (!data) return null;
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 1 }}
-      className="mb-6 flex items-center gap-2 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5"
-    >
-      <span className="relative flex h-2.5 w-2.5">
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />
-      </span>
-      <span className="text-sm font-medium text-white/90">
-        <strong className="text-white">{data.count}+ quotes</strong> requested in {data.month}
-      </span>
-    </motion.div>
-  );
-}
-
 export default function HeroSection() {
   const [formData, setFormData] = useState({ service: "", location: "", description: "" });
   const isTabletOrDesktop = useMediaQuery("(min-width: 768px)");
@@ -132,8 +102,10 @@ export default function HeroSection() {
         className="relative z-20 bg-gradient-to-r from-brand-gold via-brand-gold-light to-brand-gold px-4 py-2.5 text-center"
       >
         <div className="flex items-center justify-center gap-2">
-          <Clock className="h-4 w-4 animate-pulse text-brand-charcoal" />
-          <span className="text-sm font-bold tracking-wide text-brand-charcoal">{getUrgencyText()}</span>
+          <Shield className="h-4 w-4 text-brand-charcoal" aria-hidden="true" />
+          <span className="text-sm font-bold tracking-wide text-brand-charcoal">
+            Free on-site quotes · QBCC licence 15299707 · Brisbane & South East Queensland
+          </span>
         </div>
       </motion.div>
 
@@ -159,15 +131,10 @@ export default function HeroSection() {
             </motion.p>
             <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.9 }} className="mb-8 flex flex-col gap-4 sm:flex-row sm:gap-6">
               <div className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5">
-                <div className="flex gap-0.5">{Array.from({ length: 5 }).map((_, index) => <Star key={index} className="h-4 w-4 fill-brand-gold text-brand-gold" />)}</div>
-                <span className="text-sm font-bold text-white">4.9/5 Google Reviews</span>
-              </div>
-              <div className="flex items-center gap-2.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2.5">
                 <Shield className="h-5 w-5 text-brand-gold" />
                 <span className="text-sm font-bold text-white">QBCC Licensed #15299707</span>
               </div>
             </motion.div>
-            <QuoteCounter />
             <a href="tel:0424463268" onClick={() => trackPhoneCallClick()} className="inline-flex items-center gap-2 text-lg font-bold text-brand-gold transition-colors hover:text-brand-gold-light lg:hidden">
               <Phone className="h-5 w-5" />0424 463 268
             </a>

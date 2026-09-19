@@ -7,7 +7,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Phone, Send, Loader2, CheckCircle, Shield, Star, Users } from "lucide-react";
+import { Phone, Send, Loader2, CheckCircle, Shield, MapPin, Mail } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { submitCallbackFallback, CONTACT_INFO } from "@/lib/formFallback";
 import { useLeadSource } from "@/hooks/useLeadSource";
@@ -33,7 +33,7 @@ export default function MiniQuoteForm() {
     onSuccess: () => {
       trackCallbackConversion({ phone, name });
       setSubmitted(true);
-      toast.success("We'll call you within 24 hours!");
+      toast.success("We received your callback request.");
     },
     onError: async (error) => {
       if (error.data?.code === "BAD_REQUEST" || error.data?.code === "TOO_MANY_REQUESTS") {
@@ -54,7 +54,7 @@ export default function MiniQuoteForm() {
         if (result.success) {
           trackCallbackConversion({ phone, name });
           setSubmitted(true);
-          toast.success("We'll call you within 24 hours!");
+          toast.success("We received your callback request.");
         } else if (result.method === "mailto") {
           toast.info("Your email app has opened. Please press Send to complete the enquiry.");
         }
@@ -107,7 +107,7 @@ export default function MiniQuoteForm() {
   };
 
   return (
-    <section className="relative py-16 lg:py-20 bg-brand-charcoal overflow-hidden">
+    <section id="callback" className="relative py-16 lg:py-20 bg-brand-charcoal overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div className="absolute inset-0" style={{
@@ -129,12 +129,12 @@ export default function MiniQuoteForm() {
             <div className="flex items-center justify-center gap-2 mb-3">
               <div className="w-8 h-px bg-brand-gold" />
               <span className="text-brand-gold text-xs font-semibold tracking-[0.2em] uppercase" style={{ fontFamily: "var(--font-body)" }}>
-                Takes 10 Seconds
+                Request a callback
               </span>
               <div className="w-8 h-px bg-brand-gold" />
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-              Want a <span className="text-brand-gold">Free Quote</span>? Just Leave Your Number.
+              Want to discuss your project?
             </h2>
             <p className="text-white/50 text-sm sm:text-base" style={{ fontFamily: "var(--font-body)" }}>
               Add your suburb so we can confirm we service your area — no email required.
@@ -148,9 +148,9 @@ export default function MiniQuoteForm() {
               className="bg-white/5 border border-brand-gold/30 rounded-xl p-8"
             >
               <CheckCircle className="w-12 h-12 text-brand-gold mx-auto mb-3" />
-              <p className="text-white font-bold text-lg mb-1">We&apos;ll Call You Soon!</p>
+              <p className="text-white font-bold text-lg mb-1">We received your callback request</p>
               <p className="text-white/50 text-sm" style={{ fontFamily: "var(--font-body)" }}>
-                Thanks {name}! A member of our team will be in touch within 24 hours.
+                Thanks {name}. Your details have been sent to the CCG team for review.
               </p>
             </motion.div>
           ) : (
@@ -220,15 +220,15 @@ export default function MiniQuoteForm() {
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-6 text-white/30 text-xs" style={{ fontFamily: "var(--font-body)" }}>
             <div className="flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
-              QBCC Licensed
+              QBCC licence 15299707
             </div>
             <div className="flex items-center gap-1.5">
-              <Star className="w-3.5 h-3.5" />
-              4.9/5 Google Reviews
+              <MapPin className="w-3.5 h-3.5" />
+              Brisbane &amp; SEQ
             </div>
             <div className="flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5" />
-              500+ Projects Completed
+              <Mail className="w-3.5 h-3.5" />
+              No email required
             </div>
           </div>
 

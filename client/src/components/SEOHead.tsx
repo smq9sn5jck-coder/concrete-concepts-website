@@ -19,6 +19,10 @@ interface SEOHeadProps {
 const BASE_URL = "https://concreteconceptsgroup.com";
 const DEFAULT_IMAGE = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/og-social-share_5e916781.png";
 const SITE_NAME = "Concrete Concepts Group";
+const CUSTOMER_WEBSITE_HOSTS = new Set([
+  "concreteconceptsgroup.com",
+  "www.concreteconceptsgroup.com",
+]);
 
 export default function SEOHead({
   title,
@@ -31,6 +35,11 @@ export default function SEOHead({
   noindex = false,
   geo,
 }: SEOHeadProps) {
+  const effectiveNoindex =
+    noindex ||
+    typeof window === "undefined" ||
+    !CUSTOMER_WEBSITE_HOSTS.has(window.location.hostname);
+
   useEffect(() => {
     // Title
     document.title = title;
@@ -62,7 +71,7 @@ export default function SEOHead({
     if (keywords) {
       setMeta("name", "keywords", keywords);
     }
-    setMeta("name", "robots", noindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+    setMeta("name", "robots", effectiveNoindex ? "noindex, nofollow" : "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
 
     // Canonical URL
     if (canonical) {
@@ -111,7 +120,7 @@ export default function SEOHead({
     return () => {
       document.querySelectorAll('script[data-seo-head="true"]').forEach(el => el.remove());
     };
-  }, [title, description, canonical, ogType, ogImage, keywords, structuredData, noindex, geo]);
+  }, [title, description, canonical, ogType, ogImage, keywords, structuredData, effectiveNoindex, geo]);
 
   return null;
 }

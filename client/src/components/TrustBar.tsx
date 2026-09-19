@@ -1,20 +1,15 @@
 /*
   Trust Bar: Horizontal strip showing key trust signals
-  QBCC License, ABN, Fully Insured, Years Experience
+  QBCC licence, ABN, detailed quote flow, service area
   Placed just below the hero for immediate credibility
 */
 import { motion } from "framer-motion";
-import { Shield, Award, FileCheck, Star } from "lucide-react";
+import { Shield, ClipboardList, FileCheck, MapPin } from "lucide-react";
 
 const trustItems = [
   {
-    icon: Star,
-    label: "Google Reviews",
-    value: "4.9 ★★★★★",
-  },
-  {
     icon: Shield,
-    label: "QBCC Licensed",
+    label: "QBCC licence",
     value: "#15299707",
   },
   {
@@ -23,9 +18,14 @@ const trustItems = [
     value: "61 695 485 593",
   },
   {
-    icon: Award,
-    label: "Fully Insured",
-    value: "Public Liability",
+    icon: ClipboardList,
+    label: "Detailed quote",
+    value: "Five guided steps",
+  },
+  {
+    icon: MapPin,
+    label: "Service area",
+    value: "Brisbane & SEQ",
   },
 ];
 

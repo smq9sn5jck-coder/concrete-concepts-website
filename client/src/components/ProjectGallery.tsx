@@ -266,8 +266,8 @@ export default function ProjectGallery() {
             className="text-lg text-muted-foreground leading-relaxed"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Real photos from real jobs. See the quality and craftsmanship 
-            that goes into every Concrete Concepts project.
+            Browse the current gallery by service type to see concrete finishes,
+            preparation stages and completed surfaces.
           </p>
         </motion.div>
 

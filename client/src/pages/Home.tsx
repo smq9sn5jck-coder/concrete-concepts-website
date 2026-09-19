@@ -2,23 +2,21 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
-import ServiceAreaMap from "@/components/ServiceAreaMap";
+import ServiceAreaGrid from "@/components/ServiceAreaGrid";
 import ProcessSection from "@/components/ProcessSection";
 import WhyChooseUs from "@/components/WhyChooseUs";
 import ProjectGallery from "@/components/ProjectGallery";
 import BeforeAfterSection from "@/components/BeforeAfterSection";
-import TestimonialsSection from "@/components/TestimonialsSection";
-import ContactSection from "@/components/ContactSection";
+import ContactDecisionPanel from "@/components/ContactDecisionPanel";
 import TrustedPartners from "@/components/TrustedPartners";
 import FAQSection from "@/components/FAQSection";
 import PaymentPlans from "@/components/PaymentPlans";
 import CTABanner from "@/components/CTABanner";
-import SeasonalBanner from "@/components/SeasonalBanner";
+import ProjectPlanningBanner from "@/components/ProjectPlanningBanner";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 // ExitIntentPopup removed per owner preference
 import StickyMobileCTA from "@/components/StickyMobileCTA";
-import SocialProofNotification from "@/components/SocialProofNotification";
 import TrustBar from "@/components/TrustBar";
 import GuideCtaBanner from "@/components/GuideCtaBanner";
 import MiniQuoteForm from "@/components/MiniQuoteForm";
@@ -32,7 +30,7 @@ const localBusinessSchema = {
   name: "Concrete Concepts Group Pty Ltd",
   alternateName: "Concrete Concepts Group",
   description:
-    "Professional concreting services in Brisbane and all surrounding areas. Driveways, slabs, patios, retaining walls, exposed aggregate, and excavation. QBCC Licensed #15299707.",
+    "Professional concreting services across Brisbane and South East Queensland. Driveways, slabs, patios, retaining walls, exposed aggregate, and excavation. QBCC Licensed #15299707.",
   url: "https://concreteconceptsgroup.com",
   telephone: "+61424463268",
   email: "info@concreteconceptsgroup.com",
@@ -93,43 +91,6 @@ const localBusinessSchema = {
       dayOfWeek: "Saturday",
       opens: "07:00",
       closes: "14:00",
-    },
-  ],
-  aggregateRating: {
-    "@type": "AggregateRating",
-    ratingValue: "4.9",
-    reviewCount: "17",
-    bestRating: "5",
-    worstRating: "1",
-  },
-  review: [
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Myresh M" },
-      datePublished: "2025-08-04",
-      reviewBody: "Fantastic work from Jarrad and his team! Professional, efficient and delivered a high quality exposed aggregate finish. Very happy with the result and highly recommend!!",
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Kailash S" },
-      datePublished: "2025-05-24",
-      reviewBody: "Highly professional, respected our requirement, on time and completed the work to our entire satisfaction. Happy to recommend Jarred.",
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Sheeba" },
-      datePublished: "2025-05-02",
-      reviewBody: "Highly recommend Jarrod and his boys team for their exceptional professional work.",
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
-    },
-    {
-      "@type": "Review",
-      author: { "@type": "Person", name: "Joe S" },
-      datePublished: "2025-06-02",
-      reviewBody: "Excellent job done and quick and reliable.",
-      reviewRating: { "@type": "Rating", ratingValue: "5", bestRating: "5" },
     },
   ],
   makesOffer: [
@@ -198,8 +159,14 @@ const websiteSchema = {
   },
 };
 
+const CUSTOMER_HOSTS = new Set([
+  "concreteconceptsgroup.com",
+  "www.concreteconceptsgroup.com",
+]);
+
 export default function Home() {
   useGodModeTracking();
+  const noindex = typeof window === "undefined" || !CUSTOMER_HOSTS.has(window.location.hostname);
 
   return (
     <div className="min-h-screen">
@@ -209,6 +176,7 @@ export default function Home() {
         canonical="/"
         keywords="concreter brisbane, concrete driveway brisbane, exposed aggregate brisbane, retaining wall brisbane, concrete slab brisbane, concreting brisbane, concreter near me"
         structuredData={[localBusinessSchema, websiteSchema]}
+        noindex={noindex}
       />
       <Navbar />
       <HeroSection />
@@ -216,23 +184,21 @@ export default function Home() {
       <DeferredSection><ServicesSection /></DeferredSection>
       <DeferredSection><MiniQuoteForm /></DeferredSection>
       <DeferredSection><AboutSection /></DeferredSection>
-      <DeferredSection><ServiceAreaMap /></DeferredSection>
+      <DeferredSection><ServiceAreaGrid /></DeferredSection>
       <DeferredSection><ProcessSection /></DeferredSection>
       <DeferredSection><WhyChooseUs /></DeferredSection>
       <DeferredSection><ProjectGallery /></DeferredSection>
       <DeferredSection><BeforeAfterSection /></DeferredSection>
-      <DeferredSection><TestimonialsSection /></DeferredSection>
-      <DeferredSection><SeasonalBanner /></DeferredSection>
+      <DeferredSection><ProjectPlanningBanner /></DeferredSection>
       <DeferredSection><TrustedPartners /></DeferredSection>
       <DeferredSection><GuideCtaBanner variant="section" /></DeferredSection>
       <DeferredSection><FAQSection /></DeferredSection>
       <DeferredSection><PaymentPlans /></DeferredSection>
-      <DeferredSection><ContactSection /></DeferredSection>
+      <DeferredSection><ContactDecisionPanel /></DeferredSection>
       <DeferredSection><CTABanner /></DeferredSection>
       <DeferredSection><Footer /></DeferredSection>
       {/* ExitIntentPopup removed per owner preference */}
       <StickyMobileCTA />
-      <SocialProofNotification />
     </div>
   );
 }

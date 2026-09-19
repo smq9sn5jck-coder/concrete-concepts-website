@@ -5,7 +5,7 @@
 */
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { MapPin, ArrowRight, Phone, Shield, Award } from "lucide-react";
+import { MapPin, ArrowRight, Phone, Shield, ClipboardList } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
@@ -187,20 +187,19 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "Concrete Concepts Group Service Areas",
-  description: `Professional concreting services across ${totalSuburbs}+ suburbs in Brisbane and all surrounding areas`,
+  description: `Listed concreting service areas across ${totalSuburbs} Brisbane and South East Queensland localities`,
   numberOfItems: totalSuburbs,
   itemListElement: REGIONS.flatMap((region) =>
     region.suburbs.map((suburb, i) => ({
       "@type": "ListItem",
       position: i + 1,
-      name: `Concreter ${suburb.name}`,
+      name: suburb.name,
       url: `https://concreteconceptsgroup.com/areas/${suburb.slug}`,
     }))
   ),
 };
 
 const breadcrumbs = [
-  { label: "Home", href: "/" },
   { label: "Service Areas" },
 ];
 
@@ -212,8 +211,8 @@ export default function ServiceAreasPage() {
   return (
     <div className="min-h-screen bg-background">
       <SEOHead
-        title="Concreting Service Areas Brisbane | All Suburbs We Cover | Concrete Concepts"
-        description={`Professional concreting services across ${totalSuburbs}+ suburbs in Brisbane and all surrounding areas. Find your local concreter. QBCC Licensed #15299707. Free quotes — 0424 463 268.`}
+        title="Concreting Service Areas | Brisbane & SEQ | Concrete Concepts"
+        description={`Browse ${totalSuburbs} listed Brisbane and South East Queensland service areas. Submit the project suburb for CCG to confirm location and access suitability.`}
         canonical="/areas"
         keywords="concreter near me, concreting brisbane suburbs, concrete driveway brisbane southside, concreter logan, concreter ipswich, concreter redlands, concreter north lakes, concreter chermside"
         structuredData={structuredData}
@@ -238,10 +237,9 @@ export default function ServiceAreasPage() {
               className="text-lg text-white/70 leading-relaxed mb-8"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Concrete Concepts Group provides professional concreting services
-              across {totalSuburbs}+ suburbs in Brisbane and all surrounding
-              areas. Find your local area below for suburb-specific information,
-              or call us for a free on-site quote.
+              Browse {totalSuburbs} listed localities across Brisbane and selected
+              South East Queensland areas. Choose an area for local project
+              information, or submit your suburb so CCG can confirm suitability.
             </p>
             <div className="flex flex-wrap gap-4">
               <Button
@@ -270,8 +268,8 @@ export default function ServiceAreasPage() {
         <div className="container flex flex-wrap justify-center gap-6 lg:gap-12">
           {[
             { icon: Shield, text: "QBCC Licensed #15299707" },
-            { icon: Award, text: "Fully Insured & GST Registered" },
-            { icon: MapPin, text: `${totalSuburbs}+ Suburbs Covered` },
+            { icon: ClipboardList, text: "Five-step detailed quote" },
+            { icon: MapPin, text: `${totalSuburbs} Listed Localities` },
           ].map((item) => (
             <div key={item.text} className="flex items-center gap-2">
               <item.icon className="w-4 h-4 text-brand-charcoal" />
@@ -320,7 +318,7 @@ export default function ServiceAreasPage() {
                             className="text-brand-charcoal font-medium group-hover:text-brand-gold-dark transition-colors"
                             style={{ fontFamily: "var(--font-body)" }}
                           >
-                            Concreter {suburb.name}
+                            {suburb.name}
                           </span>
                           <ArrowRight className="w-4 h-4 text-brand-gold opacity-0 group-hover:opacity-100 transition-opacity" />
                         </Link>
@@ -341,17 +339,16 @@ export default function ServiceAreasPage() {
             className="mt-16 bg-brand-charcoal rounded-2xl p-8 lg:p-12 text-center"
           >
             <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
-              Don't See Your Suburb?{" "}
-              <span className="text-brand-gold italic">We Still Cover It</span>
+              Outside a Listed Area?{" "}
+              <span className="text-brand-gold italic">Ask Us to Check Your Location</span>
             </h2>
             <p
               className="text-white/70 max-w-2xl mx-auto mb-8 leading-relaxed"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              We service all of Brisbane and surrounding areas. If your
-              suburb isn't listed above, give us a call — we're happy to provide
-              a free quote for concreting projects anywhere in the greater
-              Brisbane region and beyond.
+              If your suburb is not listed, send the project address and access
+              details through the quote form or call the team. CCG will confirm
+              whether the location and project scope can be assessed.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <a
@@ -382,33 +379,25 @@ export default function ServiceAreasPage() {
       <section className="py-12 lg:py-16 bg-brand-charcoal/5">
         <div className="container max-w-4xl">
           <h2 className="text-2xl font-bold text-brand-charcoal mb-6">
-            Professional Concreting Across Brisbane & All Surrounding Areas
+            Concreting Across Brisbane & Selected South East Queensland Areas
           </h2>
           <div
             className="prose prose-lg max-w-none text-muted-foreground"
             style={{ fontFamily: "var(--font-body)" }}
           >
             <p>
-              Concrete Concepts Group is a QBCC Licensed concreting company
-              (Licence #15299707) providing professional concrete services across
-              Brisbane and all surrounding areas. Our team of
-              experienced concreters delivers high-quality driveways, house
-              slabs, exposed aggregate, retaining walls, patios, and excavation
-              services to residential and commercial clients.
+              Concrete Concepts Group operates under QBCC licence 15299707 and
+              reviews suitable driveway, slab, exposed aggregate, retaining wall,
+              patio and excavation requests across the listed service areas.
             </p>
             <p>
-              Whether you're in Brisbane's southside suburbs like Carindale,
-              Mount Gravatt, and Sunnybank, the Logan and Beenleigh corridor,
-              the Redlands and Bayside area, Ipswich and Springfield, or
-              Brisbane's northside including Chermside, Aspley, North Lakes, and
-              Caboolture — we provide the same professional service and quality
-              workmanship.
+              The directory includes Brisbane northside, southside, inner-city
+              and bayside localities, together with selected areas in Logan,
+              Redlands, Ipswich, Moreton Bay and the northern Gold Coast.
             </p>
             <p>
-              Every project starts with a free on-site measure and quote. We
-              provide transparent pricing with no hidden fees, and our work is
-              backed by our QBCC licence and full public liability insurance.
-              Contact us today on{" "}
+              Final coverage depends on the project address, site access and
+              scope. Start the detailed quote or contact the team on{" "}
               <a href="tel:0424463268" onClick={() => trackPhoneCallClick()} className="text-brand-gold font-semibold">
                 0424 463 268
               </a>{" "}

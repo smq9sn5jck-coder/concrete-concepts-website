@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import SEOHead from "@/components/SEOHead";
 import ComprehensiveQuoteWizard from "@/components/quote/ComprehensiveQuoteWizard";
-import { Shield, Star, Phone } from "lucide-react";
+import { Camera, ClipboardList, Phone, Shield } from "lucide-react";
 import { trackPhoneCallClick } from "@/components/ConversionTracking";
 
 export default function GetQuote() {
@@ -35,9 +35,9 @@ export default function GetQuote() {
             Tell us what you need, where the job is and anything important about access. Measurements and photos help, but they are not compulsory.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-3 text-sm text-slate-300">
-            <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-brand-yellow" />QBCC Licensed</span>
-            <span className="flex items-center gap-2"><Star className="h-4 w-4 text-brand-yellow" />4.9 Google rating</span>
-            <span className="flex items-center gap-2"><Phone className="h-4 w-4 text-brand-yellow" />Response within 24 hours</span>
+            <span className="flex items-center gap-2"><Shield className="h-4 w-4 text-brand-yellow" />QBCC licence 15299707</span>
+            <span className="flex items-center gap-2"><ClipboardList className="h-4 w-4 text-brand-yellow" />Five guided steps</span>
+            <span className="flex items-center gap-2"><Camera className="h-4 w-4 text-brand-yellow" />Optional site photos</span>
           </div>
         </div>
       </section>

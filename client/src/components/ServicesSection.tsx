@@ -16,7 +16,7 @@ const SERVICE_IMAGE_SIZES = "(max-width: 767px) calc(100vw - 2rem), (max-width: 
 const featuredServices = [
   {
     title: "Our Team at Work",
-    description: "Our experienced crew brings skill, pride, and teamwork to every pour. From prep to finish, the Concrete Concepts team delivers quality results on every job across Brisbane and surrounding areas.",
+    description: "The CCG crew coordinates preparation, reinforcement, pouring and finishing for suitable concrete projects across Brisbane and South East Queensland.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-troweling_06ff9a7c.jpeg",
     srcSet: `${performanceAssets.services.troweling.standard.url} ${performanceAssets.services.troweling.standard.width}w, ${performanceAssets.services.troweling.highDensity.url} ${performanceAssets.services.troweling.highDensity.width}w`,
     sizes: SERVICE_IMAGE_SIZES,
@@ -25,7 +25,7 @@ const featuredServices = [
   },
   {
     title: "Concrete Slabs & Foundations",
-    description: "Engineered slabs for residential and commercial builds. From house pads to shed slabs, we deliver level, durable foundations built to Australian standards.",
+    description: "Residential and suitable commercial slab requests are reviewed against intended use, dimensions, preparation, reinforcement and site access.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-finished-slab_74e9f7cd.jpeg",
     srcSet: undefined,
     sizes: undefined,
@@ -34,7 +34,7 @@ const featuredServices = [
   },
   {
     title: "Driveways & Pathways",
-    description: "Transform your property's entrance with exposed aggregate, coloured, or plain concrete driveways and pathways that combine beauty with lasting durability.",
+    description: "Plan plain, coloured or exposed aggregate driveways and paths with site-specific access, preparation, drainage and finish details.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
     srcSet: undefined,
     sizes: undefined,
@@ -43,7 +43,7 @@ const featuredServices = [
   },
   {
     title: "Retaining Walls",
-    description: "Structural retaining walls that manage terrain and prevent erosion. Expertly designed and built to handle Queensland's unique soil and weather conditions.",
+    description: "Retaining wall requests are reviewed against height, access, drainage, ground conditions and the proposed wall system.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-1_942fd49e.jpeg",
     srcSet: undefined,
     sizes: undefined,
@@ -52,7 +52,7 @@ const featuredServices = [
   },
   {
     title: "Excavation & Site Prep",
-    description: "Full excavation services to get your site ready for concrete. We handle site clearing, trenching, and ground preparation with our own machinery for a seamless start to your project.",
+    description: "Suitable excavation and site-preparation work can be assessed as part of a concrete project scope, including access and material-removal requirements.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-4_c54657e7.jpeg",
     srcSet: `${performanceAssets.services.excavation.standard.url} ${performanceAssets.services.excavation.standard.width}w, ${performanceAssets.services.excavation.highDensity.url} ${performanceAssets.services.excavation.highDensity.width}w`,
     sizes: SERVICE_IMAGE_SIZES,
@@ -61,7 +61,7 @@ const featuredServices = [
   },
   {
     title: "Site Waste Removal & Tipping",
-    description: "Complete site waste removal, excavation clean-up, and tipping services across Brisbane. We handle dirt, rubble, concrete, and green waste removal so your site stays clean and compliant throughout the project.",
+    description: "Site waste removal and tipping requirements can be reviewed where they form part of an agreed excavation or concrete preparation scope.",
     image: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-5_d25c6ec1.jpeg",
     srcSet: undefined,
     sizes: undefined,
@@ -137,8 +137,8 @@ export default function ServicesSection() {
             style={{ fontFamily: "var(--font-body)" }}
           >
             From concrete driveways and house slabs to exposed aggregate, retaining walls
-            and excavation — we handle every aspect of concreting across Brisbane
-            and all surrounding areas.
+            and excavation — CCG reviews suitable projects across Brisbane and
+            South East Queensland.
           </p>
         </motion.div>
 
@@ -228,8 +228,8 @@ export default function ServicesSection() {
                 className="text-white/60 leading-relaxed mb-6"
                 style={{ fontFamily: "var(--font-body)" }}
               >
-                Whatever your concreting needs, we have the expertise and equipment 
-                to deliver outstanding results. If it involves concrete, we can do it.
+                Select the relevant service and provide the site, access and scope
+                details needed for CCG to assess your project.
               </p>
               <Link href="/get-quote">
                 <button

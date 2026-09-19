@@ -6,63 +6,63 @@
 import { motion } from "framer-motion";
 import {
   Shield,
-  Clock,
-  Award,
-  Banknote,
+  MapPin,
+  ClipboardList,
+  Camera,
   HardHat,
   MessageSquareText,
   FileCheck,
-  Truck,
+  Layers3,
 } from "lucide-react";
 
 const reasons = [
   {
     icon: Shield,
-    title: "QBCC Licensed & Fully Insured",
+    title: "QBCC licensed",
     description:
-      "Licence #15299707 means your project is backed by Queensland's building authority. Full public liability and workers' compensation insurance on every job.",
+      "Concrete Concepts Group operates under QBCC licence 15299707 for the licensed work described in its project scope.",
   },
   {
-    icon: Clock,
-    title: "On Time, Every Time",
+    icon: MapPin,
+    title: "Site-specific planning",
     description:
-      "We lock in your start date and stick to it. Clear timelines, daily progress updates, and no surprise delays — your project stays on track from day one.",
+      "Location, access, existing surfaces, measurements, drainage and finish requirements are reviewed before the scope is confirmed.",
   },
   {
-    icon: Award,
-    title: "4.9-Star Google Rating",
+    icon: ClipboardList,
+    title: "Clear quote inputs",
     description:
-      "Our reputation speaks for itself. Consistently rated 4.9 out of 5 by real Brisbane homeowners who trust us with their biggest outdoor investments.",
+      "The guided form collects the practical project details needed for a more useful first assessment and written quote process.",
   },
   {
-    icon: Banknote,
-    title: "Transparent, Fixed Pricing",
+    icon: Camera,
+    title: "Optional site photos",
     description:
-      "Your quote is your price — no hidden extras, no surprise charges. We break down every cost so you know exactly what you're paying for before work begins.",
+      "Customers can add private site photos to show access, existing concrete and the proposed work area before CCG reviews the request.",
   },
   {
     icon: HardHat,
-    title: "Owner-Operated Quality",
+    title: "Practical scope review",
     description:
-      "Jarrod is on site for every project, not just managing from an office. You deal directly with the person responsible for the quality of your finished concrete.",
+      "Preparation, reinforcement, concrete, pumping, finishing and access requirements are considered against the actual project information provided.",
   },
   {
     icon: MessageSquareText,
-    title: "Free On-Site Quotes Within 48hrs",
+    title: "Direct project communication",
     description:
-      "We come to you, assess the site, and provide a detailed written quote — usually within 48 hours. No obligation, no pressure, just honest advice.",
+      "Customers can choose a detailed online request, a callback or a direct phone conversation depending on the information they have available.",
   },
   {
     icon: FileCheck,
-    title: "Written Warranty on All Work",
+    title: "Recorded job details",
     description:
-      "Every project comes with a written warranty covering workmanship and structural integrity. We stand behind our concrete long after the crew leaves.",
+      "Contact, site, service, measurement and access details are recorded together so the initial review is based on one consistent project brief.",
   },
   {
-    icon: Truck,
-    title: "Full-Service From Start to Finish",
+    icon: Layers3,
+    title: "Concrete service options",
     description:
-      "Excavation, formwork, reinforcement, pouring, finishing, and sealing — we handle every stage in-house. One team, one point of contact, zero subcontractor headaches.",
+      "CCG reviews suitable driveways, slabs, paths, patios, pool surrounds, steps, retaining walls, excavation and finish options across Brisbane and SEQ.",
   },
 ];
 

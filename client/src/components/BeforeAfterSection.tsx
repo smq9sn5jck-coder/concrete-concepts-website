@@ -115,8 +115,8 @@ export default function BeforeAfterSection() {
             className="text-lg text-muted-foreground leading-relaxed"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            Real Brisbane projects completed by our team.
-            Every job is finished to the highest standard.
+            Selected project images showing site preparation, concrete placement
+            and finished surfaces across different scopes.
           </p>
         </motion.div>
 

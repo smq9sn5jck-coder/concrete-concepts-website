@@ -10,26 +10,26 @@ const steps = [
   {
     icon: MessageSquare,
     number: "01",
-    title: "Get in Touch",
-    description: "Fill out our quick quote form or call 0424 463 268. Tell us about your concrete driveway, slab, retaining wall, or patio project and we'll get back to you within 24 hours.",
+    title: "Detailed project request",
+    description: "Complete the five-step quote or call 0424 463 268. Site location, scope, access, measurements and optional photos help the CCG team review the project.",
   },
   {
     icon: ClipboardCheck,
     number: "02",
     title: "Free Site Visit",
-    description: "We'll visit your Brisbane property, assess the site conditions, take measurements, and discuss your concreting requirements in detail — completely free.",
+    description: "Where a site visit is needed, CCG can assess conditions, confirm measurements and discuss practical preparation, access and finish requirements.",
   },
   {
     icon: HardHat,
     number: "03",
     title: "We Get to Work",
-    description: "Once you approve the quote, our QBCC Licensed concrete crew gets to work. We keep you informed at every stage and maintain a clean, safe site across Brisbane and SEQ.",
+    description: "After the quote is accepted and scheduling is confirmed, the crew works through the agreed preparation, reinforcement, pour and finishing scope.",
   },
   {
     icon: ThumbsUp,
     number: "04",
     title: "Quality Handover",
-    description: "We walk you through the finished work, ensure you're 100% satisfied, and provide aftercare advice to keep your concrete looking its best.",
+    description: "At handover, the team reviews the completed scope and provides practical curing and aftercare information for the selected finish.",
   },
 ];
 
@@ -64,8 +64,8 @@ export default function ProcessSection() {
             className="text-lg text-muted-foreground leading-relaxed"
             style={{ fontFamily: "var(--font-body)" }}
           >
-            We make the concreting process simple and stress-free for Brisbane homeowners 
-            and businesses. Here&apos;s how we turn your project from concept to reality.
+            A clear sequence helps Brisbane homeowners and businesses understand what
+            information is needed from first review through to handover.
           </p>
         </motion.div>
 

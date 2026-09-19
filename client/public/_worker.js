@@ -1,6 +1,11 @@
 // Metadata source: seo-manifest.json is generated from the same verified route map.
 import { applySeoMetadata, filterPublicSitemap } from "./seo-manifest.js";
 
+const CUSTOMER_WEBSITE_HOSTS = new Set([
+  "concreteconceptsgroup.com",
+  "www.concreteconceptsgroup.com",
+]);
+
 /**
  * Cloudflare Pages Worker for Concrete Concepts Group
  * AI Concrete Visualiser V3 — Mask-First Architecture
@@ -1266,11 +1271,17 @@ async function prepareStaticResponse(response, url, path, method) {
   }
 
   if (method === "GET" && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
-    const html = applySeoMetadata(await response.text(), url.pathname);
+    const isCustomerWebsiteHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
+    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride);
     const headers = new Headers(response.headers);
     headers.set("Content-Type", "text/html; charset=utf-8");
     headers.delete("Content-Length");
-    if (path.startsWith("/lp/")) headers.set("X-Robots-Tag", "noindex, follow");
+    if (!isCustomerWebsiteHost) {
+      headers.set("X-Robots-Tag", "noindex, nofollow");
+    } else if (path.startsWith("/lp/")) {
+      headers.set("X-Robots-Tag", "noindex, follow");
+    }
     return new Response(html, {
       status: response.status,
       statusText: response.statusText,

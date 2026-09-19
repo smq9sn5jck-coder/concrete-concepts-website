@@ -148,12 +148,13 @@ function replaceOrInsert(html, pattern, replacement) {
     : html.replace("</head>", `  ${replacement}\n</head>`);
 }
 
-export function applySeoMetadata(html, pathname) {
+export function applySeoMetadata(html, pathname, robotsOverride) {
   const meta = getSeoMetadata(pathname);
+  const robots = robotsOverride || meta.robots;
   let output = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${meta.title}</title>`);
   output = replaceOrInsert(output, /<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${meta.description}">`);
   output = replaceOrInsert(output, /<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${meta.canonical}">`);
-  output = replaceOrInsert(output, /<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="${meta.robots}">`);
+  output = replaceOrInsert(output, /<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="${robots}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${meta.title}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${meta.description}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${meta.canonical}">`);

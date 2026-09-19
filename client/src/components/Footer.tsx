@@ -89,9 +89,8 @@ export default function Footer() {
               className="text-white/60 text-sm leading-relaxed max-w-xs"
               style={{ fontFamily: "var(--font-body)" }}
             >
-              Brisbane's trusted concreting professionals. From driveways and slabs 
-              to retaining walls and excavation — QBCC Licensed, fully insured, 
-              and committed to quality on every project.
+              Brisbane concreting services covering driveways, slabs, paths,
+              retaining walls and suitable excavation scopes. QBCC licence 15299707.
             </p>
           </div>
 
@@ -243,7 +242,7 @@ export default function Footer() {
                 </a>
               </li>
               <li className="text-white/40 text-sm">
-                Brisbane &amp; All Surrounding Areas, QLD
+                Brisbane &amp; selected South East Queensland areas
               </li>
               <li className="text-white/40 text-sm">
                 ABN: 61 695 485 593
