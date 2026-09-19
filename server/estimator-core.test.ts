@@ -74,6 +74,21 @@ describe("CCG estimator core", () => {
     expect(result.reasonCodes).toContain("measurement_required");
   });
 
+  it("rejects retaining-wall work instead of applying slab pricing", () => {
+    const result = calculateEstimate(
+      {
+        ...fixture.request,
+        source: { system: "test", submissionId: "retaining-wall" },
+        service: "retaining_wall",
+      },
+      CCG_RATE_CARD_V1
+    );
+
+    expect(result.routing).toBe("rejected");
+    expect(result.options).toEqual([]);
+    expect(result.reasonCodes).toContain("unsupported_service_pricing");
+  });
+
   it.each(["oxide", "stencil", "honed"] as const)(
     "keeps %s in owner review while finish-specific costs are incomplete",
     (requestedFinish) => {

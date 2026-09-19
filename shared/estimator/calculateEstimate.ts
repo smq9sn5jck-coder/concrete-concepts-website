@@ -277,6 +277,17 @@ export function calculateEstimate(request: PricingRequest, card: RateCard): Pric
   if (new Set(request.alternativeFinishes).size !== request.alternativeFinishes.length) {
     throw new Error("Alternative finishes must be unique.");
   }
+  if (request.service === "retaining_wall" || request.service === "stairs") {
+    return {
+      calculationVersion: CALCULATION_VERSION,
+      rateCardVersion: card.version,
+      normalizedInputHash: stableHash(request),
+      routing: "rejected",
+      reasonCodes: ["unsupported_service_pricing"],
+      assumptions: request.evidence.notes,
+      options: [],
+    };
+  }
   const requestedDefinition = getFinishDefinition(request.requestedFinish);
 
   if (!request.scenarios || request.evidence.measurementSource === "missing" || request.requestedFinish === "not_sure") {
