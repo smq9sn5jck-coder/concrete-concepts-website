@@ -540,34 +540,207 @@ async function imageUrlToBase64(url) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// STORAGE — S3 via Forge proxy
+// STORAGE — private Cloudflare R2 with time-limited lifecycle deletion
 // ═══════════════════════════════════════════════════════════════
 
-async function storagePut(env, relKey, data, contentType) {
-  const baseUrl = env.BUILT_IN_FORGE_API_URL || "https://forge.manus.ai";
-  const apiKey = env.BUILT_IN_FORGE_API_KEY;
-  if (!apiKey) throw new Error("Storage credentials not configured");
+const PHOTO_MAX_BYTES = 10 * 1024 * 1024;
+const PHOTO_MAX_BASE64_LENGTH = 14 * 1024 * 1024;
+const PHOTO_UPLOAD_LIMIT = 24;
+const PHOTO_UPLOAD_WINDOW_MS = 60 * 1000;
+const photoUploadWindows = new Map();
 
-  const normalizedBase = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-  const url = new URL("v1/storage/upload", normalizedBase);
-  url.searchParams.set("path", relKey.replace(/^\/+/, ""));
-
-  const blob = new Blob([data], { type: contentType });
-  const form = new FormData();
-  form.append("file", blob, relKey.split("/").pop() || "file");
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}` },
-    body: form,
-  });
-
-  if (!response.ok) {
-    const msg = await response.text().catch(() => response.statusText);
-    throw new Error(`Storage upload failed (${response.status}): ${msg}`);
+class PhotoHttpError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.name = "PhotoHttpError";
+    this.status = status;
   }
-  const result = await response.json();
-  return { url: result.url };
+}
+
+function photoErrorResponse(error) {
+  const status = error instanceof PhotoHttpError ? error.status : 500;
+  const message = error instanceof PhotoHttpError
+    ? error.message
+    : "Photo storage is temporarily unavailable. You can submit without photos or try again.";
+  if (!(error instanceof PhotoHttpError)) {
+    console.error("Unexpected photo storage error:", error instanceof Error ? error.message : error);
+  }
+  return jsonResponse({ error: message }, status);
+}
+
+function bytesToHex(bytes) {
+  return Array.from(bytes, value => value.toString(16).padStart(2, "0")).join("");
+}
+
+async function sha256Hex(value) {
+  const bytes = typeof value === "string" ? new TextEncoder().encode(value) : value;
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return bytesToHex(new Uint8Array(digest));
+}
+
+function randomAccessToken() {
+  return bytesToHex(crypto.getRandomValues(new Uint8Array(32)));
+}
+
+function decodePhotoBase64(data) {
+  if (typeof data !== "string" || !data || data.length > PHOTO_MAX_BASE64_LENGTH) {
+    throw new PhotoHttpError(400, data ? "Photo is larger than 10 MB." : "Photo is empty.");
+  }
+  if (data.length % 4 !== 0 || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(data)) {
+    throw new PhotoHttpError(400, "Photo data is invalid. Please choose the image again.");
+  }
+
+  let binaryStr;
+  try {
+    binaryStr = atob(data);
+  } catch {
+    throw new PhotoHttpError(400, "Photo data is invalid. Please choose the image again.");
+  }
+  if (!binaryStr.length || binaryStr.length > PHOTO_MAX_BYTES) {
+    throw new PhotoHttpError(400, binaryStr.length ? "Photo is larger than 10 MB." : "Photo is empty.");
+  }
+  const bytes = new Uint8Array(binaryStr.length);
+  for (let index = 0; index < binaryStr.length; index += 1) {
+    bytes[index] = binaryStr.charCodeAt(index);
+  }
+  return bytes;
+}
+
+function bytesMatch(bytes, expected, offset = 0) {
+  if (bytes.length < offset + expected.length) return false;
+  return expected.every((value, index) => bytes[offset + index] === value);
+}
+
+function fourCc(bytes, offset) {
+  return String.fromCharCode(...bytes.slice(offset, offset + 4));
+}
+
+function photoSignatureMatches(bytes, contentType) {
+  if (contentType === "image/jpeg") {
+    return bytesMatch(bytes, [0xff, 0xd8, 0xff]);
+  }
+  if (contentType === "image/png") {
+    return bytesMatch(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  }
+  if (contentType === "image/webp") {
+    return bytesMatch(bytes, [0x52, 0x49, 0x46, 0x46])
+      && bytesMatch(bytes, [0x57, 0x45, 0x42, 0x50], 8);
+  }
+  if (contentType === "image/heic" || contentType === "image/heif") {
+    if (bytes.length < 12 || fourCc(bytes, 4) !== "ftyp") return false;
+    const acceptedBrands = contentType === "image/heic"
+      ? new Set(["heic", "heix", "hevc", "hevx"])
+      : new Set(["mif1", "msf1", "heic", "heix", "hevc", "hevx"]);
+    return acceptedBrands.has(fourCc(bytes, 8));
+  }
+  return false;
+}
+
+function photoExtension(contentType) {
+  if (contentType === "image/png") return "png";
+  if (contentType === "image/webp") return "webp";
+  if (contentType === "image/heic" || contentType === "image/heif") return "heic";
+  return "jpg";
+}
+
+function protectedPhotoUrl(origin, key, accessToken) {
+  const url = new URL(`/api/lead-photo/${key}`, origin);
+  url.searchParams.set("token", accessToken);
+  return url.toString();
+}
+
+async function storePrivateImage(env, { key, data, contentType, purpose, origin }) {
+  if (!env.LEAD_PHOTOS?.put) {
+    throw new PhotoHttpError(503, "Photo storage is temporarily unavailable. You can submit without photos or try again.");
+  }
+  const accessToken = randomAccessToken();
+  const accessTokenSha256 = await sha256Hex(accessToken);
+  try {
+    await env.LEAD_PHOTOS.put(key, data, {
+      httpMetadata: { contentType },
+      customMetadata: {
+        accessTokenSha256,
+        purpose,
+        storedAt: new Date().toISOString(),
+      },
+    });
+  } catch (error) {
+    console.error("Cloudflare R2 photo upload failed:", error instanceof Error ? error.message : error);
+    throw new PhotoHttpError(503, "Photo storage is temporarily unavailable. You can submit without photos or try again.");
+  }
+  return { url: protectedPhotoUrl(origin, key, accessToken), key };
+}
+
+async function storagePut(env, relKey, data, contentType, origin, purpose = "visualiser-generated") {
+  const key = String(relKey).replace(/^\/+/, "");
+  if (!/^(visualiser|timelapse)\/[a-zA-Z0-9._-]+$/.test(key)) {
+    throw new PhotoHttpError(500, "Generated media path is invalid.");
+  }
+  return storePrivateImage(env, { key, data, contentType, purpose, origin });
+}
+
+async function enforcePhotoUploadRateLimit(request) {
+  const address = request.headers.get("CF-Connecting-IP")
+    || request.headers.get("X-Forwarded-For")?.split(",")[0]?.trim()
+    || "unknown";
+  const key = await sha256Hex(address);
+  const now = Date.now();
+  const current = photoUploadWindows.get(key);
+  if (!current || now - current.startedAt >= PHOTO_UPLOAD_WINDOW_MS) {
+    photoUploadWindows.set(key, { startedAt: now, count: 1 });
+    return;
+  }
+  if (current.count >= PHOTO_UPLOAD_LIMIT) {
+    throw new PhotoHttpError(429, "Too many photo uploads. Please wait a minute and try again.");
+  }
+  current.count += 1;
+
+  if (photoUploadWindows.size > 1000) {
+    for (const [windowKey, window] of photoUploadWindows) {
+      if (now - window.startedAt >= PHOTO_UPLOAD_WINDOW_MS) photoUploadWindows.delete(windowKey);
+    }
+  }
+}
+
+async function handleProtectedPhotoRequest(request, env, url) {
+  if (!env.LEAD_PHOTOS?.get) {
+    throw new PhotoHttpError(503, "Photo storage is temporarily unavailable.");
+  }
+  let key;
+  try {
+    key = decodeURIComponent(url.pathname.slice("/api/lead-photo/".length));
+  } catch {
+    throw new PhotoHttpError(404, "Photo not found.");
+  }
+  if (!/^(quote-photos|visualiser-uploads|visualiser|timelapse)\/[a-zA-Z0-9._-]+$/.test(key)) {
+    throw new PhotoHttpError(404, "Photo not found.");
+  }
+  const token = url.searchParams.get("token") || "";
+  if (!/^[0-9a-f]{64}$/.test(token)) {
+    throw new PhotoHttpError(403, "Photo access denied.");
+  }
+
+  const object = await env.LEAD_PHOTOS.get(key);
+  if (!object) throw new PhotoHttpError(404, "Photo not found.");
+  const suppliedTokenHash = await sha256Hex(token);
+  if (!object.customMetadata?.accessTokenSha256 || suppliedTokenHash !== object.customMetadata.accessTokenSha256) {
+    throw new PhotoHttpError(403, "Photo access denied.");
+  }
+
+  const headers = new Headers();
+  if (typeof object.writeHttpMetadata === "function") object.writeHttpMetadata(headers);
+  if (!headers.has("Content-Type") && object.httpMetadata?.contentType) {
+    headers.set("Content-Type", object.httpMetadata.contentType);
+  }
+  headers.set("Cache-Control", "private, no-store");
+  headers.set("Content-Disposition", "inline");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Content-Security-Policy", "default-src 'none'; sandbox");
+  headers.set("Cross-Origin-Resource-Policy", "same-origin");
+  if (object.httpEtag) headers.set("ETag", object.httpEtag);
+  if (Number.isFinite(object.size)) headers.set("Content-Length", String(object.size));
+
+  return new Response(request.method === "HEAD" ? null : object.body, { status: 200, headers });
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -575,23 +748,20 @@ async function storagePut(env, relKey, data, contentType) {
 // ═══════════════════════════════════════════════════════════════
 
 // Handle photo upload
-async function handlePhotoUpload(env, body) {
+async function handlePhotoUpload(env, body, origin) {
   const { data, contentType, fileName } = body;
   const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
-  if (!data || typeof data !== "string" || !fileName || !allowedTypes.includes(contentType)) {
-    throw new Error("Invalid photo upload. Use JPEG, PNG, WebP or HEIC.");
+  if (!fileName || typeof fileName !== "string" || !allowedTypes.includes(contentType)) {
+    throw new PhotoHttpError(400, "Invalid photo upload. Use JPEG, PNG, WebP or HEIC.");
   }
-  if (data.length > 14 * 1024 * 1024) throw new Error("Photo is larger than 10 MB.");
-  const binaryStr = atob(data);
-  if (!binaryStr.length || binaryStr.length > 10 * 1024 * 1024) throw new Error("Photo is empty or larger than 10 MB.");
-  const bytes = new Uint8Array(binaryStr.length);
-  for (let i = 0; i < binaryStr.length; i++) {
-    bytes[i] = binaryStr.charCodeAt(i);
+  const bytes = decodePhotoBase64(data);
+  if (!photoSignatureMatches(bytes, contentType)) {
+    throw new PhotoHttpError(400, "Photo type does not match its contents. Please choose the original image.");
   }
-  const ext = contentType.includes("png") ? "png" : contentType.includes("webp") ? "webp" : contentType.includes("hei") ? "heic" : "jpg";
-  const prefix = body.purpose === "visualiser" ? "visualiser-uploads" : "quote-photos";
-  const key = `${prefix}/${Date.now()}-${Math.random().toString(36).slice(2, 10)}.${ext}`;
-  const { url } = await storagePut(env, key, bytes, contentType);
+  const purpose = body.purpose === "visualiser" ? "visualiser" : "quote";
+  const prefix = purpose === "visualiser" ? "visualiser-uploads" : "quote-photos";
+  const key = `${prefix}/${crypto.randomUUID()}.${photoExtension(contentType)}`;
+  const { url } = await storePrivateImage(env, { key, data: bytes, contentType, purpose, origin });
   return { url, fileName: String(fileName).slice(0, 255), contentType };
 }
 
@@ -621,7 +791,7 @@ async function handleQA(env, input) {
 }
 
 // Handle visualiser.generate — FLUX Fill inpainting
-async function handleGenerate(env, input) {
+async function handleGenerate(env, input, origin) {
   const { imageUrl, mask, finish, generationPrompt, customerNotes, stoneMix, borderConfig } = input;
   const finishData = FINISH_TYPES[finish] || FINISH_TYPES["plain"];
 
@@ -653,7 +823,7 @@ async function handleGenerate(env, input) {
     // Call FLUX Fill — mask is the source of truth
     const generatedImageUrl = await callFluxFill(env, prompt, imageBase64, mask);
 
-    // Download result and store on S3
+    // Download result and store in private R2
     const imageResponse = await fetch(generatedImageUrl);
     if (!imageResponse.ok) throw new Error("Failed to download generated image");
 
@@ -662,7 +832,7 @@ async function handleGenerate(env, input) {
     const ext = contentType.includes("png") ? "png" : "jpg";
     const key = `visualiser/${Date.now()}-${finish}.${ext}`;
 
-    const { url } = await storagePut(env, key, imageBuffer, contentType);
+    const { url } = await storagePut(env, key, imageBuffer, contentType, origin, "visualiser-generated");
     return { success: true, generatedUrl: url };
   } catch (err) {
     return { success: false, generatedUrl: "", error: err.message };
@@ -670,7 +840,7 @@ async function handleGenerate(env, input) {
 }
 
 // Handle visualiser.timelapse — Generate construction stage keyframes
-async function handleTimelapse(env, input) {
+async function handleTimelapse(env, input, origin) {
   const { imageUrl, mask, finish, customerNotes } = input;
 
   if (!imageUrl) return { success: false, stages: [], error: "No image provided" };
@@ -707,7 +877,7 @@ async function handleTimelapse(env, input) {
       try {
         const generatedImageUrl = await callFluxFill(env, stage.prompt, imageBase64, mask);
 
-        // Download and store on S3
+        // Download and store in private R2
         const imageResponse = await fetch(generatedImageUrl);
         if (!imageResponse.ok) throw new Error(`Failed to download stage ${stage.id}`);
 
@@ -716,7 +886,7 @@ async function handleTimelapse(env, input) {
         const ext = contentType.includes("png") ? "png" : "jpg";
         const key = `timelapse/${Date.now()}-${stage.id}.${ext}`;
 
-        const { url } = await storagePut(env, key, imageBuffer, contentType);
+        const { url } = await storagePut(env, key, imageBuffer, contentType, origin, "timelapse-generated");
         results.push({
           id: stage.id,
           label: stage.label,
@@ -1125,6 +1295,17 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders() });
     }
 
+    if (path.startsWith("/api/lead-photo/")) {
+      if (request.method !== "GET" && request.method !== "HEAD") {
+        return jsonResponse({ error: "Method not allowed." }, 405);
+      }
+      try {
+        return await handleProtectedPhotoRequest(request, env, url);
+      } catch (error) {
+        return photoErrorResponse(error);
+      }
+    }
+
     // Static assets: use CF Cache API to avoid cold-start penalty on repeat visits
     if (request.method !== "POST" || !path.startsWith("/api/")) {
       const cache = caches.default;
@@ -1187,9 +1368,14 @@ export default {
 
       // Route: Photo upload
       if (path === "/api/upload-photo") {
-        const body = await request.json();
-        const result = await handlePhotoUpload(env, body);
-        return jsonResponse(result);
+        try {
+          await enforcePhotoUploadRateLimit(request);
+          const body = await request.json();
+          const result = await handlePhotoUpload(env, body, url.origin);
+          return jsonResponse(result, 200);
+        } catch (error) {
+          return photoErrorResponse(error);
+        }
       }
 
       // Route: Visualiser QA (Claude planning brain)
@@ -1204,7 +1390,7 @@ export default {
       if (path === "/api/trpc/visualiser.generate") {
         const body = await request.json();
         const input = parseTrpcBody(body);
-        const result = await handleGenerate(env, input);
+        const result = await handleGenerate(env, input, url.origin);
         return trpcResponse(result);
       }
 
@@ -1212,7 +1398,7 @@ export default {
       if (path === "/api/trpc/visualiser.timelapse") {
         const body = await request.json();
         const input = parseTrpcBody(body);
-        const result = await handleTimelapse(env, input);
+        const result = await handleTimelapse(env, input, url.origin);
         return trpcResponse(result);
       }
 
