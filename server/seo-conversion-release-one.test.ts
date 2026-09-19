@@ -205,11 +205,11 @@ describe("Release 1 technical SEO", () => {
   const indexHtml = readFile("client/index.html");
   const worker = readFile("client/public/_worker.js");
 
-  it("submits only the 202 indexable routes and excludes paid noindex pages", async () => {
+  it("submits only the 214 approved indexable routes and excludes paid noindex pages", async () => {
     const moduleUrl = `${pathToFileURL(resolve(__dirname, "../client/public/seo-manifest.js")).href}?test=${Date.now()}`;
     const { filterPublicSitemap } = await import(moduleUrl);
     const publicSitemap = filterPublicSitemap(sitemap);
-    expect((publicSitemap.match(/<url>/g) || []).length).toBe(202);
+    expect((publicSitemap.match(/<url>/g) || []).length).toBe(214);
     expect(publicSitemap).not.toContain("/lp/");
   });
 
@@ -272,7 +272,7 @@ describe("Release 1 technical SEO", () => {
       const originalUrls = extractUrls(sitemapXml);
       const publicUrls = extractUrls(publicSitemap);
       const removedUrls = originalUrls.filter(url => !publicUrls.includes(url));
-      expect(publicUrls).toHaveLength(202);
+      expect(publicUrls).toHaveLength(214);
       expect(removedUrls).toHaveLength(76);
       expect(removedUrls.every(url => url.includes("/lp/"))).toBe(true);
       expect(publicSitemap).toContain("/services/concrete-driveways-brisbane");

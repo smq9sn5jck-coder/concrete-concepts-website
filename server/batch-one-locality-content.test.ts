@@ -8,6 +8,7 @@ import {
 } from "../shared/localityContent";
 import {
   BATCH_ONE_CREATE_SLUGS,
+  BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST,
   BATCH_ONE_UPGRADE_SLUGS,
   isBatchOneLocalityAvailable,
 } from "../shared/batchOnePublication";
@@ -80,7 +81,19 @@ describe("Batch 1 approved locality source", () => {
     expect(BATCH_ONE_ROUTES).toEqual(APPROVED.map(([slug]) => `/areas/${slug}`));
     expect(BATCH_ONE_CREATE_SLUGS).toHaveLength(12);
     expect(BATCH_ONE_UPGRADE_SLUGS).toHaveLength(8);
+    expect(BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST).toEqual(BATCH_ONE_CREATE_SLUGS);
     expect(new Set(BATCH_ONE_ROUTES).size).toBe(20);
+  });
+
+  it("publishes every approved Batch 1 canonical exactly once in the sitemap", () => {
+    const paths = sitemapPaths();
+    const xml = readFileSync(resolve(ROOT, "client/public/sitemap.xml"), "utf8");
+    for (const route of BATCH_ONE_ROUTES) {
+      expect(paths.filter(path => path === route), route).toHaveLength(1);
+      expect(xml, route).toMatch(
+        new RegExp(`<loc>${SITE_ORIGIN}${route}</loc>\\s*<lastmod>2026-09-20</lastmod>`),
+      );
+    }
   });
 
   it("passes the strict typed content validator", () => {
@@ -191,9 +204,9 @@ describe("Batch 1 publication boundary", () => {
     expect(getLocalityRouteAccess(slug, true, false)).toBe("public");
   });
 
-  it.each(BATCH_ONE_CREATE_SLUGS)("keeps new slug %s unavailable on customer hosts", slug => {
-    expect(isBatchOneLocalityAvailable(slug, { customerHost: true, previewEnabled: true })).toBe(false);
-    expect(getLocalityRouteAccess(slug, true, true)).toBe("not-found");
+  it.each(BATCH_ONE_CREATE_SLUGS)("publishes approved new slug %s on customer hosts", slug => {
+    expect(isBatchOneLocalityAvailable(slug, { customerHost: true, previewEnabled: false })).toBe(true);
+    expect(getLocalityRouteAccess(slug, true, false)).toBe("public");
   });
 
   it.each(BATCH_ONE_CREATE_SLUGS)("allows new slug %s only behind the non-customer preview gate", slug => {
@@ -252,5 +265,10 @@ describe("Batch 1 staging review route", () => {
     expect(review).toContain("record.localityContext.sourceUrls.map");
     expect(review).toContain("`/areas/${record.slug}`");
     expect(review).not.toContain("Map.groupBy");
+  });
+
+  it("lists approved create routes in the customer service-area directory", () => {
+    const areasPage = readFileSync(resolve(ROOT, "client/src/pages/ServiceAreasPage.tsx"), "utf8");
+    expect(areasPage).toContain("BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST");
   });
 });

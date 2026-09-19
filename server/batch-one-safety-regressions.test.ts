@@ -63,7 +63,7 @@ function validQuoteWithServices(services: string[]) {
 describe("Batch 1 route-gate safety", () => {
   afterEach(() => vi.unstubAllGlobals());
 
-  it("denies both HEAD and GET for an unpublished create route before cache access", async () => {
+  it("serves both HEAD and GET for an approved create route with indexable locality metadata", async () => {
     const edgeWorker = await loadWorker("head-cache-gate");
     const cache = createCacheMock();
     vi.stubGlobal("caches", { default: cache.cache });
@@ -73,16 +73,18 @@ describe("Batch 1 route-gate safety", () => {
     const url = "https://concreteconceptsgroup.com/areas/moggill";
 
     const head = await edgeWorker.fetch(new Request(url, { method: "HEAD" }), env, ctx);
-    expect(head.status).toBe(404);
-    expect(head.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
-    expect(head.headers.get("Cache-Control")).toBe("no-store");
+    expect(head.status).toBe(200);
+    expect(head.headers.get("X-Robots-Tag")).toBeNull();
     expect(await head.text()).toBe("");
     expect(cache.put).not.toHaveBeenCalled();
 
     const get = await edgeWorker.fetch(new Request(url, { method: "GET" }), env, ctx);
-    expect(get.status).toBe(404);
-    expect(get.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
-    expect(cache.put).not.toHaveBeenCalled();
+    expect(get.status).toBe(200);
+    expect(get.headers.get("X-Robots-Tag")).toBeNull();
+    const html = await get.text();
+    expect(html).toContain("Residential Concreting in Moggill");
+    expect(html).toContain('<meta name="robots" content="index, follow"');
+    expect(ctx.waitUntil).toHaveBeenCalled();
   });
 
   it("uses the documented VITE_BATCH_ONE_PREVIEW flag as the generated edge preview gate", () => {

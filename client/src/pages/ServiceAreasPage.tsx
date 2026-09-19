@@ -15,7 +15,10 @@ import { Button } from "@/components/ui/button";
 import { trackPhoneCallClick, trackWhatsAppClick } from "@/components/ConversionTracking";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { BATCH_ONE_LOCALITIES } from "@shared/localityContent";
-import { BATCH_ONE_CREATE_SLUGS } from "@shared/batchOnePublication";
+import {
+  BATCH_ONE_CREATE_SLUGS,
+  BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST,
+} from "@shared/batchOnePublication";
 import { scrollToServiceAreaHash } from "@/lib/serviceAreaHash";
 
 const BASE_REGIONS = [
@@ -208,16 +211,20 @@ const REGION_ANCHOR_BY_NAME: Record<string, string> = {
   "Ipswich & Springfield": "ipswich",
 };
 
-const stagingDirectoryAdditions = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true"
-  ? BATCH_ONE_LOCALITIES.filter(record => (BATCH_ONE_CREATE_SLUGS as readonly string[]).includes(record.slug))
-  : [];
+const batchOneDirectoryAdditions = BATCH_ONE_LOCALITIES.filter(record =>
+  (BATCH_ONE_CREATE_SLUGS as readonly string[]).includes(record.slug)
+  && (
+    import.meta.env.VITE_BATCH_ONE_PREVIEW === "true"
+    || BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST.includes(record.slug)
+  ),
+);
 
 const REGIONS = BASE_REGIONS.map(region => ({
   ...region,
   anchorId: REGION_ANCHOR_BY_NAME[region.name],
   suburbs: [
     ...region.suburbs,
-    ...stagingDirectoryAdditions
+    ...batchOneDirectoryAdditions
       .filter(record => BATCH_ONE_DIRECTORY_REGION[record.slug] === region.name)
       .map(record => ({ name: record.locality, slug: record.slug })),
   ],

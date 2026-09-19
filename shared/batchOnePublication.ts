@@ -25,10 +25,11 @@ export const BATCH_ONE_UPGRADE_SLUGS = [
 ] as const;
 
 /**
- * Release 2 is staging-only. Add new slugs here only during an approved
- * production activation release; content presence alone never publishes one.
+ * Release 2 production activation. Only the director-approved Batch 1 create
+ * routes are public; content presence alone never publishes future routes.
  */
-export const BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST: readonly string[] = [];
+export const BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST: readonly string[] =
+  BATCH_ONE_CREATE_SLUGS;
 
 export function isBatchOneLocalityAvailable(
   slug: string,
