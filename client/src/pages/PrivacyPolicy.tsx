@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import { trackPhoneCallClick } from "@/components/ConversionTracking";
+import { OTHER_TRADE_CONSENT_VERSION } from "@shared/otherTrade";
 
 export default function PrivacyPolicy() {
   return (
@@ -34,7 +35,7 @@ export default function PrivacyPolicy() {
             Privacy Policy
           </h1>
           <p className="text-muted-foreground text-sm mb-10" style={{ fontFamily: "var(--font-body)" }}>
-            Last updated: 23 March 2026
+            Last updated: 20 September 2026
           </p>
 
           <div className="prose prose-neutral dark:prose-invert max-w-none space-y-8" style={{ fontFamily: "var(--font-body)" }}>
@@ -57,7 +58,7 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li><strong className="text-foreground">Contact details:</strong> name, phone number, email address, and property address when you request a quote or contact us.</li>
-                <li><strong className="text-foreground">Project information:</strong> details about your concreting project, including service type, photos you upload, and any notes you provide.</li>
+                <li><strong className="text-foreground">Project information:</strong> details about your concreting project or other-trade request, including service or trade type, optional photos you upload, and any notes you provide.</li>
                 <li><strong className="text-foreground">Usage data:</strong> information about how you interact with our website, including pages visited, time spent, browser type, device type, and IP address.</li>
                 <li><strong className="text-foreground">Marketing data:</strong> how you found us (e.g. Google Ads, organic search, referral), UTM parameters, and ad click identifiers.</li>
                 <li><strong className="text-foreground">Communication records:</strong> records of emails, phone calls, and messages exchanged between you and our team.</li>
@@ -68,7 +69,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-semibold text-foreground mb-3">3. How We Collect Information</h2>
               <p className="text-muted-foreground leading-relaxed">
                 We collect personal information directly from you when you fill out a quote request form, use our
-                cost calculator, download our concreting guide, submit a referral, contact us by phone or email,
+                cost calculator, download our concreting guide, send an other-trade request for CCG review, contact us by phone or email,
                 or interact with our Google Ads lead forms. We also collect information automatically through
                 cookies, Google Analytics, Google Ads conversion tracking, and Meta (Facebook) Pixel when you
                 browse our website.
@@ -83,6 +84,7 @@ export default function PrivacyPolicy() {
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>To respond to your quote request and provide an estimate for your project.</li>
                 <li>To contact you about your enquiry, arrange site visits, and provide our concreting services.</li>
+                <li>To review an other-trade request and, only with the separate consent recorded with that request, decide whether to share it with one suitable independent service provider.</li>
                 <li>To send you follow-up communications related to your enquiry (e.g. project updates, estimate documents).</li>
                 <li>To improve our website, services, and advertising effectiveness.</li>
                 <li>To comply with legal obligations and resolve disputes.</li>
@@ -130,9 +132,13 @@ export default function PrivacyPolicy() {
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
                 <li>Our employees and contractors who need access to provide our concreting services.</li>
                 <li>Third-party service providers who assist with email delivery (Resend), website hosting, and cloud storage.</li>
+                <li>For an other-trade request, one suitable independent service provider if CCG chooses to make that introduction and you gave the specific provider-sharing consent shown on the request form. That independent provider is separate from CCG and is responsible for its own availability, pricing, licensing, workmanship and response.</li>
                 <li>Google and Meta for advertising measurement and optimisation purposes (as described above).</li>
                 <li>Government authorities or regulators if required by law.</li>
               </ul>
+              <p className="text-muted-foreground leading-relaxed mt-3">
+                Other-trade requests and optional photos are reviewed by CCG first and are not automatically forwarded or sent indiscriminately. If CCG later makes a permitted disclosure, CCG keeps a disclosure record identifying the request, provider, categories of information shared, authorised person and disclosure time. The current other-trade consent version is <strong className="text-foreground">{OTHER_TRADE_CONSENT_VERSION}</strong>.
+              </p>
               <p className="text-muted-foreground leading-relaxed mt-3">
                 We do not sell, rent, or trade your personal information to third parties for their marketing purposes.
               </p>
@@ -152,9 +158,11 @@ export default function PrivacyPolicy() {
               <h2 className="text-xl font-semibold text-foreground mb-3">9. Data Retention</h2>
               <p className="text-muted-foreground leading-relaxed">
                 We retain your personal information only for as long as necessary to fulfil the purposes for which
-                it was collected, including to satisfy legal, accounting, or reporting requirements. Quote request
-                data is retained for up to 3 years to support warranty obligations and business records. You may
-                request deletion of your data at any time by contacting us.
+                it was collected, including to satisfy legal, accounting, reporting, consent and dispute-resolution
+                requirements. Quote request data is retained for up to 3 years to support warranty obligations and
+                business records. Other-trade request records, optional photos, consent evidence and any later
+                disclosure record are subject to appropriate retention and secure deletion practices. You may request
+                deletion of your data at any time by contacting us, subject to legal and record-keeping obligations.
               </p>
             </section>
 
@@ -167,6 +175,7 @@ export default function PrivacyPolicy() {
                 <li>Access the personal information we hold about you.</li>
                 <li>Request correction of any inaccurate or outdated information.</li>
                 <li>Request deletion of your personal information (subject to legal obligations).</li>
+                <li>For an other-trade request, withdraw consent before disclosure by contacting us. We will record the request and prevent disclosure while it is being resolved.</li>
                 <li>Opt out of marketing communications at any time.</li>
                 <li>Lodge a complaint with the Office of the Australian Information Commissioner (OAIC) if you believe your privacy has been breached.</li>
               </ul>
@@ -193,7 +202,8 @@ export default function PrivacyPolicy() {
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">13. Contact Us</h2>
               <p className="text-muted-foreground leading-relaxed">
-                If you have any questions about this Privacy Policy or wish to exercise your rights, please contact us:
+                If you have any questions about this Privacy Policy, want to withdraw other-trade consent before disclosure,
+                or request access, correction, or deletion where applicable, please contact us:
               </p>
               <div className="mt-4 p-5 rounded-lg bg-card border border-border">
                 <p className="text-foreground font-semibold mb-2">Concrete Concepts Group Pty Ltd</p>

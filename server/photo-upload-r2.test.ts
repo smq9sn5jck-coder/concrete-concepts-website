@@ -157,6 +157,47 @@ describe("Cloudflare private R2 photo upload", () => {
     expect(JSON.stringify(metadata)).not.toContain("job-site.jpg");
   });
 
+  it("stores the exact other-trade purpose under its isolated private prefix", async () => {
+    const r2 = createR2Mock();
+    const workerUrl = `${pathToFileURL(resolve(__dirname, "../client/public/_worker.js")).href}?photo-r2=other-trade-upload-${Date.now()}-${Math.random()}`;
+    const module = await import(workerUrl);
+    expect(module.handlePhotoUpload).toBeTypeOf("function");
+    const result = await module.handlePhotoUpload(
+      { LEAD_PHOTOS: r2.bucket },
+      validJpegBody({ purpose: "other-trade" }),
+      "https://preview.example.test",
+      true,
+    ) as { url: string };
+    expect(new URL(result.url).pathname).toMatch(/^\/api\/lead-photo\/other-trade\/[0-9a-f-]{36}\.jpg$/);
+    const [key, , metadata] = r2.put.mock.calls[0];
+    expect(key).toMatch(/^other-trade\/[0-9a-f-]{36}\.jpg$/);
+    expect(metadata.customMetadata.purpose).toBe("other-trade");
+  });
+
+  it("rejects the other-trade upload purpose at the public endpoint while the production flag is off", async () => {
+    const r2 = createR2Mock();
+    const edgeWorker = await loadWorker("other-trade-default-off");
+    const response = await edgeWorker.fetch(
+      uploadRequest(validJpegBody({ purpose: "other-trade" }), "203.0.113.213"),
+      { LEAD_PHOTOS: r2.bucket, ASSETS: assetFallback() },
+      { waitUntil: vi.fn() },
+    );
+    expect(response.status).toBe(404);
+    expect(r2.put).not.toHaveBeenCalled();
+  });
+
+  it("does not treat unknown upload purposes as other-trade", async () => {
+    const r2 = createR2Mock();
+    const edgeWorker = await loadWorker("unknown-purpose");
+    const response = await edgeWorker.fetch(
+      uploadRequest(validJpegBody({ purpose: "provider" }), "203.0.113.212"),
+      { LEAD_PHOTOS: r2.bucket, ASSETS: assetFallback() },
+      { waitUntil: vi.fn() },
+    );
+    expect(response.status).toBe(400);
+    expect(r2.put).not.toHaveBeenCalled();
+  });
+
   it("serves the private image only with the matching token and secure no-store headers", async () => {
     const r2 = createR2Mock();
     const edgeWorker = await loadWorker("protected-read");

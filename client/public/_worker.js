@@ -5,6 +5,16 @@ import {
   GENERATED_BATCH_ONE_PREVIEW_ENABLED,
   getLocalityRouteAccess,
 } from "./locality-content.js";
+import {
+  GENERATED_OTHER_TRADE_CATEGORIES,
+  GENERATED_OTHER_TRADE_CONSENT_TEXT,
+  GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256,
+  GENERATED_OTHER_TRADE_CONSENT_VERSION,
+  GENERATED_OTHER_TRADE_LIMITS,
+  GENERATED_OTHER_TRADE_PAGE_VERSION,
+  GENERATED_OTHER_TRADE_PREVIEW_ENABLED,
+  GENERATED_OTHER_TRADE_TIMEFRAMES,
+} from "./other-trade-config.js";
 
 const CUSTOMER_WEBSITE_HOSTS = new Set([
   "concreteconceptsgroup.com",
@@ -244,6 +254,14 @@ function consumeWorkerRateLimit(key, windowMs, maxAttempts, now) {
     }
   }
   return true;
+}
+
+function releaseLatestWorkerRateLimit(key, timestamp) {
+  const attempts = leadRateLimits.get(key) || [];
+  const index = attempts.lastIndexOf(timestamp);
+  if (index >= 0) attempts.splice(index, 1);
+  if (attempts.length) leadRateLimits.set(key, attempts);
+  else leadRateLimits.delete(key);
 }
 
 function validateWorkerQuoteSubmission(formData) {
@@ -807,7 +825,7 @@ async function handleProtectedPhotoRequest(request, env, url) {
   } catch {
     throw new PhotoHttpError(404, "Photo not found.");
   }
-  if (!/^(quote-photos|visualiser-uploads|visualiser|timelapse)\/[a-zA-Z0-9._-]+$/.test(key)) {
+  if (!/^(quote-photos|other-trade|visualiser-uploads|visualiser|timelapse)\/[a-zA-Z0-9._-]+$/.test(key)) {
     throw new PhotoHttpError(404, "Photo not found.");
   }
   const token = url.searchParams.get("token") || "";
@@ -843,18 +861,34 @@ async function handleProtectedPhotoRequest(request, env, url) {
 // ═══════════════════════════════════════════════════════════════
 
 // Handle photo upload
-async function handlePhotoUpload(env, body, origin) {
+export async function handlePhotoUpload(
+  env,
+  body,
+  origin,
+  otherTradeEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED,
+) {
   const { data, contentType, fileName } = body;
   const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
   if (!fileName || typeof fileName !== "string" || !allowedTypes.includes(contentType)) {
     throw new PhotoHttpError(400, "Invalid photo upload. Use JPEG, PNG, WebP or HEIC.");
   }
+  const purposePrefixes = {
+    quote: "quote-photos",
+    visualiser: "visualiser-uploads",
+    "other-trade": "other-trade",
+  };
+  if (!Object.hasOwn(purposePrefixes, body.purpose || "quote")) {
+    throw new PhotoHttpError(400, "Invalid photo upload purpose.");
+  }
+  if (body.purpose === "other-trade" && !otherTradeEnabled) {
+    throw new PhotoHttpError(404, "Not found.");
+  }
   const bytes = decodePhotoBase64(data);
   if (!photoSignatureMatches(bytes, contentType)) {
     throw new PhotoHttpError(400, "Photo type does not match its contents. Please choose the original image.");
   }
-  const purpose = body.purpose === "visualiser" ? "visualiser" : "quote";
-  const prefix = purpose === "visualiser" ? "visualiser-uploads" : "quote-photos";
+  const purpose = body.purpose || "quote";
+  const prefix = purposePrefixes[purpose];
   const key = `${prefix}/${crypto.randomUUID()}.${photoExtension(contentType)}`;
   const { url } = await storePrivateImage(env, { key, data: bytes, contentType, purpose, origin });
   return { url, fileName: String(fileName).slice(0, 255), contentType };
@@ -1347,6 +1381,253 @@ async function handleCallbackSubmit(env, formData) {
   }
 }
 
+function normalizedSingleLine(value) {
+  return String(value || "").trim().replace(/[\r\n\t]+/g, " ").replace(/\s+/g, " ");
+}
+
+function validateOtherTradePhotoUrls(photoUrls, requestOrigin) {
+  if (!Array.isArray(photoUrls) || photoUrls.length > GENERATED_OTHER_TRADE_LIMITS.photoCountMax) {
+    return false;
+  }
+  const allowedOrigins = new Set([
+    "https://concreteconceptsgroup.com",
+    "https://www.concreteconceptsgroup.com",
+  ]);
+  try {
+    if (requestOrigin) allowedOrigins.add(new URL(requestOrigin).origin);
+  } catch {
+    return false;
+  }
+  return photoUrls.every(photoUrl => {
+    if (typeof photoUrl !== "string" || photoUrl.length > 1_024) return false;
+    try {
+      const parsed = new URL(photoUrl);
+      return parsed.protocol === "https:"
+        && allowedOrigins.has(parsed.origin)
+        && /^\/api\/lead-photo\/other-trade\/[0-9a-f-]{36}\.(?:jpg|png|webp|heic)$/.test(parsed.pathname)
+        && /^[0-9a-f]{64}$/.test(parsed.searchParams.get("token") || "")
+        && [...parsed.searchParams.keys()].every(key => key === "token");
+    } catch {
+      return false;
+    }
+  });
+}
+
+function validateOtherTradeSubmission(formData) {
+  const now = Date.now();
+  const name = normalizedSingleLine(formData.name);
+  const mobile = normalizeWorkerPhone(formData.mobile);
+  const email = normalizedSingleLine(formData.email).toLowerCase();
+  const location = normalizedSingleLine(formData.location);
+  const trade = normalizedSingleLine(formData.trade);
+  const description = String(formData.description || "").trim();
+  const timeframe = normalizedSingleLine(formData.timeframe);
+  const source = normalizedSingleLine(formData.source || "need-another-trade");
+  const landingPage = normalizedSingleLine(formData.landingPage || "/need-another-trade");
+  const photoUrls = formData.photoUrls ?? [];
+
+  if (String(formData.website || "").trim()) {
+    return { valid: false, status: 400, error: "Please check the form and try again." };
+  }
+  if (!Number.isFinite(formData.formStartedAt) || now - formData.formStartedAt < GENERATED_OTHER_TRADE_LIMITS.minimumCompletionMs) {
+    return { valid: false, status: 400, error: "Please check the form and try again." };
+  }
+  if (name.length < GENERATED_OTHER_TRADE_LIMITS.nameMin || name.length > GENERATED_OTHER_TRADE_LIMITS.nameMax) {
+    return { valid: false, status: 400, error: "Please enter your name." };
+  }
+  if (!/^04\d{8}$/.test(mobile) || String(formData.mobile || "").length > GENERATED_OTHER_TRADE_LIMITS.mobileMax) {
+    return { valid: false, status: 400, error: "Enter an Australian mobile number beginning with 04." };
+  }
+  if (email.length > GENERATED_OTHER_TRADE_LIMITS.emailMax || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return { valid: false, status: 400, error: "Please enter a valid email address." };
+  }
+  if (!location || location.length > GENERATED_OTHER_TRADE_LIMITS.locationMax) {
+    return { valid: false, status: 400, error: "Enter your Brisbane or South East Queensland suburb or postcode." };
+  }
+  if (!GENERATED_OTHER_TRADE_CATEGORIES.includes(trade)) {
+    return { valid: false, status: 400, error: "Select an approved trade category." };
+  }
+  if (!GENERATED_OTHER_TRADE_TIMEFRAMES.includes(timeframe)) {
+    return { valid: false, status: 400, error: "Select an approved timeframe." };
+  }
+  if (description.length < GENERATED_OTHER_TRADE_LIMITS.descriptionMin || description.length > GENERATED_OTHER_TRADE_LIMITS.descriptionMax) {
+    return { valid: false, status: 400, error: `Add a job description between ${GENERATED_OTHER_TRADE_LIMITS.descriptionMin} and ${GENERATED_OTHER_TRADE_LIMITS.descriptionMax} characters.` };
+  }
+  const serviceArea = workerServiceArea(location);
+  if (!serviceArea.allowed) {
+    return { valid: false, status: 400, error: "We currently review requests in Brisbane and surrounding South East Queensland areas." };
+  }
+  if (formData.consent !== true
+    || formData.consentVersion !== GENERATED_OTHER_TRADE_CONSENT_VERSION
+    || formData.consentText !== GENERATED_OTHER_TRADE_CONSENT_TEXT
+    || formData.consentTextSha256 !== GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256
+    || formData.pageVersion !== GENERATED_OTHER_TRADE_PAGE_VERSION) {
+    return { valid: false, status: 400, error: "Confirm the current provider-sharing consent before submitting." };
+  }
+  if (!validateOtherTradePhotoUrls(photoUrls, formData._requestOrigin)) {
+    return { valid: false, status: 400, error: "One or more private photo links are invalid. Remove the affected photo and try again." };
+  }
+  if (source.length > GENERATED_OTHER_TRADE_LIMITS.sourceMax || landingPage.length > GENERATED_OTHER_TRADE_LIMITS.landingPageMax) {
+    return { valid: false, status: 400, error: "Please check the form and try again." };
+  }
+
+  return {
+    valid: true,
+    normalized: {
+      name,
+      mobile,
+      email,
+      location: serviceArea.normalized,
+      serviceAreaStatus: serviceArea.status,
+      trade,
+      description,
+      timeframe,
+      source,
+      landingPage,
+      photoUrls,
+    },
+  };
+}
+
+export async function handleOtherTradeSubmit(env, formData) {
+  const validation = validateOtherTradeSubmission(formData);
+  if (!validation.valid) return { success: false, status: validation.status, error: validation.error };
+  if (await sha256Hex(GENERATED_OTHER_TRADE_CONSENT_TEXT) !== GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256) {
+    console.error("Other-trade consent configuration failed integrity validation");
+    return { success: false, status: 503, retryable: true, error: "We couldn't safely store this request. Please retry or call 0424 463 268." };
+  }
+  const now = Date.now();
+  const contactKey = `other-trade:${validation.normalized.mobile}|${validation.normalized.email}`;
+  const addressKey = `other-trade-address:${formData._clientAddress || "unknown"}`;
+  if (!consumeWorkerRateLimit(contactKey, 10 * 60_000, 1, now)) {
+    return { success: false, status: 429, error: "We've already received this request. Please wait before trying again." };
+  }
+  if (!consumeWorkerRateLimit(addressKey, 10 * 60_000, 8, now)) {
+    return { success: false, status: 429, error: "Too many requests were received. Please wait a few minutes and try again." };
+  }
+  if (!env.LEAD_BACKUP_DB?.prepare) {
+    releaseLatestWorkerRateLimit(contactKey, now);
+    releaseLatestWorkerRateLimit(addressKey, now);
+    console.error("Other-trade D1 insert unavailable");
+    return { success: false, status: 503, retryable: true, error: "We couldn't safely store this request. Please retry or call 0424 463 268." };
+  }
+
+  const leadId = `other_trade_${crypto.randomUUID()}`;
+  const timestamp = new Date().toISOString();
+  try {
+    const insert = await env.LEAD_BACKUP_DB.prepare(`
+      INSERT INTO other_trade_leads (
+        id, created_at, received_at, name, mobile, email, suburb_postcode,
+        trade_category, description, timeframe, photo_urls_json, source,
+        landing_page, service_area_status, consent_status, consent_version,
+        consent_timestamp, consent_text_sha256, page_version, delivery_status,
+        review_status, provider_recipient, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(
+      leadId,
+      timestamp,
+      timestamp,
+      validation.normalized.name,
+      validation.normalized.mobile,
+      validation.normalized.email,
+      validation.normalized.location,
+      validation.normalized.trade,
+      validation.normalized.description,
+      validation.normalized.timeframe,
+      JSON.stringify(validation.normalized.photoUrls),
+      validation.normalized.source,
+      validation.normalized.landingPage,
+      validation.normalized.serviceAreaStatus,
+      "granted",
+      GENERATED_OTHER_TRADE_CONSENT_VERSION,
+      timestamp,
+      GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256,
+      GENERATED_OTHER_TRADE_PAGE_VERSION,
+      "d1_stored_email_pending",
+      "new",
+      null,
+      timestamp,
+    ).run();
+    if (insert?.success !== true || Number(insert?.meta?.changes) !== 1) {
+      releaseLatestWorkerRateLimit(contactKey, now);
+      releaseLatestWorkerRateLimit(addressKey, now);
+      console.error("Other-trade D1 insert was not confirmed");
+      return { success: false, status: 503, retryable: true, error: "We couldn't safely store this request. Please retry or call 0424 463 268." };
+    }
+  } catch {
+    releaseLatestWorkerRateLimit(contactKey, now);
+    releaseLatestWorkerRateLimit(addressKey, now);
+    console.error("Other-trade D1 insert failed");
+    return { success: false, status: 503, retryable: true, error: "We couldn't safely store this request. Please retry or call 0424 463 268." };
+  }
+
+  const photoSection = validation.normalized.photoUrls.length
+    ? `<h3>Private photos for CCG review</h3><ul>${validation.normalized.photoUrls.map((photoUrl, index) => `<li><a href="${escapeWorkerHtml(photoUrl)}" target="_blank" rel="noopener">Photo ${index + 1}</a></li>`).join("")}</ul>`
+    : "<p><strong>Private photos:</strong> None attached</p>";
+  const emailHtml = `
+    <h2>Other trade review request</h2>
+    <p><strong>CCG review required. Do not forward until provider suitability and consent scope are checked.</strong></p>
+    <table style="border-collapse:collapse;width:100%">
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Name</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.name)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Mobile</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.mobile)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Email</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.email)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Suburb or postcode</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.location)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Trade</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.trade)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Timeframe</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.timeframe)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;vertical-align:top">Job description</td><td style="padding:8px;border:1px solid #ddd;white-space:pre-wrap">${escapeWorkerHtml(validation.normalized.description)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Service-area status</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.serviceAreaStatus)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Source</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.source)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Landing page</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(validation.normalized.landingPage)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Consent timestamp</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(timestamp)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold;vertical-align:top">Consent wording</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(GENERATED_OTHER_TRADE_CONSENT_TEXT)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Consent version</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(GENERATED_OTHER_TRADE_CONSENT_VERSION)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Consent SHA-256</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256)}</td></tr>
+      <tr><td style="padding:8px;border:1px solid #ddd;font-weight:bold">Page version</td><td style="padding:8px;border:1px solid #ddd">${escapeWorkerHtml(GENERATED_OTHER_TRADE_PAGE_VERSION)}</td></tr>
+    </table>
+    ${photoSection}
+  `;
+
+  let emailStatus = "failed";
+  if (env.RESEND_API_KEY) {
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "Concrete Concepts <info@concreteconceptsgroup.com>",
+          to: ["info@concreteconceptsgroup.com"],
+          subject: `[OTHER TRADE] ${validation.normalized.trade} - ${validation.normalized.location} (${validation.normalized.name})`,
+          html: emailHtml,
+        }),
+      });
+      if (response.ok) emailStatus = "sent";
+    } catch {
+      emailStatus = "failed";
+    }
+  }
+
+  try {
+    await env.LEAD_BACKUP_DB.prepare(`
+      UPDATE other_trade_leads SET delivery_status = ?, updated_at = ? WHERE id = ?
+    `).bind(emailStatus === "sent" ? "email_sent" : "email_failed", new Date().toISOString(), leadId).run();
+  } catch {
+    console.error("Other-trade delivery status update failed");
+  }
+
+  return {
+    success: true,
+    message: "Request received for CCG review",
+    serviceAreaStatus: validation.normalized.serviceAreaStatus,
+    channels: { d1: "stored", email: emailStatus },
+  };
+}
+
+export function handleReferralRedirect(request, previewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+  if (!previewEnabled) return null;
+  const status = request.method === "GET" || request.method === "HEAD" ? 308 : 303;
+  return Response.redirect(new URL("/need-another-trade", request.url).toString(), status);
+}
+
 // Parse tRPC batch request body
 function parseTrpcBody(body) {
   if (body && typeof body === "object") {
@@ -1376,6 +1657,8 @@ async function prepareStaticResponse(response, url, path, method) {
     headers.set("Content-Type", "text/html; charset=utf-8");
     headers.delete("Content-Length");
     if (!isCustomerWebsiteHost) {
+      headers.set("X-Robots-Tag", "noindex, nofollow");
+    } else if (path === "/need-another-trade") {
       headers.set("X-Robots-Tag", "noindex, nofollow");
     } else if (path.startsWith("/lp/")) {
       headers.set("X-Robots-Tag", "noindex, follow");
@@ -1407,9 +1690,37 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    if (path === "/referral") {
+      const redirect = handleReferralRedirect(request);
+      if (redirect) return redirect;
+    }
+
+    if (path === "/api/other-trade-submit" && !GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+      return jsonResponse({ error: "Not found." }, 404);
+    }
+
+    if (path === "/need-another-trade" && !GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+
     // Handle CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders() });
+    }
+
+    if (path === "/api/other-trade-submit") {
+      if (request.method !== "POST") {
+        const response = jsonResponse({ error: "Method not allowed." }, 405);
+        response.headers.set("Allow", "POST");
+        return response;
+      }
+      if (!request.headers.get("Content-Type")?.includes("application/json")) {
+        return jsonResponse({ error: "Content-Type must be application/json." }, 415);
+      }
+      const declaredLength = Number(request.headers.get("Content-Length") || "0");
+      if (Number.isFinite(declaredLength) && declaredLength > 65_536) {
+        return jsonResponse({ error: "Request payload is too large." }, 413);
+      }
     }
 
     if (path.startsWith("/api/lead-photo/")) {
@@ -1461,6 +1772,17 @@ export default {
     }
 
     try {
+      // Route: Other-trade review request (preview-gated, D1-first, no provider delivery)
+      if (path === "/api/other-trade-submit") {
+        const body = await request.json();
+        const result = await handleOtherTradeSubmit(env, {
+          ...body,
+          _clientAddress: request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "unknown",
+          _requestOrigin: url.origin,
+        });
+        return jsonResponse(result, result.success ? 200 : result.status || 500);
+      }
+
       // Route: Quote submission (direct)
       if (path === "/api/quote-submit") {
         const body = await request.json();

@@ -2,6 +2,7 @@ import {
   GENERATED_BATCH_ONE_BY_SLUG,
   GENERATED_PUBLIC_LOCALITY_SLUGS,
 } from "./locality-content.js";
+import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "./other-trade-config.js";
 
 const SITE_ORIGIN = "https://concreteconceptsgroup.com";
 
@@ -43,6 +44,13 @@ const SERVICE_METADATA = {
   "/services/shed-slabs-brisbane": ["Concrete Shed Slabs Brisbane | CCG Quotes", "Request a detailed quote for a Brisbane or SEQ shed slab with dimensions, site access, preparation and intended-use information."],
 };
 
+const OTHER_TRADE_METADATA = {
+  title: "Need Another Trade? | CCG Review Request",
+  description: "Send a Brisbane or South East Queensland trade request for CCG review. No provider, availability, price, workmanship or response is guaranteed.",
+  canonical: `${SITE_ORIGIN}/need-another-trade`,
+  robots: "noindex, nofollow",
+};
+
 function titleCaseSlug(slug) {
   return decodeURIComponent(slug || "").split("-").filter(Boolean)
     .map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
@@ -69,8 +77,15 @@ export function renderLocalityContentShell(pathname) {
   return `<main data-edge-locality-shell="true"><article><p>${escapeHtml(record.region)} · ${escapeHtml(record.lga)} · ${escapeHtml(record.postcode)}</p><h1>${escapeHtml(record.h1)}</h1><p>${escapeHtml(record.intro)}</p><h2>Practical site considerations</h2><p>${escapeHtml(record.practicalConsiderations)}</p><h2>Locality context</h2><p>${escapeHtml(record.localityContext.attribution)}</p><p>Sources reviewed: ${escapeHtml(record.localityContext.claimDate)}</p><ul>${sources}</ul><h2>Relevant concrete services</h2><ul>${services}</ul><h2>Frequently asked questions</h2>${faqs}<h2>Nearby live locality guides</h2><ul>${nearby}</ul><p><a href="${escapeHtml(record.regionalHub.path)}">${escapeHtml(record.regionalHub.label)}</a></p><p><a href="/get-quote">Start a detailed quote</a></p></article></main>`;
 }
 
-export function getSeoMetadata(pathname) {
+export function renderOtherTradeContentShell(pathname, previewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  if (path !== "/need-another-trade" || !previewEnabled) return "";
+  return `<main data-edge-other-trade-shell="true"><article><p>Concrete Concepts Group · Brisbane and South East Queensland</p><h1>Need another trade?</h1><p>Choose a direct CCG concreting quote or send another-trade details to CCG for review.</p><section><h2>Concreting quote</h2><p>CCG handles concreting directly through its detailed five-step quote.</p><p><a href="/get-quote">Start a detailed concreting quote</a></p></section><section><h2>Another trade request</h2><p>Send a separate request for CCG to review. This is not a booking or guaranteed provider match.</p><p>With your separate consent, CCG may share the contact details, job information and optional photos you provide with one suitable independent service provider. Requests are not automatically forwarded.</p></section></article></main>`;
+}
+
+export function getSeoMetadata(pathname, otherTradePreviewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  if (path === "/need-another-trade" && otherTradePreviewEnabled) return OTHER_TRADE_METADATA;
   if (CORE_METADATA[path]) return { title: CORE_METADATA[path][0], description: CORE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path === "/" ? "" : path}`, robots: "index, follow" };
   if (SERVICE_METADATA[path]) return { title: SERVICE_METADATA[path][0], description: SERVICE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
   const batchOne = getBatchOneRecord(path);
@@ -109,11 +124,11 @@ export function applySeoMetadata(html, pathname, robotsOverride) {
   output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${meta.title}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${meta.description}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${meta.canonical}">`);
-  const localityShell = renderLocalityContentShell(pathname);
-  if (localityShell) {
+  const contentShell = renderLocalityContentShell(pathname) || renderOtherTradeContentShell(pathname);
+  if (contentShell) {
     output = output.replace(
       /(<div\s+id=["']root["'][^>]*>)[\s\S]*?<\/div>(\s*(?=<script\b))/i,
-      `$1${localityShell}</div>$2`,
+      `$1${contentShell}</div>$2`,
     );
   }
   return output;

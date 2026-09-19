@@ -10,6 +10,17 @@ import {
   validateAustralianPhone,
 } from "@shared/leadValidation";
 import type { ComprehensiveQuote } from "@shared/quoteBrief";
+import {
+  isOtherTradeCategory,
+  isOtherTradeTimeframe,
+  OTHER_TRADE_CONSENT_TEXT,
+  OTHER_TRADE_CONSENT_VERSION,
+  OTHER_TRADE_LIMITS,
+  OTHER_TRADE_PAGE_VERSION,
+  type OtherTradeSubmission,
+  type OtherTradeSubmissionResult,
+} from "@shared/otherTrade";
+import { GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256 } from "@/generated/otherTradeConfig";
 
 const BUSINESS_EMAIL = "info@concreteconceptsgroup.com";
 const BUSINESS_PHONE = "0424 463 268";
@@ -279,6 +290,72 @@ export async function submitGuideFallback(data: GuideFallbackData): Promise<Fall
       error: err instanceof Error ? err.message : "Delivery service unavailable",
     };
   }
+}
+
+/** Submit an other-trade request only to its isolated D1-first endpoint. */
+export async function submitOtherTradeFallback(
+  data: OtherTradeSubmission,
+): Promise<OtherTradeSubmissionResult> {
+  const name = data.name.trim().replace(/\s+/g, " ");
+  if (name.length < OTHER_TRADE_LIMITS.nameMin || name.length > OTHER_TRADE_LIMITS.nameMax) {
+    throw new Error("Please enter your name.");
+  }
+  const phoneValidation = validateAustralianPhone(data.mobile);
+  if (!phoneValidation.valid || !("kind" in phoneValidation) || phoneValidation.kind !== "mobile") {
+    throw new Error("Enter an Australian mobile number beginning with 04.");
+  }
+  const email = data.email.trim().toLowerCase();
+  if (email.length > OTHER_TRADE_LIMITS.emailMax || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    throw new Error("Please enter a valid email address.");
+  }
+  const serviceArea = classifyServiceArea(data.location);
+  if (!serviceArea.canSubmit) throw new Error(serviceArea.message);
+  if (!isOtherTradeCategory(data.trade)) throw new Error("Select an approved trade category.");
+  if (!isOtherTradeTimeframe(data.timeframe)) throw new Error("Select an approved timeframe.");
+  const description = data.description.trim();
+  if (description.length < OTHER_TRADE_LIMITS.descriptionMin || description.length > OTHER_TRADE_LIMITS.descriptionMax) {
+    throw new Error(`Add a job description between ${OTHER_TRADE_LIMITS.descriptionMin} and ${OTHER_TRADE_LIMITS.descriptionMax} characters.`);
+  }
+  if (data.consent !== true
+    || data.consentVersion !== OTHER_TRADE_CONSENT_VERSION
+    || data.consentText !== OTHER_TRADE_CONSENT_TEXT
+    || data.consentTextSha256 !== GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256
+    || data.pageVersion !== OTHER_TRADE_PAGE_VERSION) {
+    throw new Error("Confirm the current provider-sharing consent before submitting.");
+  }
+  if (!Array.isArray(data.photoUrls) || data.photoUrls.length > OTHER_TRADE_LIMITS.photoCountMax) {
+    throw new Error("Remove excess photos before submitting.");
+  }
+  const submissionSignals = assessSubmissionSignals({
+    honeypot: data.website,
+    startedAt: data.formStartedAt,
+    minimumCompletionMs: OTHER_TRADE_LIMITS.minimumCompletionMs,
+  });
+  if (!submissionSignals.allowed) throw new Error("Please check the form and try again.");
+
+  const response = await fetch("/api/other-trade-submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      ...data,
+      name,
+      mobile: phoneValidation.normalized,
+      email,
+      location: serviceArea.normalized,
+      description,
+      source: data.source || "need-another-trade",
+      landingPage: data.landingPage || window.location.pathname,
+    }),
+  });
+  const result = await response.json().catch(() => ({})) as OtherTradeSubmissionResult;
+  if (!response.ok || !result.success) {
+    return {
+      success: false,
+      retryable: response.status >= 500 || result.retryable === true,
+      error: result.error || "We couldn't confirm this request. Please retry or call 0424 463 268.",
+    };
+  }
+  return result;
 }
 
 /** Opens a pre-filled email draft. The customer must still press Send. */

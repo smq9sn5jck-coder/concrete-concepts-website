@@ -63,6 +63,16 @@ describe("public sitemap and edge indexability parity", () => {
     expect(getSeoMetadata("/lp/retaining-wall-brisbane").robots).toBe("noindex, follow");
   });
 
+  it("keeps the staging-only other-trade route out of the production sitemap and explicitly noindexed", () => {
+    const paths = sitemapPaths();
+    expect(paths).not.toContain("/need-another-trade");
+    expect(paths).toContain("/referral");
+    expect(getSeoMetadata("/need-another-trade", true)).toMatchObject({
+      canonical: "https://concreteconceptsgroup.com/need-another-trade",
+      robots: "noindex, nofollow",
+    });
+  });
+
   it.each(["/admin", "/my-quote", "/404"])(
     "keeps the private or utility route %s noindexed",
     path => {

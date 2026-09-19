@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import MetaPixelInit from "./components/MetaPixelInit";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { captureUtmParams } from "@/lib/utm";
+import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "@/generated/otherTradeConfig";
 
 // Capture UTM parameters, gclid, fbclid, referrer on first page load
 captureUtmParams();
@@ -32,6 +33,9 @@ const LandingPage = lazy(() => import("./pages/LandingPage"));
 const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
 const GetQuote = lazy(() => import("./pages/GetQuote"));
 const ReferralPage = lazy(() => import("./pages/ReferralPage"));
+const NeedAnotherTradePage = GENERATED_OTHER_TRADE_PREVIEW_ENABLED
+  ? lazy(() => import("./pages/NeedAnotherTradePage"))
+  : null;
 const GuidePage = lazy(() => import("./pages/GuidePage"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
@@ -59,6 +63,11 @@ function PageLoader() {
   );
 }
 
+function ReferralPreviewRedirect() {
+  if (typeof window !== "undefined") window.location.replace("/need-another-trade");
+  return <PageLoader />;
+}
+
 function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -78,7 +87,13 @@ function Router() {
         <Route path={"/gallery/before-after"} component={BeforeAfterGallery} />
           <Route path={"/projects"} component={ProjectsPage} />
         <Route path={"/get-quote"} component={GetQuote} />
-        <Route path={"/referral"} component={ReferralPage} />
+        {NeedAnotherTradePage && (
+          <Route path={"/need-another-trade"} component={NeedAnotherTradePage} />
+        )}
+        <Route
+          path={"/referral"}
+          component={GENERATED_OTHER_TRADE_PREVIEW_ENABLED ? ReferralPreviewRedirect : ReferralPage}
+        />
         <Route path={"/guide"} component={GuidePage} />
         <Route path={"/lp/:slug"} component={LandingPage} />
         <Route path={"/privacy"} component={PrivacyPolicy} />
