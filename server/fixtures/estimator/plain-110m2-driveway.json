@@ -1,0 +1,99 @@
+{
+  "rateCardVersion": "ccg-rates-2026-02-q7831-v1",
+  "calculationVersion": "ccg-estimator-v1",
+  "request": {
+    "schemaVersion": 1,
+    "source": {
+      "system": "test",
+      "submissionId": "fixture-plain-110"
+    },
+    "service": "driveway",
+    "workType": "replacement",
+    "requestedFinish": "plain",
+    "alternativeFinishes": [],
+    "scenarios": {
+      "low": {
+        "areaM2": 110,
+        "thicknessMm": 100,
+        "mix": "n32",
+        "mesh": "sl72",
+        "membrane": false,
+        "formLm": 42,
+        "roadbaseT": 14,
+        "distanceKm": 12,
+        "saturday": false,
+        "excavationHours": 6,
+        "tipperLoads": 4,
+        "removalM2": 0,
+        "cuttingLm": 0,
+        "pump": "none",
+        "prepDays": 2.5,
+        "prepCrew": 4,
+        "pourDays": 1.5,
+        "pourCrew": 4,
+        "difficultAccess": false,
+        "targetMarginBps": 2200
+      },
+      "expected": {
+        "areaM2": 110,
+        "thicknessMm": 100,
+        "mix": "n32",
+        "mesh": "sl72",
+        "membrane": false,
+        "formLm": 42,
+        "roadbaseT": 17,
+        "distanceKm": 12,
+        "saturday": false,
+        "excavationHours": 8,
+        "tipperLoads": 5,
+        "removalM2": 0,
+        "cuttingLm": 0,
+        "pump": "none",
+        "prepDays": 3,
+        "prepCrew": 4,
+        "pourDays": 1.5,
+        "pourCrew": 4,
+        "difficultAccess": false,
+        "targetMarginBps": 2200
+      },
+      "high": {
+        "areaM2": 110,
+        "thicknessMm": 100,
+        "mix": "n32",
+        "mesh": "sl72",
+        "membrane": false,
+        "formLm": 46,
+        "roadbaseT": 20,
+        "distanceKm": 12,
+        "saturday": false,
+        "excavationHours": 12,
+        "tipperLoads": 7,
+        "removalM2": 0,
+        "cuttingLm": 0,
+        "pump": "none",
+        "prepDays": 4,
+        "prepCrew": 4,
+        "pourDays": 1.5,
+        "pourCrew": 4,
+        "difficultAccess": false,
+        "targetMarginBps": 2200
+      }
+    },
+    "evidence": {
+      "photosProvided": false,
+      "measurementSource": "client_approximate",
+      "notes": [
+        "No site photos were available.",
+        "Drainage and final levels require site confirmation."
+      ]
+    }
+  },
+  "expected": {
+    "rawLowIncGstCents": 2196700,
+    "rawExpectedIncGstCents": 2451900,
+    "rawHighIncGstCents": 2943600,
+    "displayLowIncGstCents": 2200000,
+    "displayHighIncGstCents": 2950000,
+    "routing": "owner_review"
+  }
+}
