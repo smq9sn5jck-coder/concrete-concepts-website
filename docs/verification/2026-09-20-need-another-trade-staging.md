@@ -2,14 +2,14 @@
 
 **Date:** 20 September 2026
 **Status:** Verified non-production Cloudflare preview
-**Preview deployment:** `8bef88af-b070-4533-ae1f-832076640af0`
+**Preview deployment:** `cef74831-95ba-48ca-b1c6-92fd18b45bb3`
 **Preview branch:** `release-3-need-another-trade-review`
 **Review URL:** https://release-3-need-another-trade.concrete-concepts-group.pages.dev/need-another-trade
 **Production baseline retained:** `b0bcd192-4162-467d-8afa-1dfa7c3c907a`
 
 ## Outcome
 
-The approved **Need Another Trade?** experience has been implemented as a non-production staging release. It presents a clear split between CCG concreting enquiries and other-trade requests. The concreting pathway enters the existing five-step quote funnel without submitting a lead. The other-trade pathway uses a separate request class, separate endpoint, explicit provider-sharing consent, private photo storage, and an owner-review-first workflow.
+The approved **Need Another Trade?** experience has been implemented as a non-production staging release. It presents a clear split between CCG concreting enquiries and other-trade requests. The concreting pathway enters the existing five-step quote funnel without submitting a lead. The other-trade pathway uses a separate request class, separate endpoint, explicit provider-sharing consent, private photo storage, and an owner-review-first workflow. The same permanent review branch also contains the approved 20-page Batch 1 locality review index at `/batch-one-review`.
 
 The new route is **not published on the customer website**. It is excluded from the public sitemap, returns `X-Robots-Tag: noindex, nofollow`, renders a `noindex, nofollow` meta policy, and uses the customer-domain canonical only as a future production canonical. The live production deployment and its Google Ads settings were not changed.
 
@@ -46,7 +46,7 @@ No Google Ads budget, target ROAS, bidding strategy, campaign goal, keyword, loc
 
 | Resource | Preview | Production |
 |---|---|---|
-| Pages deployment | `8bef88af-b070-4533-ae1f-832076640af0` | `b0bcd192-4162-467d-8afa-1dfa7c3c907a` retained |
+| Pages deployment | `cef74831-95ba-48ca-b1c6-92fd18b45bb3` | `b0bcd192-4162-467d-8afa-1dfa7c3c907a` retained |
 | D1 binding | `ccg-other-trade-preview-20260920` (`57820612-5691-4486-8191-0e48b94a8ae4`) | Existing production lead backup unchanged |
 | D1 records after testing | 0 leads; 0 disclosures | Not queried or changed by this staging release |
 | R2 binding | `ccg-other-trade-preview-photos-20260920` | `ccg-lead-photos` unchanged |
@@ -72,4 +72,4 @@ An independent fresh-eyes review returned **pass** with no remaining findings. I
 
 This staging deployment must remain non-production until the director reviews the page and the provider-sharing privacy wording receives the required Australian legal/privacy review. Production publication also requires a separate release approval. Release 3B provider disclosure controls remain out of scope.
 
-Preview rollback is immediate and does not require touching production: delete or supersede deployment `8bef88af-b070-4533-ae1f-832076640af0`, restore the prior Pages preview bindings if desired, and retain the isolated D1 tables as an empty audit-safe record unless their deletion is separately approved. The live customer website continues to use production deployment `b0bcd192-4162-467d-8afa-1dfa7c3c907a`.
+Preview rollback is immediate and does not require touching production: delete or supersede deployment `cef74831-95ba-48ca-b1c6-92fd18b45bb3`, restore the prior Pages preview bindings if desired, and retain the isolated D1 tables as an empty audit-safe record unless their deletion is separately approved. The live customer website continues to use production deployment `b0bcd192-4162-467d-8afa-1dfa7c3c907a`.

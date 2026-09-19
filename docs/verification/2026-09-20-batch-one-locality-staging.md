@@ -4,6 +4,9 @@
 
 **Scope:** Release 2 tasks 2.1–2.10 only. This candidate is **staging-only**. It does not activate the 12 create routes on the customer domains and does not add them to the production sitemap.
 
+**Permanent review:** https://release-3-need-another-trade.concrete-concepts-group.pages.dev/batch-one-review
+**Unified preview deployment:** `cef74831-95ba-48ca-b1c6-92fd18b45bb3`
+
 ## Outcome
 
 The fixed 20-page locality batch is implemented and verified in a private, noindex staging build. The customer website remains on the existing production release. No Google Ads campaign, budget, bidding, target ROAS, targeting, keyword or conversion-goal setting changed. No lead or Google Ads conversion was created during testing.
@@ -77,4 +80,5 @@ The first independent review returned seven material findings, all reproduced an
 - Edge-shell verification: `/home/ubuntu/ccg-r2-preview-2026-09-20/edge-shell-verification.json`
 - Source verification: `/home/ubuntu/ccg-r2-preview-2026-09-20/source-verification.md`
 - Link verification: `/home/ubuntu/ccg-r2-preview-2026-09-20/link-verification.json`
-- Corrected staging URL: `https://4174-iruxhrayrsa3gdj4ht5dv-5ac7b973.sg2.manus.computer/batch-one-review`
+- Temporary local staging URL: `https://4174-iruxhrayrsa3gdj4ht5dv-5ac7b973.sg2.manus.computer/batch-one-review`
+- Permanent noindex Cloudflare review URL: `https://release-3-need-another-trade.concrete-concepts-group.pages.dev/batch-one-review`
