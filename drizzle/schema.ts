@@ -68,6 +68,26 @@ export const quoteRequests = mysqlTable("quote_requests", {
 export type QuoteRequest = typeof quoteRequests.$inferSelect;
 export type InsertQuoteRequest = typeof quoteRequests.$inferInsert;
 
+// One-time post-quote site-inspection booking SMS delivery
+export const quoteBookingDeliveries = mysqlTable("quote_booking_deliveries", {
+  id: int("id").autoincrement().primaryKey(),
+  quoteRequestId: int("quoteRequestId").notNull().unique(),
+  tokenHash: varchar("tokenHash", { length: 64 }).notNull().unique(),
+  status: mysqlEnum("status", ["available", "sending", "sent", "failed", "uncertain"]).default("available").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  requestedAt: timestamp("requestedAt"),
+  sentAt: timestamp("sentAt"),
+  failedAt: timestamp("failedAt"),
+  attemptCount: int("attemptCount").default(0).notNull(),
+  providerMessageId: varchar("providerMessageId", { length: 128 }),
+  lastErrorClass: varchar("lastErrorClass", { length: 100 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type QuoteBookingDelivery = typeof quoteBookingDeliveries.$inferSelect;
+export type InsertQuoteBookingDelivery = typeof quoteBookingDeliveries.$inferInsert;
+
 // Job timeline events — full audit trail of status changes, notes, and updates
 export const jobTimelineEvents = mysqlTable("job_timeline_events", {
   id: int("id").autoincrement().primaryKey(),

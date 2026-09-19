@@ -69,7 +69,7 @@ A dedicated `quote_booking_deliveries` table will keep the delivery workflow sep
 | `quoteRequestId` | Associates the request with the saved detailed quote. |
 | `tokenHash` | Stores a one-way hash rather than the browser token. |
 | `expiresAt` | Enforces the 24-hour success-screen window. |
-| `status` | Tracks `available`, `sending`, `sent` or `failed`. |
+| `status` | Tracks `available`, `sending`, `sent`, `failed` or non-retryable `uncertain`. |
 | `requestedAt` | Records the customer’s explicit click. |
 | `sentAt` | Records successful provider acceptance. |
 | `failedAt` | Records the latest failed attempt without customer data. |
@@ -77,7 +77,7 @@ A dedicated `quote_booking_deliveries` table will keep the delivery workflow sep
 | `providerMessageId` | Optional operational reference; never returned to the client. |
 | `createdAt` and `updatedAt` | Support audit and troubleshooting. |
 
-The table will enforce one booking-delivery row per quote and a unique token hash. Customer-facing retries may move `failed` back to `sending` within the token lifetime, but `sent` is terminal and cannot send again.
+The table will enforce one booking-delivery row per quote and a unique token hash. Customer-facing retries may move a confirmed `failed` result back to `sending` within the token lifetime. Both `sent` and `uncertain` are terminal for customer retries. Twilio notes that duplicate messages almost always mean the application submitted multiple provider requests, so an ambiguous network result must not trigger an automatic or customer-initiated retry.[2]
 
 ## Security and Abuse Controls
 
@@ -96,6 +96,7 @@ A database, Twilio or network failure must not invalidate or duplicate the alrea
 | Twilio is not configured | Explain that text delivery is unavailable and keep the direct booking action visible. |
 | Token is invalid or expired | Ask the customer to use the direct booking action or call the business. |
 | First provider attempt fails | Show a concise retry option while the token remains valid. |
+| Provider acceptance cannot be confirmed | Mark the delivery `uncertain`, disable SMS retry and ask the customer to check messages or use the direct booking action. |
 | Message has already been sent | Report that it was already sent and do not contact Twilio again. |
 | Emergency quote fallback succeeded | Omit the SMS action; retain direct booking and call actions. |
 | Calendly is unavailable | The submitted quote remains safe and the call action remains available. |
@@ -122,8 +123,9 @@ Before implementation, failing tests will require the following behaviour:
 6. Invalid or expired tokens never invoke the SMS transport.
 7. A successful delivery is idempotent and parallel claims cannot send twice.
 8. Failed sends can be retried within the token lifetime without losing the original quote.
-9. The quote conversion tracker remains limited to the existing two confirmed-delivery branches.
-10. No real SMS is sent by the automated test suite.
+9. Ambiguous provider outcomes become non-retryable so a persistence or network fault cannot produce a duplicate SMS.
+10. The quote conversion tracker remains limited to the existing two confirmed-delivery branches.
+11. No real SMS is sent by the automated test suite.
 
 After implementation, focused tests, the full Vitest suite, TypeScript, database migration generation, the guarded production build and browser checks at mobile and desktop sizes must pass.
 
@@ -137,4 +139,6 @@ The deployment will be accepted only after the quote route, primary success scre
 
 [1]: https://www.twilio.com/docs/messaging/features/consent-api "Twilio Consent Management API"
 
-[2]: https://calendly.com/concreteconceptsgroup-info/free-site-inspection-fixed-quote "Concrete Concepts Group Free Site Inspection and Fixed Quote"
+[2]: https://www.twilio.com/docs/messaging/guides/debugging-common-issues "Twilio Debugging Common Messaging Issues"
+
+[3]: https://calendly.com/concreteconceptsgroup-info/free-site-inspection-fixed-quote "Concrete Concepts Group Free Site Inspection and Fixed Quote"

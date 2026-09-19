@@ -25,7 +25,7 @@ import { generateQuotePdf, generateCustomQuotePdf } from "./quotePdf";
 import { storagePut } from "./storage";
 import { sendQuotePdfEmail } from "./quotePdfEmail";
 import { sendDay1WhatToExpect, sendDay3FollowUp, sendDay7FollowUp, sendReviewRequest } from "./followUpEmails";
-import { isTwilioConfigured, sendNewQuoteSms, sendCallbackSms, sendDay3SmsFollowUp, sendDay7SmsFollowUp, sendReviewRequestSms } from "./smsFollowUp";
+import { isTwilioConfigured, sendNewQuoteSms, sendCallbackSms, sendDay3SmsFollowUp, sendDay7SmsFollowUp, sendReviewRequestSms, sendTransactionalSms } from "./smsFollowUp";
 import { and, eq, ne, lt, gte, isNull, asc, desc, lte } from "drizzle-orm";
 import { isMetaConfigured, isInstagramConfigured, postToFacebook, postToInstagram, postToBothPlatforms, generateHashtags } from "./metaApi";
 import { sendAbandonedQuoteEmail } from "./abandonedQuoteEmail";
@@ -45,6 +45,8 @@ import {
   validateAustralianPhone,
 } from "@shared/leadValidation";
 import { comprehensiveQuoteSchema, toLegacyQuoteFields } from "@shared/quoteBrief";
+import { deliverBookingLink } from "./quoteBookingSms";
+import { createQuoteBookingDelivery, createQuoteBookingDeliveryStore } from "./quoteBookingDeliveryStore";
 
 // Static fallback reviews (from Google Business Profile, manually curated)
 // Used when Google Maps API quota is exhausted or unavailable
@@ -184,6 +186,8 @@ const callbackSubmissionLimiter = new SubmissionRateLimiter({ windowMs: 2 * 60_0
 const callbackAddressLimiter = new SubmissionRateLimiter({ windowMs: 10 * 60_000, maxAttempts: 8 });
 const guideSubmissionLimiter = new SubmissionRateLimiter({ windowMs: 10 * 60_000, maxAttempts: 1 });
 const guideAddressLimiter = new SubmissionRateLimiter({ windowMs: 10 * 60_000, maxAttempts: 8 });
+const bookingSmsTokenLimiter = new SubmissionRateLimiter({ windowMs: 60 * 60_000, maxAttempts: 6 });
+const bookingSmsAddressLimiter = new SubmissionRateLimiter({ windowMs: 10 * 60_000, maxAttempts: 20 });
 
 const quoteInputSchema = z.object({
   formType: z.enum(["hero_quick_quote"]).optional(),
@@ -748,12 +752,14 @@ export const appRouter = router({
 
         // Generate status token for customer tracking portal
         const statusToken = crypto.randomBytes(32).toString("hex");
+        let savedQuoteId: number | undefined;
+        let bookingDeliveryToken: string | null = null;
 
         // Save to database
         try {
           const db = await getDb();
           if (db) {
-            await db.insert(quoteRequests).values({
+            const [inserted] = await db.insert(quoteRequests).values({
               name: input.name,
               phone: input.phone,
               email: input.email,
@@ -773,6 +779,10 @@ export const appRouter = router({
               landingPage: input.landingPage ?? null,
               statusToken,
             });
+            savedQuoteId = Number(inserted.insertId);
+            if (savedQuoteId > 0 && input.jobBrief) {
+              bookingDeliveryToken = await createQuoteBookingDelivery(db, savedQuoteId);
+            }
           }
         } catch (err) {
           console.error("[Quote] Failed to save to database:", err);
@@ -858,17 +868,7 @@ export const appRouter = router({
         // Generate branded PDF estimate and save to S3 for admin review
         // (NOT auto-emailed to customer — admin can review/edit and send manually)
         try {
-          // Get the quote ID from the database for the reference number
-          let quoteId: number | undefined;
-          try {
-            const db = await getDb();
-            if (db) {
-              const allQuotes = await db.select({ id: quoteRequests.id }).from(quoteRequests);
-              if (allQuotes.length > 0) {
-                quoteId = Math.max(...allQuotes.map(q => q.id));
-              }
-            }
-          } catch (_e) { /* ignore */ }
+          const quoteId = savedQuoteId;
 
           const quoteRef = quoteId
             ? `CCG-${String(quoteId).padStart(4, "0")}`
@@ -948,7 +948,40 @@ export const appRouter = router({
           success: true,
           message: "Quote request submitted successfully!",
           serviceAreaStatus: serviceArea.status,
+          bookingDeliveryToken,
         };
+      }),
+
+    sendBookingLink: publicProcedure
+      .input(z.object({
+        token: z.string().regex(/^[a-f0-9]{64}$/, "Invalid booking delivery token"),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const forwardedAddress = ctx.req.headers["x-forwarded-for"];
+        const address = Array.isArray(forwardedAddress)
+          ? forwardedAddress[0]
+          : forwardedAddress?.split(",")[0]?.trim() || ctx.req.ip || "unknown";
+        const tokenFingerprint = createLeadFingerprint({ email: input.token });
+        const addressFingerprint = createLeadFingerprint({ address });
+
+        if (!bookingSmsTokenLimiter.attempt(tokenFingerprint).allowed
+          || !bookingSmsAddressLimiter.attempt(addressFingerprint).allowed) {
+          throw new TRPCError({
+            code: "TOO_MANY_REQUESTS",
+            message: "Please wait before requesting the booking link again.",
+          });
+        }
+
+        if (!isTwilioConfigured()) return { status: "unavailable" } as const;
+
+        const db = await getDb();
+        if (!db) return { status: "unavailable" } as const;
+
+        return deliverBookingLink({
+          rawToken: input.token,
+          store: createQuoteBookingDeliveryStore(db),
+          send: sendTransactionalSms,
+        });
       }),
 
     // Admin: list all quote requests
