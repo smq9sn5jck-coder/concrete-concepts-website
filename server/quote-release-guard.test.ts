@@ -17,6 +17,8 @@ const validSource: ReleaseContractFiles = {
   worker: [
     'url.pathname === "/api/upload-photo"',
     'url.pathname.includes("/api/trpc/quote.submit")',
+    'url.pathname.includes("/api/trpc/quote.sendBookingLink")',
+    "createBookingDeliveryToken",
   ].join("\n"),
 };
 
@@ -55,6 +57,20 @@ describe("quote release source contract", () => {
     expect(result.errors).toContain("Missing rendered Step 1 of 5 marker");
     expect(result.errors).toContain("Wizard step contract is incomplete");
   });
+
+  it("rejects a production Worker without the booking gateway routes", () => {
+    const result = verifySourceContract({
+      ...validSource,
+      worker: [
+        'url.pathname === "/api/upload-photo"',
+        'url.pathname.includes("/api/trpc/quote.submit")',
+      ].join("\n"),
+    });
+
+    expect(result.ok).toBe(false);
+    expect(result.errors).toContain("Worker booking SMS route is missing");
+    expect(result.errors).toContain("Worker booking token creation is missing");
+  });
 });
 
 describe("quote release build contract", () => {
@@ -66,6 +82,8 @@ describe("quote release build contract", () => {
         'children:"How can we reach you?"',
         'fetch("/api/upload-photo")',
         'path:"/api/trpc/quote.submit"',
+        'path:"/api/trpc/quote.sendBookingLink"',
+        "createBookingDeliveryToken",
       ])
     ).toEqual({ ok: true, errors: [] });
   });
@@ -79,5 +97,19 @@ describe("quote release build contract", () => {
     expect(result.ok).toBe(false);
     expect(result.errors).toContain("Built bundle is missing /get-quote");
     expect(result.errors).toContain("Built bundle is missing Step 1 of 5");
+  });
+
+  it("rejects a built Worker without the booking gateway route", () => {
+    const result = verifyBuiltContract([
+      'route:"/get-quote"',
+      'children:"Step 1 of 5"',
+      'children:"How can we reach you?"',
+      'fetch("/api/upload-photo")',
+      'path:"/api/trpc/quote.submit"',
+    ]);
+
+    expect(result.ok).toBe(false);
+    expect(result.errors).toContain("Built bundle is missing booking SMS endpoint");
+    expect(result.errors).toContain("Built bundle is missing booking token creation");
   });
 });

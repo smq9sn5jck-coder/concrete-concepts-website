@@ -45,6 +45,12 @@ export function verifySourceContract(files: ReleaseContractFiles): ReleaseContra
   if (!files.worker.includes("/api/trpc/quote.submit")) {
     errors.push("Worker quote submission route is missing");
   }
+  if (!files.worker.includes("/api/trpc/quote.sendBookingLink")) {
+    errors.push("Worker booking SMS route is missing");
+  }
+  if (!files.worker.includes("createBookingDeliveryToken")) {
+    errors.push("Worker booking token creation is missing");
+  }
   return result(errors);
 }
 
@@ -61,6 +67,12 @@ export function verifyBuiltContract(parts: string[]): ReleaseContractResult {
   }
   if (!bundle.includes("/api/trpc/quote.submit")) {
     errors.push("Built bundle is missing quote submission endpoint");
+  }
+  if (!bundle.includes("/api/trpc/quote.sendBookingLink")) {
+    errors.push("Built bundle is missing booking SMS endpoint");
+  }
+  if (!bundle.includes("createBookingDeliveryToken")) {
+    errors.push("Built bundle is missing booking token creation");
   }
   return result(errors);
 }
