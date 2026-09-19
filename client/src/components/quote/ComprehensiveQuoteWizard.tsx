@@ -37,6 +37,7 @@ import {
 } from "@/lib/quoteFunnelAnalytics";
 import {
   comprehensiveQuoteSchema,
+  normalizeQuoteFinish,
   toLegacyQuoteFields,
   type ComprehensiveQuote,
 } from "@shared/quoteBrief";
@@ -74,11 +75,15 @@ const SERVICES = [
 ] as const;
 
 const FINISHES = [
-  ["plain", "Plain concrete"],
-  ["coloured", "Coloured concrete"],
-  ["exposed", "Exposed aggregate"],
-  ["stencilled", "Stencilled / stamped"],
-  ["not_sure", "Not sure — advise me"],
+  ["plain", "Plain Concrete — Broom Finish"],
+  ["oxide", "Coloured Concrete — Oxide Finish"],
+  ["exposed_raven", "Exposed Aggregate — Raven"],
+  ["exposed_sp", "Exposed Aggregate — Salt & Pepper"],
+  ["exposed_jersey", "Exposed Aggregate — Jersey"],
+  ["exposed_casper", "Exposed Aggregate — Casper"],
+  ["stencil", "Stencilled / Stamped Concrete"],
+  ["honed", "Honed / Ground Concrete"],
+  ["not_sure", "Not Sure — Recommend a Finish"],
 ] as const;
 
 const TIMEFRAMES = [
@@ -196,6 +201,7 @@ export default function ComprehensiveQuoteWizard() {
     setData((current) => ({
       ...current,
       ...saved,
+      finish: normalizeQuoteFinish(saved.finish),
       suburb: saved.postcode ? saved.suburb : location.suburb,
       postcode: saved.postcode || location.postcode,
     }));

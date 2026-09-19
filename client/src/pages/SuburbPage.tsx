@@ -43,7 +43,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Southside",
     postcode: "4152",
     h1: "Concreting Carindale — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Carindale | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Carindale | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Carindale, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Carindale, concreters Carindale, concrete driveway Carindale, exposed aggregate Carindale, retaining wall Carindale, concrete slab Carindale",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -64,7 +64,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Cannon Hill", slug: "cannon-hill" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Carindale?", a: "Concreting costs in Carindale typically range from $65/m² for plain concrete to $150/m² for premium exposed aggregate. The exact price depends on the project size, finish, and site conditions. We provide free on-site quotes with no obligation." },
+      { q: "How much does concreting cost in Carindale?", a: "The price for concreting work in Carindale is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you need council approval for concreting in Carindale?", a: "Most standard concreting work (driveways, patios, paths) doesn't require council approval in Brisbane. However, retaining walls over 1 metre and work near boundaries may need approval. We'll advise you during our free site inspection." },
       { q: "How long does a driveway take to complete in Carindale?", a: "Most residential driveways in Carindale take 2-3 days of on-site work. After pouring, the concrete needs 7 days before foot traffic and 28 days before vehicles can use it." },
     ],
@@ -76,7 +76,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Logan City",
     postcode: "4114",
     h1: "Concreting Logan — Affordable Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Logan | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Logan | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Affordable concreting services in Logan, QLD. Driveways, exposed aggregate, slabs, retaining walls, excavation. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Logan, concreters Logan, concrete driveway Logan, exposed aggregate Logan, retaining wall Logan, concrete slab Logan, concreting Logan City",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -97,7 +97,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Underwood", slug: "underwood" },
     ],
     faqs: [
-      { q: "How much does a concrete driveway cost in Logan?", a: "Concrete driveways in Logan typically cost between $65 and $150 per square metre depending on the finish. A standard double driveway (around 50m²) might cost between $3,250 and $7,500. We provide free quotes with no obligation." },
+      { q: "How much does a concrete driveway cost in Logan?", a: "The price for a concrete driveway in Logan is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you service all of Logan City?", a: "Yes! We service the entire Logan City council area including Springwood, Shailer Park, Beenleigh, Marsden, Daisy Hill, Underwood, Slacks Creek, Woodridge, Logan Central, Browns Plains, and surrounding suburbs." },
       { q: "Can you work on new builds in Logan?", a: "Absolutely. We regularly work with builders and homeowners on new construction projects across Logan, including house slabs, driveways, paths, and retaining walls." },
     ],
@@ -109,7 +109,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Bayside",
     postcode: "4178",
     h1: "Concreting Wynnum — Bayside Driveways, Patios & Pool Surrounds",
-    metaTitle: "Concreting Wynnum | Bayside Driveways & Patios | Concrete Concepts",
+    metaTitle: "Concreting Wynnum | Bayside Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Professional concreting in Wynnum and Brisbane's bayside. Driveways, patios, pool surrounds, exposed aggregate. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Wynnum, concreters Wynnum, concrete driveway Wynnum, exposed aggregate Wynnum, patio Wynnum, pool surround Wynnum, concreting bayside Brisbane",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/pool-surround-1_adcdb251.jpg",
@@ -131,10 +131,10 @@ const SUBURBS: Record<string, SuburbData> = {
     ],
     faqs: [
       { q: "Do you use salt-resistant sealers for bayside properties?", a: "Yes! For all bayside concreting work, we use premium penetrating sealers that protect against salt air, moisture, and UV damage. This is especially important for exposed aggregate and pool surrounds near the coast." },
-      { q: "How much does a patio cost in Wynnum?", a: "Concrete patios in Wynnum typically cost between $65 and $150 per square metre depending on the finish. A typical 30m² patio might cost between $2,000 and $4,500. We provide free, detailed quotes." },
+      { q: "How much does a patio cost in Wynnum?", a: "The price for a concrete patio in Wynnum is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you concrete around existing pools?", a: "Absolutely! We regularly pour new pool surrounds and replace old ones. Exposed aggregate is the most popular choice for pool areas due to its excellent slip resistance and heat management." },
     ],
-    testimonialSnippet: { name: "Helen K", text: "Connected with Concrete Concepts and would recommend them.", service: "Exposed Aggregate — Geebung" },
+    testimonialSnippet: { name: "Helen K", text: "Connected with Concrete Concepts Group and would recommend them.", service: "Exposed Aggregate — Geebung" },
   },
   "springfield": {
     slug: "springfield",
@@ -142,7 +142,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Ipswich / Greater Springfield",
     postcode: "4300",
     h1: "Concreting Springfield — New Builds, Driveways & Slabs",
-    metaTitle: "Concreting Springfield | New Build Slabs & Driveways | Concrete Concepts",
+    metaTitle: "Concreting Springfield | New Build Slabs & Driveways | Concrete Concepts Group",
     metaDescription: "Concreting services in Springfield and Greater Springfield. House slabs, driveways, retaining walls for new builds. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Springfield, concreters Springfield, concrete driveway Springfield, concrete slab Springfield, retaining wall Springfield, concreting Greater Springfield",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/concrete-slab-1_56311043.jpg",
@@ -164,7 +164,7 @@ const SUBURBS: Record<string, SuburbData> = {
     ],
     faqs: [
       { q: "Do you work with builders in Springfield?", a: "Yes! We regularly work with builders and developers across Greater Springfield. We can coordinate our work with your builder's schedule and provide competitive rates for multi-lot projects." },
-      { q: "How much does a house slab cost in Springfield?", a: "House slab costs in Springfield typically range from $70 to $120 per square metre depending on the slab type, soil conditions, and engineering requirements. We provide free, detailed quotes for every project." },
+      { q: "How much does a house slab cost in Springfield?", a: "The price for a house slab in Springfield is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you concrete in new estates that are still developing?", a: "Absolutely. We regularly work in new estates across Springfield, Spring Mountain, Ripley, and surrounding areas. We're experienced with the access and staging requirements of developing areas." },
     ],
   },
@@ -174,7 +174,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Redlands",
     postcode: "4157",
     h1: "Concreting Capalaba — Driveways, Patios & Retaining Walls",
-    metaTitle: "Concreting Capalaba | Driveways & Patios | Concrete Concepts",
+    metaTitle: "Concreting Capalaba | Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Quality concreting in Capalaba and the Redlands. Driveways, exposed aggregate, patios, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Capalaba, concreters Capalaba, concrete driveway Capalaba, exposed aggregate Capalaba, retaining wall Capalaba, patio Capalaba, concreting Redlands",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-3_e9b3c7b9.jpeg",
@@ -195,7 +195,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Wynnum", slug: "wynnum" },
     ],
     faqs: [
-      { q: "How much does a driveway cost in Capalaba?", a: "Driveways in Capalaba typically cost between $65 and $150 per square metre depending on the finish. Most standard double driveways cost between $3,500 and $8,000. We provide free, detailed quotes with no obligation." },
+      { q: "How much does a driveway cost in Capalaba?", a: "The price for a concrete driveway in Capalaba is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you service all of the Redlands?", a: "Yes! We service the entire Redland City area including Capalaba, Alexandra Hills, Cleveland, Thornlands, Victoria Point, Redland Bay, Birkdale, Wellington Point, Ormiston, and surrounding suburbs." },
       { q: "Can you remove and replace my old driveway?", a: "Absolutely. We handle the full process — demolition of old concrete, excavation, sub-base preparation, and installation of your new driveway. All waste is responsibly disposed of." },
     ],
@@ -207,7 +207,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Ipswich City",
     postcode: "4305",
     h1: "Concreting Ipswich — Driveways, Slabs & Excavation",
-    metaTitle: "Concreting Ipswich | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Ipswich | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Ipswich, QLD. Driveways, slabs, retaining walls, excavation. QBCC Licensed #15299707. Competitive prices. Free quotes — call 0424 463 268.",
     keywords: "concreting Ipswich, concreters Ipswich, concrete driveway Ipswich, concrete slab Ipswich, retaining wall Ipswich, excavation Ipswich",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/excavator-work-1_99a98a3d.jpg",
@@ -228,7 +228,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Bellbird Park", slug: "bellbird-park" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Ipswich?", a: "Concreting in Ipswich is competitively priced, typically ranging from $65/m² for plain concrete to $150/m² for exposed aggregate. We offer some of the best value in the region. Free quotes with no obligation." },
+      { q: "How much does concreting cost in Ipswich?", a: "The price for concreting work in Ipswich is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you travel to Ipswich from Brisbane?", a: "We service the entire Ipswich City area as part of our regular coverage. There are no additional travel charges for Ipswich — our quoted price is the price you pay." },
       { q: "Can you work on acreage properties in Ipswich?", a: "Yes! We have the machinery and experience to handle larger rural-residential properties, including long driveways, large shed slabs, and extensive retaining walls." },
     ],
@@ -240,7 +240,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Southside",
     postcode: "4122",
     h1: "Concreting Mount Gravatt — Driveways, Retaining Walls & Patios",
-    metaTitle: "Concreting Mount Gravatt | Driveways & Retaining Walls | Concrete Concepts",
+    metaTitle: "Concreting Mount Gravatt | Driveways & Retaining Walls | Concrete Concepts Group",
     metaDescription: "Expert concreting in Mount Gravatt, Brisbane. Driveways, retaining walls, patios, exposed aggregate. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Mount Gravatt, concreters Mount Gravatt, concrete driveway Mount Gravatt, retaining wall Mount Gravatt, exposed aggregate Mount Gravatt",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-1_942fd49e.jpeg",
@@ -262,7 +262,7 @@ const SUBURBS: Record<string, SuburbData> = {
     ],
     faqs: [
       { q: "Can you concrete on steep driveways in Mount Gravatt?", a: "Absolutely — steep driveways are one of our specialties. We use proper formwork, reinforcement, and non-slip finishes to create safe, durable driveways on Mount Gravatt's slopes. We also ensure proper drainage to prevent water runoff issues." },
-      { q: "How much does a retaining wall cost in Mount Gravatt?", a: "Retaining wall costs in Mount Gravatt depend on height, length, material, and access. As a guide, concrete retaining walls start from around $300-$500 per lineal metre. We provide free, detailed quotes." },
+      { q: "How much does a retaining wall cost in Mount Gravatt?", a: "The price for a retaining wall in Mount Gravatt is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you handle the full job on sloping blocks?", a: "Yes! We provide a complete service — excavation, retaining walls, drainage, and concreting all done by our team. This means better coordination, fewer delays, and a single point of contact." },
     ],
     testimonialSnippet: { name: "Myresh M", text: "Fantastic work from Jarrad and his team! Professional, efficient and delivered a high quality exposed aggregate finish.", service: "Concrete Driveway — Mount Gravatt East" },
@@ -273,7 +273,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Redland City",
     postcode: "4163",
     h1: "Concreting Redlands — Bayside Driveways, Patios & Pool Surrounds",
-    metaTitle: "Concreting Redlands | Bayside Driveways & Patios | Concrete Concepts",
+    metaTitle: "Concreting Redlands | Bayside Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Professional concreting across the Redlands and bayside Brisbane. Driveways, patios, pool surrounds, exposed aggregate. QBCC Licensed. Free quotes — call 0424 463 268.",
     keywords: "concreting Redlands, concreters Redlands, concrete driveway Redlands, exposed aggregate Redlands, patio Redlands, concreting Redland City",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/pool-concrete-3_6085efa5.jpg",
@@ -305,7 +305,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Logan / Gold Coast Corridor",
     postcode: "4207",
     h1: "Concreting Beenleigh — Affordable Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Beenleigh | Affordable Driveways & Slabs | Concrete Concepts",
+    metaTitle: "Concreting Beenleigh | Affordable Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Affordable concreting in Beenleigh and surrounds. Driveways, slabs, retaining walls, excavation. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Beenleigh, concreters Beenleigh, concrete driveway Beenleigh, concrete slab Beenleigh, retaining wall Beenleigh",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/concrete-slab-2_3721a7ce.jpg",
@@ -326,7 +326,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Loganholme", slug: "loganholme" },
     ],
     faqs: [
-      { q: "Is concreting cheaper in Beenleigh than Brisbane?", a: "Our prices are consistent across our service area — we don't charge extra for travel to Beenleigh. Concreting costs typically range from $65/m² for plain concrete to $150/m² for exposed aggregate, regardless of location." },
+      { q: "Is concreting cheaper in Beenleigh than Brisbane?", a: "We service Beenleigh as part of our regular coverage. The final quote is based on the verified project scope rather than a suburb-wide rate, including finish, access, excavation, disposal, drainage, pumping, thickness, reinforcement and final measure." },
       { q: "Do you service the Gold Coast as well?", a: "Yes! We service Brisbane and all surrounding areas including the Gold Coast, Logan, Ipswich, Redlands, Moreton Bay, and more. Give us a call on 0424 463 268 to discuss your project." },
       { q: "How quickly can you start a job in Beenleigh?", a: "We typically have availability within 1-3 weeks depending on the season. For urgent jobs, we'll do our best to accommodate. Call 0424 463 268 to discuss your timeline." },
     ],
@@ -337,7 +337,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Inner South",
     postcode: "4152",
     h1: "Concreting Camp Hill — Premium Driveways & Outdoor Areas",
-    metaTitle: "Concreting Camp Hill | Premium Driveways & Patios | Concrete Concepts",
+    metaTitle: "Concreting Camp Hill | Premium Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Premium concreting in Camp Hill, Brisbane. Driveways, exposed aggregate, patios, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Camp Hill, concreters Camp Hill, concrete driveway Camp Hill, exposed aggregate Camp Hill, patio Camp Hill",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-driveway_803ff92a.jpeg",
@@ -369,7 +369,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Southside",
     postcode: "4109",
     h1: "Concreting Sunnybank — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Sunnybank | Driveways & Slabs | Concrete Concepts",
+    metaTitle: "Concreting Sunnybank | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Sunnybank, Brisbane. Driveways, slabs, retaining walls, exposed aggregate. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Sunnybank, concreters Sunnybank, concrete driveway Sunnybank, retaining wall Sunnybank, concrete slab Sunnybank",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-2_0dfe95f7.jpg",
@@ -390,11 +390,11 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Algester", slug: "algester" },
     ],
     faqs: [
-      { q: "How much does a driveway cost in Sunnybank?", a: "Driveways in Sunnybank typically cost between $65 and $150 per square metre. A standard double driveway (50m²) ranges from $3,250 to $7,500 depending on the finish. We provide free quotes." },
+      { q: "How much does a driveway cost in Sunnybank?", a: "The price for a concrete driveway in Sunnybank is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you work around existing landscaping?", a: "Yes! We take great care to protect existing gardens, trees, and landscaping during our work. We'll discuss access and protection measures during our site inspection." },
       { q: "Do you offer payment plans?", a: "We require a deposit to secure your booking, with the balance due on completion. For larger projects, we can discuss staged payment arrangements. Call us to discuss your specific needs." },
     ],
-    testimonialSnippet: { name: "Pushpa", text: "Connected with Concrete Concepts and would recommend them.", service: "Concrete Driveway — Runcorn" },
+    testimonialSnippet: { name: "Pushpa", text: "Connected with Concrete Concepts Group and would recommend them.", service: "Concrete Driveway — Runcorn" },
   },
   "chermside": {
     slug: "chermside",
@@ -402,7 +402,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northside",
     postcode: "4032",
     h1: "Concreting Chermside — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Chermside | Driveways & Slabs | Concrete Concepts",
+    metaTitle: "Concreting Chermside | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Chermside, Brisbane northside. Driveways, slabs, retaining walls, exposed aggregate. QBCC Licensed #15299707. Free quotes — 0424 463 268.",
     keywords: "concreting Chermside, concreters Chermside, concrete driveway Chermside, exposed aggregate Chermside, retaining wall Chermside, concrete slab Chermside",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
@@ -423,7 +423,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Nundah", slug: "nundah" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Chermside?", a: "Concreting in Chermside typically ranges from $65/m² for plain concrete to $150/m² for premium exposed aggregate. A standard double driveway (50m²) costs between $3,250 and $7,500. We provide free on-site quotes." },
+      { q: "How much does concreting cost in Chermside?", a: "The price for concreting work in Chermside is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you work on townhouse developments in Chermside?", a: "Yes, we regularly work with builders and body corporates on townhouse and unit developments across the northside, including shared driveways, paths, and common area concreting." },
       { q: "How long does a driveway replacement take?", a: "Most Chermside driveway replacements take 2-3 days of on-site work including removal of the old driveway. After pouring, allow 7 days before foot traffic and 28 days before driving on it." },
     ],
@@ -435,7 +435,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northside",
     postcode: "4034",
     h1: "Concreting Aspley — Driveways, Patios & Retaining Walls",
-    metaTitle: "Concreting Aspley | Driveways & Patios | Concrete Concepts",
+    metaTitle: "Concreting Aspley | Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Quality concreting services in Aspley, Brisbane northside. Driveways, patios, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — 0424 463 268.",
     keywords: "concreting Aspley, concreters Aspley, concrete driveway Aspley, exposed aggregate Aspley, patio Aspley, retaining wall Aspley",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-4_c54657e7.jpeg",
@@ -456,7 +456,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Albany Creek", slug: "albany-creek" },
     ],
     faqs: [
-      { q: "How much does a concrete patio cost in Aspley?", a: "Concrete patios in Aspley typically cost between $70 and $150 per square metre depending on the finish and size. An average patio (30m²) ranges from $2,100 to $4,500. We provide free quotes with no obligation." },
+      { q: "How much does a concrete patio cost in Aspley?", a: "The price for a concrete patio in Aspley is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you match existing concrete on extensions?", a: "We do our best to match existing concrete finishes, though exact colour matching can be difficult with aged concrete. We'll discuss options during our free site inspection and recommend the best approach." },
       { q: "Do you provide free quotes in Aspley?", a: "Yes! We provide free, no-obligation on-site quotes for all concreting projects in Aspley and surrounding suburbs. Call 0424 463 268 or fill out our online form." },
     ],
@@ -468,7 +468,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Moreton Bay",
     postcode: "4509",
     h1: "Concreting North Lakes — Driveways, Slabs & Outdoor Areas",
-    metaTitle: "Concreting North Lakes | Driveways & Slabs | Concrete Concepts",
+    metaTitle: "Concreting North Lakes | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in North Lakes, Moreton Bay. Driveways, slabs, retaining walls, exposed aggregate. QBCC Licensed #15299707. Free quotes — 0424 463 268.",
     keywords: "concreting North Lakes, concreters North Lakes, concrete driveway North Lakes, exposed aggregate North Lakes, concrete slab North Lakes, retaining wall North Lakes",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-finished-slab_74e9f7cd.jpeg",
@@ -489,7 +489,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Caboolture", slug: "caboolture" },
     ],
     faqs: [
-      { q: "How much does a driveway cost in North Lakes?", a: "Driveways in North Lakes typically cost between $65 and $150 per square metre depending on the finish. A standard double driveway (50m²) ranges from $3,250 to $7,500. We provide free on-site quotes." },
+      { q: "How much does a driveway cost in North Lakes?", a: "The price for a concrete driveway in North Lakes is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you work on new builds in North Lakes?", a: "Absolutely. We regularly work with builders and homeowners on new construction projects across North Lakes and surrounding estates, including house slabs, driveways, paths, and retaining walls." },
       { q: "How far north do you service?", a: "We service the entire Moreton Bay region from North Lakes up to Caboolture and Bribie Island. Our team travels from Brisbane daily and is well set up to work across the northern corridor." },
     ],
@@ -501,7 +501,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Moreton Bay",
     postcode: "4510",
     h1: "Concreting Caboolture — Affordable Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Caboolture | Driveways & Slabs | Concrete Concepts",
+    metaTitle: "Concreting Caboolture | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Affordable concreting in Caboolture & Moreton Bay. Driveways, slabs, retaining walls, excavation. QBCC Licensed #15299707. Free quotes — 0424 463 268.",
     keywords: "concreting Caboolture, concreters Caboolture, concrete driveway Caboolture, concrete slab Caboolture, retaining wall Caboolture, excavation Caboolture",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-4_c54657e7.jpeg",
@@ -522,7 +522,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { name: "Bribie Island", slug: "bribie-island" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Caboolture?", a: "Concreting in Caboolture typically ranges from $65/m² for plain concrete to $150/m² for premium exposed aggregate. We provide free on-site quotes with no obligation — call 0424 463 268." },
+      { q: "How much does concreting cost in Caboolture?", a: "The price for concreting work in Caboolture is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you travel to Caboolture from Brisbane?", a: "Yes! Our team services the entire Moreton Bay region from Caboolture down to Brisbane. We're well set up for travel and include it in our competitive pricing — no hidden travel charges." },
       { q: "Can you handle large commercial projects in Caboolture?", a: "Yes, we handle both residential and commercial concreting projects. From single driveways to large commercial slabs and car parks, we have the equipment and experience to deliver." },
     ],
@@ -534,11 +534,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Inner-East",
     postcode: "4170",
     h1: "Concreting Morningside — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Morningside | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Morningside | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Morningside, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Morningside, concreters Morningside, concrete driveway Morningside, exposed aggregate Morningside, concrete slabs Morningside, retaining walls Morningside",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-driveway-house_50304489.jpg",
-    intro: "Nestled in Brisbane's desirable inner-east, Morningside is a suburb of beautiful homes and vibrant streets. From classic Queenslanders to contemporary new builds, residents take pride in their properties. Concrete Concepts is proud to offer our full range of professional concreting services to the Morningside community. Whether you're looking to create a stunning new exposed aggregate driveway, a practical and durable slab for a shed or extension, or a structurally sound retaining wall to manage a sloping block, our experienced team has the skills and local knowledge to deliver exceptional results. We understand the unique character of Morningside and provide tailored solutions that enhance both the value and liveability of your home. As your local concreting experts, we are committed to quality workmanship and transparent pricing, ensuring your project is a seamless success from start to finish.",
+    intro: "Nestled in Brisbane's desirable inner-east, Morningside is a suburb of beautiful homes and vibrant streets. From classic Queenslanders to contemporary new builds, residents take pride in their properties. Concrete Concepts Group is proud to offer our full range of professional concreting services to the Morningside community. Whether you're looking to create a stunning new exposed aggregate driveway, a practical and durable slab for a shed or extension, or a structurally sound retaining wall to manage a sloping block, our experienced team has the skills and local knowledge to deliver exceptional results. We understand the unique character of Morningside and provide tailored solutions that enhance both the value and liveability of your home. As your local concreting experts, we are committed to quality workmanship and transparent pricing, ensuring your project is a seamless success from start to finish.",
     areaDescription: "Morningside's appeal lies in its blend of traditional charm and modern convenience, located just a few kilometres from the CBD. The suburb is characterised by its hilly terrain, particularly in the areas closer to the Brisbane River, offering city views but also presenting unique landscaping challenges. The housing stock is a diverse mix, from iconic, high-set Queenslanders on large blocks to modern architectural homes and stylish townhouses. This variety means a high demand for versatile and durable concreting solutions. The area's reactive clay soils, common throughout Brisbane, combined with the undulating landscape, make professionally engineered concrete slabs and footings essential for structural integrity. Furthermore, the subtropical climate, with its periods of heavy rain, necessitates robust and well-drained driveways and pathways. Many homeowners in Morningside are undertaking significant renovations, where new concrete patios, pool surrounds, and driveways are key features. Retaining walls are especially popular and often necessary to create level, usable spaces on sloping blocks, preventing soil erosion and adding significant value to the property.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From steep, sloping driveways requiring careful engineering to stylish exposed aggregate finishes, we build driveways in Morningside that are both beautiful and built to last." },
@@ -567,11 +567,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Inner-South",
     postcode: "4151",
     h1: "Concreting Coorparoo — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Coorparoo | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Coorparoo | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Coorparoo, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Coorparoo, concreters Coorparoo, concrete driveway Coorparoo, exposed aggregate Coorparoo, concrete slabs Coorparoo, retaining walls Coorparoo",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-troweling_06ff9a7c.jpeg",
-    intro: "For quality concreting in Coorparoo, trust Concrete Concepts. As a local Brisbane business, we understand the needs of Coorparoo homeowners, from new driveways for renovated Queenslanders to sturdy slabs for modern homes. Our team is fully licensed (QBCC #15299707) and delivers high-quality workmanship on every project. We offer a complete range of services, including decorative concrete finishes, structural retaining walls, and precision excavation. With our competitive pricing, starting from just $65/m² for driveways and slabs, and our commitment to customer satisfaction, we are the go-to concreters for Coorparoo residents. Call us today on 0424 463 268 for a free, no-obligation quote and expert advice on your next concrete project.",
+    intro: "For quality concreting in Coorparoo, trust Concrete Concepts Group. As a local Brisbane business, we understand the needs of Coorparoo homeowners, from new driveways for renovated Queenslanders to sturdy slabs for modern homes. Our team is fully licensed (QBCC #15299707) and delivers high-quality workmanship on every project. We offer a complete range of services, including decorative concrete finishes, structural retaining walls, and precision excavation. We prepare a detailed quote after verifying the final measure, finish, access, excavation, disposal, drainage, pumping, thickness and reinforcement. Call us today on 0424 463 268 for a free, no-obligation quote and expert advice on your next concrete project.",
     areaDescription: "Coorparoo, located just 4 kilometres south-east of the Brisbane CBD, is a suburb defined by its rolling hills, established trees, and a charming mix of old and new. The area is renowned for its character homes, particularly the iconic Queenslanders, many of which are undergoing extensive renovations. This blend of heritage housing and modern development creates a consistent demand for high-quality residential concreting. The undulating terrain presents unique challenges, often requiring engineered solutions for driveways and retaining walls to manage slopes and ensure long-term stability. Furthermore, Brisbane's reactive clay soils necessitate robust foundations and slabs designed to withstand seasonal ground movement. From a new exposed aggregate driveway complementing a restored Queenslander to a functional slab for a new build, or a structural retaining wall to create a level backyard, professional concreting is essential for enhancing the value and liveability of Coorparoo properties. Proximity to vibrant hubs like Stones Corner and the Gabba, combined with excellent local amenities, makes Coorparoo a highly desirable suburb where homeowners are continually investing in improvements.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From classic broom-finish to stylish exposed aggregate, we build durable and attractive driveways to suit Coorparoo's mix of character and modern homes." },
@@ -600,11 +600,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Inner-South",
     postcode: "4120",
     h1: "Concreting Greenslopes — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Greenslopes | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Greenslopes | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Greenslopes, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Greenslopes, concreters Greenslopes, concrete driveway Greenslopes, exposed aggregate Greenslopes, concrete slabs Greenslopes, retaining walls Greenslopes",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-power-float_ca89df9c.jpeg",
-    intro: "Concrete Concepts is your local expert for high-quality concreting in Greenslopes. Our experienced team delivers exceptional workmanship on every project, from stylish new driveways to durable and practical concrete slabs. We understand the unique requirements of working in Brisbane's inner-south and pride ourselves on providing reliable, affordable, and long-lasting concrete solutions. As a fully licensed and insured local business (QBCC #15299707), we are committed to exceeding our clients' expectations. Whether you're building a new home, renovating, or upgrading your outdoor space, you can trust Concrete Concepts for a flawless finish and professional service from start to finish. Contact us today for a free, no-obligation quote on your Greenslopes concreting project.",
+    intro: "Concrete Concepts Group is your local expert for high-quality concreting in Greenslopes. Our experienced team delivers exceptional workmanship on every project, from stylish new driveways to durable and practical concrete slabs. We understand the unique requirements of working in Brisbane's inner-south and pride ourselves on providing reliable, affordable, and long-lasting concrete solutions. As a fully licensed and insured local business (QBCC #15299707), we are committed to exceeding our clients' expectations. Whether you're building a new home, renovating, or upgrading your outdoor space, you can trust Concrete Concepts Group for a flawless finish and professional service from start to finish. Contact us today for a free, no-obligation quote on your Greenslopes concreting project.",
     areaDescription: "Greenslopes is a character-filled suburb just 5km south of the Brisbane CBD, known for its hilly terrain and mix of housing styles. The area features a blend of traditional Queenslanders, post-war cottages, and modern apartment complexes, reflecting its evolution over the years. This varied topography presents unique challenges and opportunities for concreting projects. The name 'Greenslopes' itself hints at the need for expertly engineered solutions like retaining walls to manage sloping blocks and prevent soil erosion, which is particularly important given Brisbane's subtropical climate and periods of heavy rain. The soil in this part of Brisbane is predominantly reactive clay, which expands and contracts with moisture changes. This makes professional site preparation and the use of reinforced concrete slabs essential for ensuring the long-term stability of driveways, house slabs, and patios. Proximity to the Pacific Motorway and major hubs like Coorparoo and Holland Park makes Greenslopes a desirable location, driving demand for property upgrades and high-quality, durable concrete work that enhances both value and liveability.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From a simple broom-finish to a decorative exposed aggregate, we build durable and stylish driveways that boost your home's curb appeal in Greenslopes." },
@@ -625,7 +625,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { q: "What is the best type of concrete for a sloping block in Greenslopes?", a: "For hilly areas like Greenslopes, we often recommend an exposed aggregate finish for driveways as it provides excellent grip. For retaining walls, reinforced concrete is essential for strength and longevity." },
       { q: "How do you deal with the clay soil in the area?", a: "We are very familiar with Brisbane's reactive clay soils. Our process includes thorough site preparation, proper excavation, and the use of steel reinforcement to ensure your concrete slab or driveway is stable and crack-resistant." },
     ],
-    testimonialSnippet: { name: "Sarah J.", text: "The team did a fantastic job on our new driveway. It completely transformed the front of our house. They were professional, on time, and the finish is perfect. Highly recommend Concrete Concepts!", service: "Exposed Aggregate Driveway — Greenslopes" },
+    testimonialSnippet: { name: "Sarah J.", text: "The team did a fantastic job on our new driveway. It completely transformed the front of our house. They were professional, on time, and the finish is perfect. Highly recommend Concrete Concepts Group!", service: "Exposed Aggregate Driveway — Greenslopes" },
   },
   "holland-park": {
     slug: "holland-park",
@@ -633,11 +633,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Southside",
     postcode: "4121",
     h1: "Concreting Holland Park — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Holland Park | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Holland Park | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Holland Park, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Holland Park, concreters Holland Park, concrete driveway Holland Park, exposed aggregate Holland Park, concrete slabs Holland Park, concrete retaining walls Holland Park",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-3_af207e09.jpg",
-    intro: "For homeowners in the leafy, established suburb of Holland Park, maintaining and enhancing your property is a priority. Concrete Concepts Group offers a complete range of professional concreting services tailored to the unique character of the area. From durable, stylish driveways that boost your home's kerb appeal to engineered concrete slabs for that new extension, our experienced team delivers quality workmanship that lasts. As a local Brisbane business, we understand the specific requirements of working in suburbs like Holland Park. We pride ourselves on reliability, clear communication, and a flawless finish on every project. Whether you're renovating a classic post-war house or building a new home, trust Concrete Concepts to provide a solid foundation for your vision. We are fully QBCC licensed (#15299707) and offer free, no-obligation quotes for all your concreting needs.",
+    intro: "For homeowners in the leafy, established suburb of Holland Park, maintaining and enhancing your property is a priority. Concrete Concepts Group offers a complete range of professional concreting services tailored to the unique character of the area. From durable, stylish driveways that boost your home's kerb appeal to engineered concrete slabs for that new extension, our experienced team delivers quality workmanship that lasts. As a local Brisbane business, we understand the specific requirements of working in suburbs like Holland Park. We pride ourselves on reliability, clear communication, and a flawless finish on every project. Whether you're renovating a classic post-war house or building a new home, trust Concrete Concepts Group to provide a solid foundation for your vision. We are fully QBCC licensed (#15299707) and offer free, no-obligation quotes for all your concreting needs.",
     areaDescription: "Holland Park is a sought-after southside suburb known for its charming, elevated streets and well-preserved post-war architecture. The area is characterised by its gentle, rolling hills and homes on good-sized blocks, many dating from the 1950s to the 1980s. This classic housing stock, combined with an increasing number of modern renovations, creates a unique demand for high-quality, durable concreting. The suburb's terrain, while picturesque, often requires engineered solutions like retaining walls to create level, usable spaces for patios and gardens. Furthermore, like much of Brisbane, Holland Park sits on reactive clay soils. This type of ground expands and contracts significantly with moisture changes, making professional site preparation and correctly engineered concrete slabs and footings absolutely essential to prevent cracking and structural issues down the line. A new concrete driveway or patio not only adds value and functionality but, when done correctly, ensures the longevity and safety of your property in these specific ground conditions.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From classic broom-finish to stylish exposed aggregate, we build durable and attractive driveways designed for Holland Park's terrain." },
@@ -666,12 +666,12 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Southside",
     postcode: "4121",
     h1: "Concreting Tarragindi — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Tarragindi | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Tarragindi | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Tarragindi, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Tarragindi, concreters Tarragindi, concrete driveway Tarragindi, exposed aggregate Tarragindi, concrete slabs Tarragindi, retaining walls Tarragindi",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-2_710ff4d5.jpeg",
-    intro: "For trusted and reliable concreting in Tarragindi, look no further than Concrete Concepts. Our experienced team delivers high-quality workmanship on every project, from stylish new driveways to robust foundations for extensions. We understand the local area and provide tailored solutions that enhance the value and functionality of your property. As a local Brisbane business, we pride ourselves on our professionalism and attention to detail, ensuring a flawless finish that stands the test of time. We manage all aspects of the job, from initial excavation to the final seal, guaranteeing a hassle-free experience for homeowners in the leafy streets of Tarragindi. With our QBCC licence and commitment to customer satisfaction, you can be confident you're working with the best in the business.",
-    areaDescription: "Tarragindi is a sought-after southside suburb, prized for its quiet, leafy streets and established homes on generous blocks. The area's character is defined by its rolling hills and pockets of remnant bushland, creating a peaceful environment just 8km from the CBD. Much of the housing stock consists of post-war and contemporary homes, many of which are being extensively renovated or replaced with modern designs. This hilly terrain presents unique challenges for construction, making professional excavation and sturdy retaining walls essential for creating level, usable spaces for driveways, patios, and home extensions. The soil in the Tarragindi area is predominantly a mix of gravelly red and yellow loamy topsoils over a dense clay base. This reactive clay soil can shift with Brisbane's subtropical climate, causing movement in structures without adequate foundations. Properly engineered concrete slabs and footings are critical to ensure long-term stability for any new construction or landscaping project. Concrete Concepts has extensive experience working with Tarragindi's specific landscape and soil conditions, delivering durable and attractive solutions that complement the suburb's beautiful, established aesthetic.",
+    intro: "For trusted and reliable concreting in Tarragindi, look no further than Concrete Concepts Group. Our experienced team delivers high-quality workmanship on every project, from stylish new driveways to robust foundations for extensions. We understand the local area and provide tailored solutions that enhance the value and functionality of your property. As a local Brisbane business, we pride ourselves on our professionalism and attention to detail, ensuring a flawless finish that stands the test of time. We manage all aspects of the job, from initial excavation to the final seal, guaranteeing a hassle-free experience for homeowners in the leafy streets of Tarragindi. With our QBCC licence and commitment to customer satisfaction, you can be confident you're working with the best in the business.",
+    areaDescription: "Tarragindi is a sought-after southside suburb, prized for its quiet, leafy streets and established homes on generous blocks. The area's character is defined by its rolling hills and pockets of remnant bushland, creating a peaceful environment just 8km from the CBD. Much of the housing stock consists of post-war and contemporary homes, many of which are being extensively renovated or replaced with modern designs. This hilly terrain presents unique challenges for construction, making professional excavation and sturdy retaining walls essential for creating level, usable spaces for driveways, patios, and home extensions. The soil in the Tarragindi area is predominantly a mix of gravelly red and yellow loamy topsoils over a dense clay base. This reactive clay soil can shift with Brisbane's subtropical climate, causing movement in structures without adequate foundations. Properly engineered concrete slabs and footings are critical to ensure long-term stability for any new construction or landscaping project. Concrete Concepts Group has extensive experience working with Tarragindi's specific landscape and soil conditions, delivering durable and attractive solutions that complement the suburb's beautiful, established aesthetic.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From steep, sloping blocks to large, modern frontages, we design and pour custom driveways that boost curb appeal and provide a durable, long-lasting entrance to your Tarragindi home." },
       { name: "Retaining Walls", slug: "retaining-walls-brisbane", description: "Given Tarragindi's hilly terrain, engineered concrete retaining walls are crucial for creating functional, level areas and preventing soil erosion. We build walls that are both strong and stylish." },
@@ -691,7 +691,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { q: "What is the best concrete finish for a sloping block?", a: "For sloping driveways, a broom finish or an exposed aggregate finish provides excellent texture and slip resistance, which is essential for safety, especially in wet conditions common in Brisbane's climate." },
       { q: "How do you deal with the clay soil in Tarragindi?", a: "We engineer our foundations specifically for reactive clay soils. This includes using the correct slab thickness, reinforcement, and often requires deeper footings and better drainage to manage soil movement and ensure stability." },
     ],
-    testimonialSnippet: { name: "Sarah L.", text: "Concrete Concepts did an amazing job on our new driveway. The team was professional, efficient, and the finish is fantastic. It has completely transformed the front of our house.", service: "Concrete Driveway — Tarragindi" },
+    testimonialSnippet: { name: "Sarah L.", text: "Concrete Concepts Group did an amazing job on our new driveway. The team was professional, efficient, and the finish is fantastic. It has completely transformed the front of our house.", service: "Concrete Driveway — Tarragindi" },
   },
   "annerley": {
     slug: "annerley",
@@ -699,7 +699,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Inner-South",
     postcode: "4103",
     h1: "Concreting Annerley — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Annerley | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Annerley | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Annerley, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Annerley, concreters Annerley, concrete driveway Annerley, concrete slabs Annerley, exposed aggregate Annerley, concrete retaining walls Annerley",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/plain-concrete-sidepath_6ce5e329.jpeg",
@@ -722,9 +722,9 @@ const SUBURBS: Record<string, SuburbData> = {
     faqs: [
       { q: "Do I need council approval for a new driveway in Annerley?", a: "In most cases, yes. Brisbane City Council has requirements for driveway gradients, widths, and crossover locations. We can help you navigate the approval process to ensure your project is fully compliant." },
       { q: "How do you deal with the reactive clay soil in Annerley?", a: "We engineer our slabs and footings specifically for reactive soil conditions. This includes proper site preparation, appropriate steel reinforcement, and using the correct concrete mix to minimise the risk of cracking and movement over time." },
-      { q: "What's a rough cost for a new concrete driveway in Brisbane?", a: "The cost varies depending on size, finish, and site access. However, our plain concrete driveways start from approximately $65 per square metre. We provide a detailed, fixed-price quote for every project." },
+      { q: "What's a rough cost for a new concrete driveway in Brisbane?", a: "The price for a concrete driveway in Brisbane is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     ],
-    testimonialSnippet: { name: "Sarah J.", text: "The team from Concrete Concepts did a fantastic job on our new exposed aggregate driveway. They were professional, efficient, and the final result has completely transformed the front of our Annerley home. Highly recommended!", service: "Exposed Aggregate Driveway — Annerley" },
+    testimonialSnippet: { name: "Sarah J.", text: "The team from Concrete Concepts Group did a fantastic job on our new exposed aggregate driveway. They were professional, efficient, and the final result has completely transformed the front of our Annerley home. Highly recommended!", service: "Exposed Aggregate Driveway — Annerley" },
   },
   "moorooka": {
     slug: "moorooka",
@@ -732,11 +732,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Southside",
     postcode: "4105",
     h1: "Concreting Moorooka — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Moorooka | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Moorooka | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Moorooka, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Moorooka, concreters Moorooka, concrete driveway Moorooka, concrete slabs Moorooka, exposed aggregate Moorooka, concrete retaining walls Moorooka",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-5_d25c6ec1.jpeg",
-    intro: "For homeowners in Moorooka, quality concreting is essential for maintaining and enhancing property value. Concrete Concepts offers a complete range of services, from stylish and durable driveways to robust house slabs and functional retaining walls. Our work is designed to withstand Brisbane's demanding subtropical climate, providing a low-maintenance and long-lasting solution for your home. Whether you are updating a classic post-war residence or completing a new build, our experienced team ensures a professional finish that complements your property. We understand the importance of getting the job done right, using high-quality materials and proven techniques to deliver results that are both practical and aesthetically pleasing, adding significant appeal and functionality to your Moorooka home.",
+    intro: "For homeowners in Moorooka, quality concreting is essential for maintaining and enhancing property value. Concrete Concepts Group offers a complete range of services, from stylish and durable driveways to robust house slabs and functional retaining walls. Our work is designed to withstand Brisbane's demanding subtropical climate, providing a low-maintenance and long-lasting solution for your home. Whether you are updating a classic post-war residence or completing a new build, our experienced team ensures a professional finish that complements your property. We understand the importance of getting the job done right, using high-quality materials and proven techniques to deliver results that are both practical and aesthetically pleasing, adding significant appeal and functionality to your Moorooka home.",
     areaDescription: "Moorooka is a diverse and affordable suburb on Brisbane's southside, located just 9km from the CBD. Characterised by its mix of charming post-war houses and a growing number of contemporary builds, the area offers generous block sizes, making it popular with families and renovators. Its terrain is varied, with some streets offering gentle slopes and others featuring more significant inclines, particularly on the eastern side towards Toohey Forest. This topography, combined with Brisbane's reactive clay soils, makes professional concreting a necessity. Clay soils expand and contract with moisture changes, which can lead to cracking and structural issues in poorly laid concrete. A professionally engineered concrete slab is vital for new homes and extensions, while properly constructed retaining walls are crucial for managing sloped blocks and preventing soil erosion. For driveways and patios, using the correct reinforcement and expansion joints is key to ensuring a long-lasting, crack-free surface that can handle both vehicle traffic and the harsh Queensland sun.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From standard broom-finish to decorative exposed aggregate, we build durable and attractive driveways to suit your Moorooka home." },
@@ -755,7 +755,7 @@ const SUBURBS: Record<string, SuburbData> = {
     faqs: [
       { q: "Do I need council approval for a new driveway in Moorooka?", a: "Yes, in most cases, any new or replacement driveway that connects to a council road requires a permit from Brisbane City Council to ensure it meets safety and construction standards." },
       { q: "How do you deal with the clay soil in Moorooka when pouring a slab?", a: "We use best-practice engineering standards, including proper site preparation, appropriate slab thickness, and steel reinforcement (reo) to create a strong foundation that can resist movement from reactive clay soils." },
-      { q: "What is a rough cost for a new exposed aggregate driveway?", a: "The cost varies based on size, access, and preparation work, but as a guide, exposed aggregate driveways typically start from around $90-$120 per square metre. We provide a firm, free quote after a site inspection." },
+      { q: "What is a rough cost for a new exposed aggregate driveway?", a: "The price for a concrete driveway is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     ],
     testimonialSnippet: { name: "David R.", text: "The team did a fantastic job on our new driveway. They were professional, on time, and the finished exposed aggregate looks brilliant. Really lifted the look of our old place.", service: "Exposed Aggregate Driveway — Moorooka" },
   },
@@ -765,11 +765,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Western Suburbs",
     postcode: "4069",
     h1: "Concreting Kenmore — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Kenmore | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Kenmore | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Kenmore, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Kenmore, concreters Kenmore, concrete driveway Kenmore, exposed aggregate Kenmore, concrete slabs Kenmore, retaining walls Kenmore",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-3_bb83bac8.jpeg",
-    intro: "For homeowners in the leafy, established suburb of Kenmore, quality concreting is essential for maintaining and enhancing property value. Concrete Concepts offers a complete range of services, from stylish and durable driveways to robust retaining walls that manage the area's hilly terrain. Our experienced team understands the specific needs of Kenmore properties, ensuring every project from a new patio to a foundational slab is completed to the highest standard. We pride ourselves on delivering functional and aesthetically pleasing concrete solutions that complement the beautiful homes and natural landscape of this sought-after western suburb. With a focus on longevity and quality craftsmanship, we are the trusted local choice for all your concreting needs in Kenmore.",
+    intro: "For homeowners in the leafy, established suburb of Kenmore, quality concreting is essential for maintaining and enhancing property value. Concrete Concepts Group offers a complete range of services, from stylish and durable driveways to robust retaining walls that manage the area's hilly terrain. Our experienced team understands the specific needs of Kenmore properties, ensuring every project from a new patio to a foundational slab is completed to the highest standard. We pride ourselves on delivering functional and aesthetically pleasing concrete solutions that complement the beautiful homes and natural landscape of this sought-after western suburb. With a focus on longevity and quality craftsmanship, we are the trusted local choice for all your concreting needs in Kenmore.",
     areaDescription: "Kenmore, a premier western suburb of Brisbane, is characterised by its large, established family homes, many of which are situated on generous, leafy blocks. The suburb's terrain is notably hilly, with winding roads and properties often featuring sloped gardens and yards, especially closer to the Brisbane River. This topography, combined with Brisbane's reactive clay soils that shrink and swell with moisture changes, makes professional engineering and construction of concrete structures like driveways and retaining walls critically important. A well-built retaining wall is not just a decorative feature but a structural necessity to prevent soil erosion and manage water runoff, particularly during the heavy rains of the subtropical climate.\n\nThe housing stock in Kenmore is a mix of classic post-war houses and more contemporary residences, all of which benefit from high-quality concrete work. Whether it's a modern exposed aggregate driveway to enhance curb appeal, a sturdy new slab for a home extension, or a beautifully finished concrete patio for outdoor entertaining, the investment in quality concreting pays dividends. Proximity to suburbs like Chapel Hill, Kenmore Hills, and Indooroopilly places Kenmore in a desirable, family-friendly corridor with excellent amenities. For residents, ensuring that any concrete work is handled by licensed professionals who understand local conditions and Brisbane City Council requirements is key to a successful and lasting result.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "Durable and stylish concrete driveways, expertly installed to handle Kenmore's hilly terrain and enhance your home's curb appeal." },
@@ -798,12 +798,12 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Inner-West",
     postcode: "4068",
     h1: "Concreting Indooroopilly — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Indooroopilly | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Indooroopilly | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Indooroopilly, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Indooroopilly, concreters Indooroopilly, concrete driveway Indooroopilly, concrete slabs Indooroopilly, exposed aggregate Indooroopilly, retaining walls Indooroopilly",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-closeup_e16c9248.jpeg",
-    intro: "For durable, high-quality concreting in Indooroopilly, trust the local experts at Concrete Concepts. Nestled in Brisbane's inner-west, Indooroopilly's unique landscape of rolling hills and riverside properties demands a specialised approach. Whether you're upgrading an older Queenslander with a new driveway or pouring a foundation for a modern apartment complex, our team has the experience to deliver exceptional results. We understand the challenges of working on sloping blocks and provide tailored solutions for everything from stylish exposed aggregate driveways to robust retaining walls and perfectly engineered house slabs. As your local, fully licensed concreters, we are committed to enhancing your property's value and functionality with workmanship that stands the test of time in the Brisbane climate. We ensure every project, big or small, meets the highest standards of quality and complies with all local council regulations, providing a seamless and professional service from start to finish.",
-    areaDescription: "Indooroopilly is a vibrant, established suburb known for its leafy streets, prestigious homes, and proximity to the University of Queensland. Its diverse housing stock ranges from classic, pre-war Queenslanders and post-war timber homes to contemporary architectural builds and multi-level apartment buildings. The suburb's most defining characteristic is its hilly terrain, with many properties situated on steep slopes that present unique construction challenges. This topography, combined with Brisbane's highly reactive clay soils, makes professional concreting essential. Soil movement due to moisture changes can cause cracking and instability in poorly laid foundations and hardscaping. Therefore, engineered concrete slabs, footings, and retaining walls are not just a feature but a necessity for structural integrity and longevity. The subtropical climate, with its periods of heavy rainfall, further necessitates effective drainage solutions and durable, weather-resistant surfaces like sealed or exposed aggregate concrete for driveways and pathways. Concrete Concepts specialises in addressing these specific local conditions, ensuring that every concrete structure is designed and built to withstand the environmental pressures of the area, protecting your investment for decades to come.",
+    intro: "For durable, high-quality concreting in Indooroopilly, trust the local experts at Concrete Concepts Group. Nestled in Brisbane's inner-west, Indooroopilly's unique landscape of rolling hills and riverside properties demands a specialised approach. Whether you're upgrading an older Queenslander with a new driveway or pouring a foundation for a modern apartment complex, our team has the experience to deliver exceptional results. We understand the challenges of working on sloping blocks and provide tailored solutions for everything from stylish exposed aggregate driveways to robust retaining walls and perfectly engineered house slabs. As your local, fully licensed concreters, we are committed to enhancing your property's value and functionality with workmanship that stands the test of time in the Brisbane climate. We ensure every project, big or small, meets the highest standards of quality and complies with all local council regulations, providing a seamless and professional service from start to finish.",
+    areaDescription: "Indooroopilly is a vibrant, established suburb known for its leafy streets, prestigious homes, and proximity to the University of Queensland. Its diverse housing stock ranges from classic, pre-war Queenslanders and post-war timber homes to contemporary architectural builds and multi-level apartment buildings. The suburb's most defining characteristic is its hilly terrain, with many properties situated on steep slopes that present unique construction challenges. This topography, combined with Brisbane's highly reactive clay soils, makes professional concreting essential. Soil movement due to moisture changes can cause cracking and instability in poorly laid foundations and hardscaping. Therefore, engineered concrete slabs, footings, and retaining walls are not just a feature but a necessity for structural integrity and longevity. The subtropical climate, with its periods of heavy rainfall, further necessitates effective drainage solutions and durable, weather-resistant surfaces like sealed or exposed aggregate concrete for driveways and pathways. Concrete Concepts Group specialises in addressing these specific local conditions, ensuring that every concrete structure is designed and built to withstand the environmental pressures of the area, protecting your investment for decades to come.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "Durable and stylish concrete driveways to enhance your home's kerb appeal. We handle everything from excavation to the final seal, ensuring a perfect finish for Indooroopilly's sloping blocks." },
       { name: "Retaining Walls", slug: "retaining-walls-brisbane", description: "Engineered concrete retaining walls are essential for managing Indooroopilly's hilly terrain. We build strong, long-lasting walls to create level areas and prevent soil erosion." },
@@ -831,7 +831,7 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Western Suburbs",
     postcode: "4069",
     h1: "Concreting Chapel Hill — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Chapel Hill | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Chapel Hill | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Chapel Hill, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Chapel Hill, concreters Chapel Hill, concrete driveway Chapel Hill, exposed aggregate Chapel Hill, concrete slabs Chapel Hill, retaining walls Chapel Hill",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-6_529d16f2.jpeg",
@@ -864,11 +864,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northwest",
     postcode: "4061",
     h1: "Concreting The Gap — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting The Gap | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting The Gap | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in The Gap, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting The Gap, concreters The Gap, concrete driveway The Gap, exposed aggregate The Gap, concrete slabs The Gap, retaining walls The Gap",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-slab-prep_28461c38.jpeg",
-    intro: "Concrete Concepts is your local specialist for high-quality concreting in The Gap. Nestled against the beautiful backdrop of Mt Coot-tha, we understand the unique challenges and opportunities of working in this leafy suburb. Whether you need a durable new driveway to complement your home, a stable slab for an extension, or a sturdy retaining wall to manage the hilly terrain, our experienced team delivers exceptional results. We combine modern techniques with a deep understanding of local conditions to provide solutions that are both functional and aesthetically pleasing. As a fully licensed and insured Brisbane business, we pride ourselves on reliability, clear communication, and a commitment to exceeding our clients' expectations on every project.",
+    intro: "Concrete Concepts Group is your local specialist for high-quality concreting in The Gap. Nestled against the beautiful backdrop of Mt Coot-tha, we understand the unique challenges and opportunities of working in this leafy suburb. Whether you need a durable new driveway to complement your home, a stable slab for an extension, or a sturdy retaining wall to manage the hilly terrain, our experienced team delivers exceptional results. We combine modern techniques with a deep understanding of local conditions to provide solutions that are both functional and aesthetically pleasing. As a fully licensed and insured Brisbane business, we pride ourselves on reliability, clear communication, and a commitment to exceeding our clients' expectations on every project.",
     areaDescription: "The Gap is a sought-after suburb in Brisbane's northwest, prized for its large blocks, established homes, and tranquil bushland setting. The area's hilly terrain and proximity to the Mt Coot-tha reserve mean that many properties require thoughtful landscaping and structural solutions. The prevailing housing stock consists of older, high-set timber homes and a growing number of modern architectural builds, all of which can be significantly enhanced by professional concreting. Due to the topography, effective stormwater management and soil stabilisation are critical. The region's reactive clay soils expand and contract with moisture changes, making professionally engineered concrete slabs and footings essential to prevent structural cracking and movement. Retaining walls are also a common necessity, used to create level usable spaces for patios, pools, and gardens on sloping blocks. A new concrete driveway or patio not only adds significant value but also provides a safe, durable surface that can withstand the subtropical climate and the demands of family life.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "From steep, sloping driveways to expansive entrances, we design and pour durable, long-lasting concrete driveways that boost your home's curb appeal and functionality." },
@@ -897,11 +897,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northwest",
     postcode: "4055",
     h1: "Concreting Ferny Grove — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Ferny Grove | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Ferny Grove | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Ferny Grove, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Ferny Grove, concreters Ferny Grove, concrete driveway Ferny Grove, concrete slabs Ferny Grove, exposed aggregate Ferny Grove, retaining walls Ferny Grove",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-7_4a8ac427.jpeg",
-    intro: "For trusted and professional concreting in Ferny Grove, look no further than Concrete Concepts. As a local Brisbane business, we understand the needs of homeowners in this beautiful, leafy suburb. Situated at the end of the train line, Ferny Grove has a unique blend of suburban convenience and a semi-rural atmosphere. Whether you're building a new home on a generous block or upgrading your existing property, our team delivers high-quality concrete solutions that last. From durable, stylish driveways to functional and attractive patios and shed slabs, we have the expertise to enhance your home's value and appeal. We are fully QBCC licensed (#15299707) and committed to providing exceptional workmanship and reliable service to the Ferny Grove community.",
+    intro: "For trusted and professional concreting in Ferny Grove, look no further than Concrete Concepts Group. As a local Brisbane business, we understand the needs of homeowners in this beautiful, leafy suburb. Situated at the end of the train line, Ferny Grove has a unique blend of suburban convenience and a semi-rural atmosphere. Whether you're building a new home on a generous block or upgrading your existing property, our team delivers high-quality concrete solutions that last. From durable, stylish driveways to functional and attractive patios and shed slabs, we have the expertise to enhance your home's value and appeal. We are fully QBCC licensed (#15299707) and committed to providing exceptional workmanship and reliable service to the Ferny Grove community.",
     areaDescription: "Ferny Grove is a popular suburb for families, known for its larger-than-average block sizes, quiet cul-de-sacs, and abundant green spaces like the Brisbane Forest Park. The housing stock is diverse, ranging from classic high-set timber homes to modern brick residences and new builds in developing estates. The terrain can be quite hilly in parts, with sloping blocks that present unique landscaping challenges. The local soil composition, often a mix of gravelly loams and reactive Brisbane clays, requires professional expertise for stable, long-lasting concrete structures. A well-constructed concrete driveway is essential to handle the subtropical climate, preventing erosion and providing safe access on steep inclines. Many homes take advantage of the rolling landscape by installing tiered gardens and outdoor areas, making engineered concrete retaining walls a necessity for structural integrity and creating usable, level spaces. With the ongoing development and the desire of residents to maximise their outdoor lifestyle, high-quality concreting for patios, pool surrounds, and shed slabs is in constant demand throughout Ferny Grove.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We design and install durable concrete driveways in Ferny Grove, perfect for sloping blocks and built to withstand the Brisbane climate. Choose from a range of finishes, including exposed aggregate and coloured concrete." },
@@ -922,7 +922,7 @@ const SUBURBS: Record<string, SuburbData> = {
       { q: "What is the best concrete finish for a sloping driveway?", a: "For sloping sites in areas like Ferny Grove, we often recommend a broom finish or an exposed aggregate finish. Both provide excellent texture for grip in wet conditions, which is crucial for safety." },
       { q: "My property has a lot of clay soil. Is that a problem for a new slab?", a: "Reactive clay soils are common in Brisbane and require specific site preparation. We ensure the sub-base is properly engineered with appropriate compaction and drainage to prevent slab movement and cracking over time." },
     ],
-    testimonialSnippet: { name: "Mark S.", text: "Concrete Concepts did a fantastic job on our new exposed aggregate driveway. The block is quite steep and they handled it perfectly. The team was professional and the result is better than we hoped.", service: "Concrete Driveway — Ferny Grove" },
+    testimonialSnippet: { name: "Mark S.", text: "Concrete Concepts Group did a fantastic job on our new exposed aggregate driveway. The block is quite steep and they handled it perfectly. The team was professional and the result is better than we hoped.", service: "Concrete Driveway — Ferny Grove" },
   },
   "everton-park": {
     slug: "everton-park",
@@ -930,11 +930,11 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northside",
     postcode: "4053",
     h1: "Concreting Everton Park — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Everton Park | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Everton Park | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Everton Park, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Everton Park, concreters Everton Park, concrete driveway Everton Park, exposed aggregate Everton Park, concrete slabs Everton Park, retaining walls Everton Park, concrete cutting Everton Park",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-pouring_f7343992.jpeg",
-    intro: "For trusted, reliable, and high-quality concreting in Everton Park, look no further than Concrete Concepts. As a local Brisbane business, we have extensive experience working with the diverse range of properties in this popular northside suburb. From revitalising older, post-war houses with brand new driveways to pouring precision slabs for modern extensions, our team delivers exceptional results every time. We understand the unique challenges of the area, including its undulating terrain and reactive soils, ensuring every project is built to last. Our commitment to quality workmanship and customer satisfaction has made us a leading choice for homeowners and builders in Everton Park seeking everything from stylish exposed aggregate patios to structurally sound retaining walls. We are fully licensed and insured, offering peace of mind and a quality guarantee on all our work. Contact us for a free, no-obligation quote and see how we can bring your concrete project to life.",
+    intro: "For trusted, reliable, and high-quality concreting in Everton Park, look no further than Concrete Concepts Group. As a local Brisbane business, we have extensive experience working with the diverse range of properties in this popular northside suburb. From revitalising older, post-war houses with brand new driveways to pouring precision slabs for modern extensions, our team delivers exceptional results every time. We understand the unique challenges of the area, including its undulating terrain and reactive soils, ensuring every project is built to last. Our commitment to quality workmanship and customer satisfaction has made us a leading choice for homeowners and builders in Everton Park seeking everything from stylish exposed aggregate patios to structurally sound retaining walls. We are fully licensed and insured, offering peace of mind and a quality guarantee on all our work. Contact us for a free, no-obligation quote and see how we can bring your concrete project to life.",
     areaDescription: "Everton Park is a thriving, family-friendly suburb on Brisbane's northside, located approximately 9 kilometres from the CBD. Known for its leafy streets and gently undulating terrain, the area features a unique blend of housing styles. You’ll find many charming post-war timber and brick homes on generous blocks, increasingly alongside modern architectural builds and renovated properties. This mix creates strong demand for a variety of concreting services, from replacing cracked, decades-old driveways to pouring foundations for new homes and extensions. The suburb's rolling hills mean that expertly engineered retaining walls are often essential for creating level, usable spaces for gardens, patios, and pools. Like much of Brisbane, Everton Park is characterised by reactive clay soils, which can expand and contract with moisture changes. This makes professional site preparation and the use of reinforced concrete crucial to prevent future cracking and movement. With its excellent access to major roads like South Pine and Stafford Roads, and its proximity to hubs like Stafford and Chermside, Everton Park is a prime location for property investment and development, underpinning the need for durable, high-quality concrete work.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We specialise in replacing old, cracked driveways in Everton Park's post-war homes and installing stylish new ones for modern builds. A quality concrete driveway enhances curb appeal and property value." },
@@ -963,12 +963,12 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northside",
     postcode: "4053",
     h1: "Concreting Stafford — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Stafford | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Stafford | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Stafford, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Stafford, concreters Stafford, concrete driveway Stafford, exposed aggregate Stafford, concrete slabs Stafford, retaining walls Stafford",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-gallery-8_967d5266.jpeg",
-    intro: "Located just 8 kilometres north of the Brisbane CBD, Stafford is a suburb that perfectly blends convenience and a relaxed, family-friendly atmosphere. Known for its leafy streets and a growing cafe culture, it's a sought-after location for professionals and young families. The area features a mix of classic post-war houses and modern renovations, creating a diverse architectural landscape. As homeowners increasingly invest in upgrading their properties, the demand for high-quality, durable, and aesthetically pleasing concrete work has never been higher. From stylish new driveways to functional and attractive patios, professional concreting is key to enhancing these homes' value and street appeal. Concrete Concepts is proud to offer our full range of expert concreting services to the residents of Stafford, ensuring every project meets the highest standards of quality and durability that a Brisbane home deserves.",
-    areaDescription: "Stafford's terrain is predominantly flat to gently undulating, making it well-suited for construction and landscaping projects. The suburb is characterized by its established housing stock, with many original post-war timber homes now undergoing significant renovations and extensions. This renewal trend often involves creating new concrete driveways, slabs for extensions, and outdoor entertaining areas. A key consideration for any construction in the region is the soil composition. Like much of inner-north Brisbane, Stafford sits on reactive clay soils, which can shrink and swell with changes in moisture content. This makes professional site preparation and slab engineering essential to prevent future cracking and movement. Furthermore, proximity to Kedron Brook means managing stormwater runoff is a crucial aspect of planning new hard surfaces. Concrete Concepts has extensive experience working with these specific local conditions. We ensure that every concrete slab and driveway is designed and installed to comply with Brisbane City Council requirements and withstand the challenges of the subtropical climate, guaranteeing a long-lasting and structurally sound result for your property.",
+    intro: "Located just 8 kilometres north of the Brisbane CBD, Stafford is a suburb that perfectly blends convenience and a relaxed, family-friendly atmosphere. Known for its leafy streets and a growing cafe culture, it's a sought-after location for professionals and young families. The area features a mix of classic post-war houses and modern renovations, creating a diverse architectural landscape. As homeowners increasingly invest in upgrading their properties, the demand for high-quality, durable, and aesthetically pleasing concrete work has never been higher. From stylish new driveways to functional and attractive patios, professional concreting is key to enhancing these homes' value and street appeal. Concrete Concepts Group is proud to offer our full range of expert concreting services to the residents of Stafford, ensuring every project meets the highest standards of quality and durability that a Brisbane home deserves.",
+    areaDescription: "Stafford's terrain is predominantly flat to gently undulating, making it well-suited for construction and landscaping projects. The suburb is characterized by its established housing stock, with many original post-war timber homes now undergoing significant renovations and extensions. This renewal trend often involves creating new concrete driveways, slabs for extensions, and outdoor entertaining areas. A key consideration for any construction in the region is the soil composition. Like much of inner-north Brisbane, Stafford sits on reactive clay soils, which can shrink and swell with changes in moisture content. This makes professional site preparation and slab engineering essential to prevent future cracking and movement. Furthermore, proximity to Kedron Brook means managing stormwater runoff is a crucial aspect of planning new hard surfaces. Concrete Concepts Group has extensive experience working with these specific local conditions. We ensure that every concrete slab and driveway is designed and installed to comply with Brisbane City Council requirements and withstand the challenges of the subtropical climate, guaranteeing a long-lasting and structurally sound result for your property.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We design and install high-quality concrete driveways that boost your home's kerb appeal and provide a durable, long-lasting surface for daily use." },
       { name: "Exposed Aggregate", slug: "exposed-aggregate-brisbane", description: "A popular choice in Stafford for a modern, stylish finish. Our exposed aggregate driveways and paths offer a textured, non-slip surface that is both beautiful and practical." },
@@ -996,12 +996,12 @@ const SUBURBS: Record<string, SuburbData> = {
     region: "Brisbane Northside",
     postcode: "4012",
     h1: "Concreting Nundah — Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Nundah | Driveways & Slabs from $65/m² | Concrete Concepts",
+    metaTitle: "Concreting Nundah | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Nundah, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes — call 0424 463 268.",
     keywords: "concreting Nundah, concreters Nundah, concrete driveway Nundah, concrete slabs Nundah, exposed aggregate Nundah, retaining walls Nundah",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-stair-formwork_22770470.jpeg",
-    intro: "For trusted and professional concreting in Nundah, look no further than Concrete Concepts. As a locally owned Brisbane business, we are proud to serve the thriving northside community of Nundah and its surrounding areas. Located just 8 kilometres from the CBD, Nundah is experiencing a significant transformation, with new developments and renovations adding to its vibrant character. Whether you're building a new home, renovating a classic Queenslander, or upgrading your outdoor space, our team has the expertise to deliver high-quality concrete solutions that last. From stylish and durable driveways to robust foundations and functional retaining walls, we understand the specific needs of Nundah properties. We are fully QBCC licensed (#15299707) and committed to providing exceptional workmanship and reliable service. We handle every project, big or small, with the same level of professionalism, ensuring your concrete work not only looks great but also stands up to the demands of the Brisbane climate. Contact us today for a free, no-obligation quote and let's discuss how we can bring your concrete concepts to life.",
-    areaDescription: "Nundah, QLD 4012, is a rapidly evolving suburb on Brisbane's northside, known for its dynamic blend of old and new. Situated near Toombul, Clayfield, and Hendra, it offers excellent connectivity and a growing list of amenities. The suburb's housing landscape is diverse, featuring beautifully renovated post-war and Queenslander homes alongside a surge of modern apartment complexes. This rapid gentrification means there is a constant demand for high-quality concreting work, from new driveways for contemporary homes to foundational slabs for extensions and new builds. The terrain in Nundah is predominantly flat, which simplifies site preparation and excavation for concreting projects. However, like much of Brisbane, the area is characterized by reactive clay soils. These soils can expand and contract significantly with changes in moisture content, posing a risk to the stability of concrete structures. Professional concreting is therefore essential to ensure that driveways, slabs, and footings are engineered to withstand these challenging ground conditions. Properly designed and reinforced concrete work from an experienced contractor like Concrete Concepts is crucial for preventing cracking and movement over time, protecting the long-term value and safety of Nundah properties.",
+    intro: "For trusted and professional concreting in Nundah, look no further than Concrete Concepts Group. As a locally owned Brisbane business, we are proud to serve the thriving northside community of Nundah and its surrounding areas. Located just 8 kilometres from the CBD, Nundah is experiencing a significant transformation, with new developments and renovations adding to its vibrant character. Whether you're building a new home, renovating a classic Queenslander, or upgrading your outdoor space, our team has the expertise to deliver high-quality concrete solutions that last. From stylish and durable driveways to robust foundations and functional retaining walls, we understand the specific needs of Nundah properties. We are fully QBCC licensed (#15299707) and committed to providing exceptional workmanship and reliable service. We handle every project, big or small, with the same level of professionalism, ensuring your concrete work not only looks great but also stands up to the demands of the Brisbane climate. Contact us today for a free, no-obligation quote and let's discuss how we can bring your concrete concepts to life.",
+    areaDescription: "Nundah, QLD 4012, is a rapidly evolving suburb on Brisbane's northside, known for its dynamic blend of old and new. Situated near Toombul, Clayfield, and Hendra, it offers excellent connectivity and a growing list of amenities. The suburb's housing landscape is diverse, featuring beautifully renovated post-war and Queenslander homes alongside a surge of modern apartment complexes. This rapid gentrification means there is a constant demand for high-quality concreting work, from new driveways for contemporary homes to foundational slabs for extensions and new builds. The terrain in Nundah is predominantly flat, which simplifies site preparation and excavation for concreting projects. However, like much of Brisbane, the area is characterized by reactive clay soils. These soils can expand and contract significantly with changes in moisture content, posing a risk to the stability of concrete structures. Professional concreting is therefore essential to ensure that driveways, slabs, and footings are engineered to withstand these challenging ground conditions. Properly designed and reinforced concrete work from an experienced contractor like Concrete Concepts Group is crucial for preventing cracking and movement over time, protecting the long-term value and safety of Nundah properties.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We design and install high-quality concrete driveways in Nundah, perfect for both classic Queenslanders and modern homes. Our driveways are built to withstand Brisbane's climate and heavy use, with options for exposed aggregate to add street appeal." },
       { name: "Concrete Slabs", slug: "concrete-slabs-brisbane", description: "From house and shed slabs to patio bases, we provide expertly engineered concrete slabs for Nundah properties. We ensure all slabs are designed to suit the local clay soil conditions, providing a stable and durable foundation for your project." },
@@ -1021,20 +1021,20 @@ const SUBURBS: Record<string, SuburbData> = {
       { q: "How do you deal with the clay soil in Brisbane when laying a concrete slab?", a: "We take soil conditions very seriously. Our process includes proper site preparation, including excavation and compaction, and engineering the slab with appropriate steel reinforcement and thickness to counteract the movement of reactive clay soils, ensuring a stable foundation." },
       { q: "How long does a typical concrete driveway project take from start to finish?", a: "A standard residential driveway in Nundah usually takes between 3 to 5 days, depending on the size, site access, and weather conditions. This includes excavation, formwork, steel fixing, concrete pour, and curing time before it can be driven on." },
     ],
-    testimonialSnippet: { name: "Sarah W.", text: "The team from Concrete Concepts did a fantastic job on our new exposed aggregate driveway. It has completely transformed the look of our home. They were professional, efficient, and the quality of the work is outstanding. Highly recommended!", service: "Exposed Aggregate Driveway — Nundah" },
+    testimonialSnippet: { name: "Sarah W.", text: "The team from Concrete Concepts Group did a fantastic job on our new exposed aggregate driveway. It has completely transformed the look of our home. They were professional, efficient, and the quality of the work is outstanding. Highly recommended!", service: "Exposed Aggregate Driveway — Nundah" },
   },
   "marsden": {
   slug: "marsden",
   name: "Marsden",
   region: "Logan",
   postcode: "4132",
-  metaTitle: "Concreter Marsden | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Looking for a reliable concreter in Marsden? Concrete Concepts offers expert services for driveways, shed slabs, and retaining walls. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Marsden | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Looking for a reliable concreter in Marsden? Concrete Concepts Group offers expert services for driveways, shed slabs, and retaining walls. QBCC licensed and fully insured.",
     h1: "Concreting Marsden — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Marsden, concreters Marsden, concrete driveway Marsden, exposed aggregate Marsden, retaining wall Marsden",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
-  heroAlt: "A new, modern concrete driveway in Marsden, recently completed by Concrete Concepts.",
-  intro: "Marsden is a rapidly growing suburb, popular with families and new homeowners. With a surge in new builds and renovations, there's a high demand for quality concrete work. Concrete Concepts is the trusted local expert for all your concreting needs, from stylish driveways to sturdy foundations.",
+  heroAlt: "A new, modern concrete driveway in Marsden, recently completed by Concrete Concepts Group.",
+  intro: "Marsden is a rapidly growing suburb, popular with families and new homeowners. With a surge in new builds and renovations, there's a high demand for quality concrete work. Concrete Concepts Group is the trusted local expert for all your concreting needs, from stylish driveways to sturdy foundations.",
   areaDescription: "Marsden is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Marsden and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We specialise in creating durable and visually appealing concrete driveways in Marsden that enhance your home's curb appeal and value. Our team can deliver a range of finishes to suit your style." },
@@ -1043,18 +1043,18 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Concrete Patios", slug: "concrete-patios-brisbane", description: "Transform your outdoor living area with a beautiful and functional concrete patio. We offer a variety of finishes to create the perfect entertainment space for your Marsden home." },
     { name: "Excavation", slug: "excavation-brisbane", description: "Our excavation services in Marsden prepare your site for any concreting project, ensuring a smooth and efficient process from start to finish. We handle all the earthworks so you don't have to." }
   ],
-  testimonialSnippet: { name: "John S.", text: "The team from Concrete Concepts did an amazing job on our new driveway in Marsden. They were professional, efficient, and the final result is fantastic. Highly recommended!", service: "Concreting — Marsden" },
+  testimonialSnippet: { name: "John S.", text: "The team from Concrete Concepts Group did an amazing job on our new driveway in Marsden. They were professional, efficient, and the final result is fantastic. Highly recommended!", service: "Concreting — Marsden" },
   nearbySuburbs: [
     { name: "Crestmead", slug: "crestmead" },
     { name: "Waterford West", slug: "waterford-west" },
     { name: "Loganlea", slug: "loganlea" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Marsden?", a: "The cost of a new driveway in Marsden depends on the size, finish, and site access. On average, you can expect to pay between $80-$150 per square metre. We provide a detailed, fixed-price quote after a site inspection." },
+    { q: "How much does a new concrete driveway cost in Marsden?", a: "The price for a concrete driveway in Marsden is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Do I need council approval for a retaining wall in Marsden?", a: "In the Logan City Council area, retaining walls over 1 metre in height or close to a boundary may require council approval. We can advise you on the specific requirements for your Marsden property and assist with the application process." },
     { q: "What's the best concrete finish for a patio in the Logan climate?", a: "For Marsden and the wider Logan area, we often recommend a stencilled or stamped concrete finish for patios. These offer good slip resistance and come in a wide variety of styles to complement your home." },
     { q: "How long does it take to lay a shed slab?", a: "For a standard-sized shed slab in Marsden, the process usually takes 1-2 days, including excavation and pouring. We then recommend allowing the concrete to cure for at least 7 days before placing the shed on top." },
-    { q: "Why should I choose Concrete Concepts for my Marsden project?", a: "We are a local, family-owned business with a reputation for quality workmanship in the Logan region. Being QBCC licensed (licence #15123456) means we are held to high standards of quality and professionalism, giving you confidence in our work." }
+    { q: "Why should I choose Concrete Concepts Group for my Marsden project?", a: "We are a local, family-owned business with a reputation for quality workmanship in the Logan region. Being QBCC licensed (licence #15123456) means we are held to high standards of quality and professionalism, giving you confidence in our work." }
   ]
 },
   "shailer-park": {
@@ -1062,12 +1062,12 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Shailer Park",
   region: "Logan",
   postcode: "4128",
-  metaTitle: "Concreter Shailer Park | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Shailer Park? Concrete Concepts offers expert services for driveways, retaining walls, and patios. Fully licensed (QBCC) and insured.",
+  metaTitle: "Concreter Shailer Park | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Shailer Park? Concrete Concepts Group offers expert services for driveways, retaining walls, and patios. Fully licensed (QBCC) and insured.",
     h1: "Concreting Shailer Park — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Shailer Park, concreters Shailer Park, concrete driveway Shailer Park, exposed aggregate Shailer Park, retaining wall Shailer Park",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-1_942fd49e.jpeg",
-  heroAlt: "A sturdy concrete retaining wall built by Concrete Concepts on a sloped property in Shailer Park.",
+  heroAlt: "A sturdy concrete retaining wall built by Concrete Concepts Group on a sloped property in Shailer Park.",
   intro: "Shailer Park's hilly landscape and established homes present unique concreting challenges. Concrete Concepts Group has the local expertise to deliver exceptional results, from robust retaining walls to stunning driveways, ensuring your project enhances your property's value and functionality.",
   areaDescription: "Shailer Park is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Shailer Park and surrounding areas.",
   popularServices: [
@@ -1097,7 +1097,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       description: "Proper site preparation is critical, especially on the hilly terrain of Shailer Park. Our professional excavation services ensure your project starts on a solid, correctly graded foundation for optimal results."
     }
   ],
-  testimonialSnippet: { name: "David R.", text: "We needed a large retaining wall for our sloping block in Shailer Park and the team at Concrete Concepts did an amazing job. They were professional, efficient, and the final result is stronger and looks better than we could have imagined. Highly recommended!", service: "Concreting — Shailer Park" },
+  testimonialSnippet: { name: "David R.", text: "We needed a large retaining wall for our sloping block in Shailer Park and the team at Concrete Concepts Group did an amazing job. They were professional, efficient, and the final result is stronger and looks better than we could have imagined. Highly recommended!", service: "Concreting — Shailer Park" },
   nearbySuburbs: [
     { name: "Daisy Hill", slug: "daisy-hill" },
     { name: "Cornubia", slug: "cornubia" },
@@ -1114,7 +1114,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     },
     {
       q: "What is the average cost for a new concrete driveway in Shailer Park?",
-      a: "Driveway costs vary based on size, slope, and the chosen finish. On average, you can expect to pay between $80 to $150 per square metre. We provide a detailed, fixed-price quote after a free on-site inspection."
+      a: "The price for a concrete driveway in Shailer Park is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote."
     },
     {
       q: "Can you remove my old, cracked driveway?",
@@ -1131,12 +1131,12 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Underwood",
   region: "Logan",
   postcode: "4119",
-  metaTitle: "Concreter Underwood | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Underwood? Concrete Concepts offers expert driveway replacements, exposed aggregate, and patios. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Underwood | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Underwood? Concrete Concepts Group offers expert driveway replacements, exposed aggregate, and patios. QBCC licensed and fully insured.",
     h1: "Concreting Underwood — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Underwood, concreters Underwood, concrete driveway Underwood, exposed aggregate Underwood, retaining wall Underwood",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-driveway_803ff92a.jpeg",
-  heroAlt: "Modern exposed aggregate driveway in Underwood, completed by Concrete Concepts.",
+  heroAlt: "Modern exposed aggregate driveway in Underwood, completed by Concrete Concepts Group.",
   intro: "Underwood is a thriving, well-established suburb known for its blend of residential and commercial properties. For homeowners looking to enhance their property's value and appeal, Concrete Concepts Group provides high-quality, durable, and stylish concreting solutions that stand the test of time.",
   areaDescription: "Underwood is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Underwood and surrounding areas.",
   popularServices: [
@@ -1145,18 +1145,18 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Concrete Patios", slug: "concrete-patios-brisbane", description: "Transform your outdoor living area with a custom concrete patio, perfect for the Underwood lifestyle. We design and pour beautiful, functional patios that extend your entertainment space and enhance your backyard." },
     { name: "Concrete Slabs", slug: "concrete-slabs-brisbane", description: "From shed slabs to house extensions, we provide structurally sound and perfectly level concrete slabs for any project in Underwood. Our team ensures every slab meets the highest engineering and quality standards." }
   ],
-  testimonialSnippet: { name: "David L.", text: "The team from Concrete Concepts did an amazing job on our new exposed aggregate driveway in Underwood. They were professional, efficient, and the final result has completely transformed the look of our home. Highly recommended!", service: "Concreting — Underwood" },
+  testimonialSnippet: { name: "David L.", text: "The team from Concrete Concepts Group did an amazing job on our new exposed aggregate driveway in Underwood. They were professional, efficient, and the final result has completely transformed the look of our home. Highly recommended!", service: "Concreting — Underwood" },
   nearbySuburbs: [
     { name: "Springwood", slug: "springwood" },
     { name: "Rochedale", slug: "rochedale" },
     { name: "Eight Mile Plains", slug: "eight-mile-plains" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Underwood?", a: "The cost of a new driveway in Underwood depends on the size, finish, and site access. We provide free, detailed quotes. As a guide, a standard driveway can range from $80 to $150 per square metre." },
+    { q: "How much does a new concrete driveway cost in Underwood?", a: "The price for a concrete driveway in Underwood is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Do I need council approval for a new driveway in Underwood?", a: "In most cases, replacing an existing driveway does not require council approval. However, for new crossovers or significant changes, it's best to check with Logan City Council. We can help guide you through this process." },
     { q: "What is the best concrete finish for a patio in Underwood?", a: "For patios in Underwood, we often recommend a broom finish for a non-slip texture or a honed and sealed finish for a premium, smooth look. We can show you samples to help you decide." },
     { q: "How long does it take to replace a driveway?", a: "A typical driveway replacement in Underwood takes our team 2-3 days, including demolition, preparation, and pouring. We then recommend allowing 7 days for the concrete to cure before driving on it." },
-    { q: "Why should I choose Concrete Concepts for my Underwood project?", a: "We are a local, family-owned business with years of experience in Underwood and the wider Logan region. We pride ourselves on quality workmanship, transparent pricing, and excellent customer service, all backed by our QBCC licence." }
+    { q: "Why should I choose Concrete Concepts Group for my Underwood project?", a: "We are a local, family-owned business with years of experience in Underwood and the wider Logan region. We pride ourselves on quality workmanship, transparent pricing, and excellent customer service, all backed by our QBCC licence." }
   ]
 },
   "robina": {
@@ -1164,13 +1164,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Robina",
   region: "Gold Coast",
   postcode: "4226",
-  metaTitle: "Concreter Robina | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a concreter in Robina? Concrete Concepts offers expert services for driveways, slabs, and pool surrounds. Fully licensed (QBCC) and insured. Get a free quote!",
+  metaTitle: "Concreter Robina | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a concreter in Robina? Concrete Concepts Group offers expert services for driveways, slabs, and pool surrounds. Fully licensed (QBCC) and insured. Get a free quote!",
     h1: "Concreting Robina — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Robina, concreters Robina, concrete driveway Robina, exposed aggregate Robina, retaining wall Robina",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-driveway_803ff92a.jpeg",
-  heroAlt: "Exposed aggregate concrete driveway in Robina by Concrete Concepts.",
-  intro: "Robina is a premier Gold Coast suburb known for its beautiful homes and outdoor living. Concrete Concepts is the trusted local expert for high-quality concrete work, from stunning driveways to functional and stylish pool surrounds, enhancing your Robina property's value and appeal.",
+  heroAlt: "Exposed aggregate concrete driveway in Robina by Concrete Concepts Group.",
+  intro: "Robina is a premier Gold Coast suburb known for its beautiful homes and outdoor living. Concrete Concepts Group is the trusted local expert for high-quality concrete work, from stunning driveways to functional and stylish pool surrounds, enhancing your Robina property's value and appeal.",
   areaDescription: "Robina is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Robina and surrounding areas.",
   popularServices: [
     { name: "Exposed Aggregate Driveways", slug: "exposed-aggregate-brisbane", description: "Exposed aggregate is the perfect choice for Robina's modern homes, offering a durable and visually appealing finish for your driveway. We specialise in creating custom exposed aggregate driveways that complement your property's aesthetic." },
@@ -1178,18 +1178,18 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Concrete Patios", slug: "concrete-patios-brisbane", description: "Create the perfect outdoor entertaining area with a custom concrete patio. We can design and pour a patio that suits your Robina lifestyle, from simple broom-finish to decorative exposed aggregate." },
     { name: "Retaining Walls", slug: "retaining-walls-brisbane", description: "With Robina's varied terrain, a well-built retaining wall can add both function and style to your landscaping. We construct strong and attractive concrete retaining walls to suit your property's needs." }
   ],
-  testimonialSnippet: { name: "David R.", text: "Concrete Concepts did an amazing job on our new exposed aggregate driveway in Robina. The team was professional, efficient, and the final result exceeded our expectations. Highly recommended!", service: "Concreting — Robina" },
+  testimonialSnippet: { name: "David R.", text: "Concrete Concepts Group did an amazing job on our new exposed aggregate driveway in Robina. The team was professional, efficient, and the final result exceeded our expectations. Highly recommended!", service: "Concreting — Robina" },
   nearbySuburbs: [
     { name: "Mudgeeraba", slug: "mudgeeraba" },
     { name: "Merrimac", slug: "merrimac" },
     { name: "Varsity Lakes", slug: "varsity-lakes" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Robina?", a: "The cost of a new driveway in Robina depends on the size, finish (e.g., exposed aggregate), and site access. We provide free, detailed quotes. As a guide, a standard driveway can range from $80 to $150 per square metre." },
+    { q: "How much does a new concrete driveway cost in Robina?", a: "The price for a concrete driveway in Robina is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Do I need council approval for concreting work in Robina?", a: "Most minor concreting work like driveways or patios doesn't require council approval. However, larger structures or significant excavations may. We can advise you on the specific Gold Coast City Council requirements for your project." },
     { q: "What is the best concrete finish for a pool surround in Robina?", a: "For pool surrounds in Robina, we recommend a non-slip, sealed finish like exposed aggregate. It's safe, durable, and looks fantastic. We can show you a range of aggregate mixes to complement your pool area." },
     { q: "How long does it take to pour a concrete slab?", a: "A typical residential slab in Robina can be poured in a single day. However, the entire process, including excavation and preparation, can take 3-5 days, depending on the size and complexity of the job." },
-    { q: "Why should I choose Concrete Concepts for my Robina project?", a: "We are local Gold Coast concreters with a reputation for quality and reliability. We are fully QBCC licensed, insured, and committed to delivering exceptional results on every project in Robina, big or small." }
+    { q: "Why should I choose Concrete Concepts Group for my Robina project?", a: "We are local Gold Coast concreters with a reputation for quality and reliability. We are fully QBCC licensed, insured, and committed to delivering exceptional results on every project in Robina, big or small." }
   ]
 },
   "nerang": {
@@ -1197,13 +1197,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Nerang",
   region: "Gold Coast",
   postcode: "4211",
-  metaTitle: "Concreter Nerang | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Looking for a reliable concreter in Nerang? Concrete Concepts offers expert services for driveways, retaining walls, and concrete slabs. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Nerang | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Looking for a reliable concreter in Nerang? Concrete Concepts Group offers expert services for driveways, retaining walls, and concrete slabs. QBCC licensed and fully insured.",
     h1: "Concreting Nerang — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Nerang, concreters Nerang, concrete driveway Nerang, exposed aggregate Nerang, retaining wall Nerang",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-retaining-wall-1_942fd49e.jpeg",
-  heroAlt: "A sturdy concrete retaining wall built on a sloped property in Nerang by Concrete Concepts.",
-  intro: "Nerang is a gateway to the stunning Gold Coast hinterland, featuring a mix of housing from family homes to rural properties. Concrete Concepts is your local expert, specializing in high-quality concrete solutions that are perfect for Nerang's diverse and often hilly terrain. We deliver durable and beautiful results for any project, big or small.",
+  heroAlt: "A sturdy concrete retaining wall built on a sloped property in Nerang by Concrete Concepts Group.",
+  intro: "Nerang is a gateway to the stunning Gold Coast hinterland, featuring a mix of housing from family homes to rural properties. Concrete Concepts Group is your local expert, specializing in high-quality concrete solutions that are perfect for Nerang's diverse and often hilly terrain. We deliver durable and beautiful results for any project, big or small.",
   areaDescription: "Nerang is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Nerang and surrounding areas.",
   popularServices: [
     {
@@ -1227,7 +1227,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       description: "Add a touch of class to your Nerang property with an exposed aggregate finish for your driveway or patio. This decorative and non-slip surface is perfect for the Gold Coast lifestyle, offering both beauty and durability."
     }
   ],
-  testimonialSnippet: { name: "John D.", text: "The team from Concrete Concepts did an amazing job on our new driveway in Nerang. It has completely transformed the look of our home. Highly recommend their professional service!", service: "Concreting — Nerang" },
+  testimonialSnippet: { name: "John D.", text: "The team from Concrete Concepts Group did an amazing job on our new driveway in Nerang. It has completely transformed the look of our home. Highly recommend their professional service!", service: "Concreting — Nerang" },
   nearbySuburbs: [
     { name: "Carrara", slug: "carrara" },
     { name: "Highland Park", slug: "highland-park" },
@@ -1244,14 +1244,14 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     },
     {
       q: "What is the best concrete finish for a pool surround in Nerang?",
-      a: "For pool surrounds, we recommend a non-slip, decorative finish like exposed aggregate. It's safe, durable, and looks fantastic, perfectly complementing the Gold Coast lifestyle. Concrete Concepts can show you a range of options."
+      a: "For pool surrounds, we recommend a non-slip, decorative finish like exposed aggregate. It's safe, durable, and looks fantastic, perfectly complementing the Gold Coast lifestyle. Concrete Concepts Group can show you a range of options."
     },
     {
       q: "How long does it take to pour a concrete slab?",
       a: "A standard shed or patio slab in Nerang can typically be prepared and poured within a day or two. Larger or more complex slabs may take longer. We always provide a clear timeline for your project."
     },
     {
-      q: "Why should I choose Concrete Concepts for my Nerang project?",
+      q: "Why should I choose Concrete Concepts Group for my Nerang project?",
       a: "We are a local, QBCC-licensed business with years of experience in Nerang and the surrounding areas. We pride ourselves on quality workmanship, reliable service, and competitive pricing, ensuring a great result for every client."
     }
   ]
@@ -1261,13 +1261,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Coomera",
   region: "Gold Coast",
   postcode: "4209",
-  metaTitle: "Concreter Coomera | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Looking for a reliable concreter in Coomera? Concrete Concepts offers expert services for new driveways, shed slabs, and pathways. Fully licensed (QBCC) and insured.",
+  metaTitle: "Concreter Coomera | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Looking for a reliable concreter in Coomera? Concrete Concepts Group offers expert services for new driveways, shed slabs, and pathways. Fully licensed (QBCC) and insured.",
     h1: "Concreting Coomera — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Coomera, concreters Coomera, concrete driveway Coomera, exposed aggregate Coomera, retaining wall Coomera",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
-  heroAlt: "A new, modern concrete driveway for a home in Coomera, installed by Concrete Concepts.",
-  intro: "As one of the fastest-growing suburbs on the Gold Coast, Coomera is a hub of new development and construction. Concrete Concepts is the trusted local concreter for high-quality concrete solutions for new homes, from stylish driveways to functional shed slabs and pathways.",
+  heroAlt: "A new, modern concrete driveway for a home in Coomera, installed by Concrete Concepts Group.",
+  intro: "As one of the fastest-growing suburbs on the Gold Coast, Coomera is a hub of new development and construction. Concrete Concepts Group is the trusted local concreter for high-quality concrete solutions for new homes, from stylish driveways to functional shed slabs and pathways.",
   areaDescription: "Coomera is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Coomera and surrounding areas.",
   popularServices: [
     {
@@ -1291,7 +1291,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       description: "Create the perfect outdoor entertaining area for your new Coomera home with a custom concrete patio. We design and install beautiful and functional patios to enhance your lifestyle."
     }
   ],
-  testimonialSnippet: { name: "Mark T.", text: "We recently built our home in Coomera and needed a new driveway and patio. The team at Concrete Concepts did an amazing job, were very professional, and the final result exceeded our expectations. Highly recommended!", service: "Concreting — Coomera" },
+  testimonialSnippet: { name: "Mark T.", text: "We recently built our home in Coomera and needed a new driveway and patio. The team at Concrete Concepts Group did an amazing job, were very professional, and the final result exceeded our expectations. Highly recommended!", service: "Concreting — Coomera" },
   nearbySuburbs: [
     { name: "Upper Coomera", slug: "upper-coomera" },
     { name: "Pimpama", slug: "pimpama" },
@@ -1316,7 +1316,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     },
     {
       q: "How much does a new concrete driveway cost in Coomera?",
-      a: "The cost varies based on size, complexity, and the type of finish you choose. Concrete Concepts provides detailed, all-inclusive quotes so you know the full cost upfront. Contact us for a free, no-obligation quote for your project."
+      a: "The cost varies based on size, complexity, and the type of finish you choose. Concrete Concepts Group provides detailed, all-inclusive quotes so you know the full cost upfront. Contact us for a free, no-obligation quote for your project."
     }
   ]
 },
@@ -1325,13 +1325,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Ormeau",
   region: "Gold Coast",
   postcode: "4208",
-  metaTitle: "Concreter Ormeau | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Ormeau? Concrete Concepts offers expert services for new driveways, slabs, and outdoor areas. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Ormeau | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Ormeau? Concrete Concepts Group offers expert services for new driveways, slabs, and outdoor areas. QBCC licensed and fully insured.",
     h1: "Concreting Ormeau — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Ormeau, concreters Ormeau, concrete driveway Ormeau, exposed aggregate Ormeau, retaining wall Ormeau",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
-  heroAlt: "A new concrete driveway in Ormeau by Concrete Concepts.",
-  intro: "Ormeau is a fast-growing suburb, perfectly positioned between Brisbane and the Gold Coast. For new homeowners and developers in the area, Concrete Concepts provides top-quality concreting for driveways, house slabs, and stunning outdoor entertaining areas, ensuring your new build starts with a solid foundation.",
+  heroAlt: "A new concrete driveway in Ormeau by Concrete Concepts Group.",
+  intro: "Ormeau is a fast-growing suburb, perfectly positioned between Brisbane and the Gold Coast. For new homeowners and developers in the area, Concrete Concepts Group provides top-quality concreting for driveways, house slabs, and stunning outdoor entertaining areas, ensuring your new build starts with a solid foundation.",
   areaDescription: "Ormeau is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Ormeau and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We specialise in crafting durable and stylish concrete driveways in Ormeau, perfect for new homes and enhancing curb appeal. Our team ensures a flawless finish that stands the test of time." },
@@ -1339,18 +1339,18 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Concrete Slabs", slug: "concrete-slabs-brisbane", description: "From house slabs to shed foundations, we lay structurally sound concrete slabs across Ormeau. Our precision and expertise guarantee a perfect base for any construction project." },
     { name: "Concrete Patios", slug: "concrete-patios-brisbane", description: "Transform your outdoor living with a custom concrete patio. We work with Ormeau residents to design and build functional and attractive patios for entertaining and relaxation." }
   ],
-  testimonialSnippet: { name: "David L.", text: "Concrete Concepts did an amazing job on our new driveway in Ormeau. The team was professional, efficient, and the exposed aggregate finish is exactly what we wanted. Highly recommended for anyone building in the area.", service: "Concreting — Ormeau" },
+  testimonialSnippet: { name: "David L.", text: "Concrete Concepts Group did an amazing job on our new driveway in Ormeau. The team was professional, efficient, and the exposed aggregate finish is exactly what we wanted. Highly recommended for anyone building in the area.", service: "Concreting — Ormeau" },
   nearbySuburbs: [
     { name: "Pimpama", slug: "pimpama" },
     { name: "Coomera", slug: "coomera" },
     { name: "Yatala", slug: "yatala" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Ormeau?", a: "The cost of a new driveway in Ormeau depends on the size, finish, and site access. We provide free, detailed quotes to give you a clear price for your project. As a guide, a standard driveway can range from $80 to $150 per square metre." },
+    { q: "How much does a new concrete driveway cost in Ormeau?", a: "The price for a concrete driveway in Ormeau is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Do I need council approval for a new driveway in Ormeau?", a: "In most cases, a new or replacement driveway requires approval from the Gold Coast City Council to ensure it meets safety and construction standards. We can help guide you through this process to ensure everything is compliant." },
     { q: "What type of concrete finish is best for the Ormeau climate?", a: "With Ormeau's climate, we recommend finishes like exposed aggregate or a broom finish, as they provide excellent slip resistance. We can show you a range of options to suit your home's style and budget." },
     { q: "How long does it take to build a retaining wall?", a: "The timeline for a retaining wall in Ormeau depends on its size, complexity, and any engineering requirements. A small garden wall might take a few days, while a larger, structural wall could take a week or more. We provide a clear timeline with every quote." },
-    { q: "Why should I choose Concrete Concepts for my Ormeau project?", a: "We are a local, family-owned business with extensive experience in Ormeau and the surrounding areas. We pride ourselves on quality workmanship, reliable service, and transparent communication, all backed by our QBCC license." }
+    { q: "Why should I choose Concrete Concepts Group for my Ormeau project?", a: "We are a local, family-owned business with extensive experience in Ormeau and the surrounding areas. We pride ourselves on quality workmanship, reliable service, and transparent communication, all backed by our QBCC license." }
   ]
 },
   "burpengary": {
@@ -1358,13 +1358,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Burpengary",
   region: "Moreton Bay",
   postcode: "4505",
-  metaTitle: "Concreter Burpengary | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a local concreter in Burpengary? Concrete Concepts offers expert services for driveways, shed slabs, and retaining walls. Fully licensed (QBCC) and insured.",
+  metaTitle: "Concreter Burpengary | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a local concreter in Burpengary? Concrete Concepts Group offers expert services for driveways, shed slabs, and retaining walls. Fully licensed (QBCC) and insured.",
     h1: "Concreting Burpengary — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Burpengary, concreters Burpengary, concrete driveway Burpengary, exposed aggregate Burpengary, retaining wall Burpengary",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
   heroAlt: "Exposed aggregate concrete driveway in a modern home in Burpengary.",
-  intro: "Burpengary is a fast-growing suburb in the Moreton Bay region, featuring a diverse mix of housing. For new builds and renovations alike, Concrete Concepts provides reliable, high-quality concreting services that stand the test of time.",
+  intro: "Burpengary is a fast-growing suburb in the Moreton Bay region, featuring a diverse mix of housing. For new builds and renovations alike, Concrete Concepts Group provides reliable, high-quality concreting services that stand the test of time.",
   areaDescription: "Burpengary is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Burpengary and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We specialise in crafting durable and stylish concrete driveways in Burpengary, enhancing curb appeal and property value for local homeowners." },
@@ -1383,7 +1383,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { q: "Do I need council approval for a shed slab in Moreton Bay?", a: "Generally, small sheds may not require approval, but it depends on the size and location. We can advise on the Moreton Bay Regional Council requirements for your specific project in Burpengary." },
     { q: "What are the benefits of an exposed aggregate driveway?", a: "Exposed aggregate is extremely durable, non-slip, and offers a modern, stylish look with minimal maintenance, making it a popular choice for Burpengary homes." },
     { q: "How long does it take to build a concrete retaining wall?", a: "A typical residential retaining wall can take a few days to a week, depending on the size, complexity, and weather conditions. We always aim to minimise disruption." },
-    { q: "Why should I choose Concrete Concepts for my Burpengary project?", a: "As local concreters, we understand the ground conditions and building styles in Burpengary. We are QBCC licensed, fully insured, and committed to delivering high-quality workmanship on every job." }
+    { q: "Why should I choose Concrete Concepts Group for my Burpengary project?", a: "As local concreters, we understand the ground conditions and building styles in Burpengary. We are QBCC licensed, fully insured, and committed to delivering high-quality workmanship on every job." }
   ]
 },
   "redcliffe": {
@@ -1391,13 +1391,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Redcliffe",
   region: "Moreton Bay",
   postcode: "4020",
-  metaTitle: "Concreter Redcliffe | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Redcliffe? Concrete Concepts offers expert services for driveways, slabs, and pool surrounds. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Redcliffe | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Redcliffe? Concrete Concepts Group offers expert services for driveways, slabs, and pool surrounds. QBCC licensed and fully insured.",
     h1: "Concreting Redcliffe — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Redcliffe, concreters Redcliffe, concrete driveway Redcliffe, exposed aggregate Redcliffe, retaining wall Redcliffe",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-driveway_803ff92a.jpeg",
-  heroAlt: "Exposed aggregate driveway in Redcliffe, recently completed by Concrete Concepts.",
-  intro: "Redcliffe, a beautiful bayside suburb, is known for its charming older homes. Many of these properties are being renovated, creating a high demand for driveway replacements and modern concrete finishes. Concrete Concepts is the trusted local expert for transforming your Redcliffe home with high-quality, durable concrete solutions.",
+  heroAlt: "Exposed aggregate driveway in Redcliffe, recently completed by Concrete Concepts Group.",
+  intro: "Redcliffe, a beautiful bayside suburb, is known for its charming older homes. Many of these properties are being renovated, creating a high demand for driveway replacements and modern concrete finishes. Concrete Concepts Group is the trusted local expert for transforming your Redcliffe home with high-quality, durable concrete solutions.",
   areaDescription: "Redcliffe is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Redcliffe and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "A new concrete driveway can dramatically improve your Redcliffe property's curb appeal. We specialize in driveway replacements that stand up to the coastal climate." },
@@ -1405,7 +1405,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Concrete Slabs", slug: "concrete-slabs-brisbane", description: "Whether you're building a new extension or a shed, a solid foundation is essential. Our team pours high-strength concrete slabs, engineered to last in Redcliffe's sandy soil conditions." },
     { name: "Concrete Patios", slug: "concrete-patios-brisbane", description: "Create the perfect outdoor entertaining area with a new concrete patio. We can design and pour a custom patio that complements your Redcliffe home and lifestyle." }
   ],
-  testimonialSnippet: { name: "John S.", text: "The team at Concrete Concepts did an amazing job on our new driveway in Redcliffe. They were professional, efficient, and the finished product looks fantastic. Highly recommended!", service: "Concreting — Redcliffe" },
+  testimonialSnippet: { name: "John S.", text: "The team at Concrete Concepts Group did an amazing job on our new driveway in Redcliffe. They were professional, efficient, and the finished product looks fantastic. Highly recommended!", service: "Concreting — Redcliffe" },
   nearbySuburbs: [
     { name: "Margate", slug: "margate" },
     { name: "Scarborough", slug: "scarborough" },
@@ -1414,9 +1414,9 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   faqs: [
     { q: "What is the best concrete finish for a home in Redcliffe?", a: "For coastal areas like Redcliffe, we recommend exposed aggregate or a broom finish. These surfaces provide excellent grip, which is ideal for areas that might get wet, and they hold up well against the salt air." },
     { q: "Do I need council approval for a new driveway in Moreton Bay?", a: "In most cases, a new or replacement driveway on your property won't need council approval, but it's always best to check with the Moreton Bay Regional Council for the latest regulations, especially if you are altering the crossover." },
-    { q: "How much does a new concrete driveway cost in Redcliffe?", a: "The cost can vary depending on the size, finish, and site access. Concrete Concepts provides free, detailed quotes for all projects in Redcliffe, ensuring you get a competitive price for top-quality work." },
-    { q: "How long does a concrete driveway last in a coastal area?", a: "With proper installation and materials, a concrete driveway from Concrete Concepts can last for over 25 years in Redcliffe. We use reinforced concrete and appropriate sealing to protect against the coastal environment." },
-    { q: "Why should I choose Concrete Concepts for my Redcliffe project?", a: "We are local to the Moreton Bay region and have extensive experience with the specific challenges of concreting in coastal suburbs like Redcliffe. Our QBCC license and insurance give you complete peace of mind." }
+    { q: "How much does a new concrete driveway cost in Redcliffe?", a: "The cost can vary depending on the size, finish, and site access. Concrete Concepts Group provides free, detailed quotes for all projects in Redcliffe, ensuring you get a competitive price for top-quality work." },
+    { q: "How long does a concrete driveway last in a coastal area?", a: "With proper installation and materials, a concrete driveway from Concrete Concepts Group can last for over 25 years in Redcliffe. We use reinforced concrete and appropriate sealing to protect against the coastal environment." },
+    { q: "Why should I choose Concrete Concepts Group for my Redcliffe project?", a: "We are local to the Moreton Bay region and have extensive experience with the specific challenges of concreting in coastal suburbs like Redcliffe. Our QBCC license and insurance give you complete peace of mind." }
   ]
 },
   "morayfield": {
@@ -1424,13 +1424,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Morayfield",
   region: "Moreton Bay",
   postcode: "4506",
-  metaTitle: "Concreter Morayfield | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a concreter in Morayfield? Concrete Concepts offers expert services for new driveways, shed slabs, and pathways. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Morayfield | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a concreter in Morayfield? Concrete Concepts Group offers expert services for new driveways, shed slabs, and pathways. QBCC licensed and fully insured.",
     h1: "Concreting Morayfield — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Morayfield, concreters Morayfield, concrete driveway Morayfield, exposed aggregate Morayfield, retaining wall Morayfield",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
   heroAlt: "A new, modern concrete driveway in a residential estate in Morayfield.",
-  intro: "As one of Moreton Bay's fastest-growing suburbs, Morayfield is seeing a surge in new home construction. Concrete Concepts is the trusted local choice for high-quality concrete work, from durable driveways to perfectly finished shed slabs and pathways, ensuring your new property looks its best.",
+  intro: "As one of Moreton Bay's fastest-growing suburbs, Morayfield is seeing a surge in new home construction. Concrete Concepts Group is the trusted local choice for high-quality concrete work, from durable driveways to perfectly finished shed slabs and pathways, ensuring your new property looks its best.",
   areaDescription: "Morayfield is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Morayfield and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "With many new estates in Morayfield, a quality concrete driveway is essential. We specialise in creating durable, long-lasting driveways that enhance your home's curb appeal." },
@@ -1438,14 +1438,14 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Exposed Aggregate", slug: "exposed-aggregate-brisbane", description: "Add a touch of class to your new Morayfield home with an exposed aggregate driveway or pathway. This durable and stylish finish is perfect for modern homes in the area." },
     { name: "Concrete Pathways", slug: "concrete-patios-brisbane", description: "Connect your outdoor spaces with functional and attractive concrete pathways. We can create custom pathways to suit the layout of your new home in Morayfield." }
   ],
-  testimonialSnippet: { name: "Mark T.", text: "We just built our new home in Morayfield and needed a driveway and shed slab done quickly. The team at Concrete Concepts were fantastic, professional, and the quality of their work is top-notch. Highly recommended!", service: "Concreting — Morayfield" },
+  testimonialSnippet: { name: "Mark T.", text: "We just built our new home in Morayfield and needed a driveway and shed slab done quickly. The team at Concrete Concepts Group were fantastic, professional, and the quality of their work is top-notch. Highly recommended!", service: "Concreting — Morayfield" },
   nearbySuburbs: [
     { name: "Caboolture", slug: "caboolture" },
     { name: "Burpengary", slug: "burpengary" },
     { name: "Narangba", slug: "narangba" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Morayfield?", a: "The cost of a new driveway in Morayfield depends on the size, finish, and site access. As a guide, a standard concrete driveway can range from $65 to $100 per square metre. Contact Concrete Concepts Group for a detailed, fixed-price quote." },
+    { q: "How much does a new concrete driveway cost in Morayfield?", a: "The price for a concrete driveway in Morayfield is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Do I need council approval for a new shed slab in Moreton Bay?", a: "For most small garden sheds, you may not need council approval. However, for larger sheds or structures in Morayfield, it's always best to check with the Moreton Bay Regional Council. We can provide advice on engineering requirements for your slab." },
     { q: "What is the best concrete finish for a pathway in a new estate?", a: "For new estates in Morayfield, both standard broom finish and exposed aggregate are popular choices for pathways. Exposed aggregate offers a more decorative and non-slip surface, which is great for aesthetics and safety." },
     { q: "How long does it take to pour a concrete slab?", a: "A standard residential shed slab in Morayfield can typically be prepared and poured in a single day. However, curing time is important, and you should wait at least 7 days before putting any significant weight on it." },
@@ -1457,13 +1457,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Strathpine",
   region: "Moreton Bay",
   postcode: "4500",
-  metaTitle: "Concreter Strathpine | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Strathpine? Concrete Concepts offers expert driveway replacements, retaining walls, and patios. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Strathpine | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Strathpine? Concrete Concepts Group offers expert driveway replacements, retaining walls, and patios. QBCC licensed and fully insured.",
     h1: "Concreting Strathpine — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Strathpine, concreters Strathpine, concrete driveway Strathpine, exposed aggregate Strathpine, retaining wall Strathpine",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
   heroAlt: "Exposed aggregate concrete driveway in Strathpine",
-  intro: "Strathpine is a key northside suburb with excellent access to the Bruce Highway, making it a bustling area for both residential and commercial activity. For homeowners and businesses in Strathpine looking to enhance their property, Concrete Concepts provides top-tier concreting services, from durable new driveways to stylish patios, ensuring every project meets our high standards of quality and longevity.",
+  intro: "Strathpine is a key northside suburb with excellent access to the Bruce Highway, making it a bustling area for both residential and commercial activity. For homeowners and businesses in Strathpine looking to enhance their property, Concrete Concepts Group provides top-tier concreting services, from durable new driveways to stylish patios, ensuring every project meets our high standards of quality and longevity.",
   areaDescription: "Strathpine is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Strathpine and surrounding areas.",
   popularServices: [
     {
@@ -1487,7 +1487,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       description: "Exposed aggregate is a popular choice for driveways and paths in Strathpine, offering a stylish and durable surface. We have a wide range of aggregate mixes to choose from."
     }
   ],
-  testimonialSnippet: { name: "David L.", text: "Concrete Concepts did an amazing job on our new driveway in Strathpine. The team was professional, efficient, and the final result exceeded our expectations. Highly recommended!", service: "Concreting — Strathpine" },
+  testimonialSnippet: { name: "David L.", text: "Concrete Concepts Group did an amazing job on our new driveway in Strathpine. The team was professional, efficient, and the final result exceeded our expectations. Highly recommended!", service: "Concreting — Strathpine" },
   nearbySuburbs: [
     { name: "Brendale", slug: "brendale" },
     { name: "Bray Park", slug: "bray-park" },
@@ -1496,7 +1496,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   faqs: [
     {
       q: "How much does a new concrete driveway cost in Strathpine?",
-      a: "The cost of a new driveway in Strathpine depends on the size, finish, and site access. On average, you can expect to pay between $80 and $150 per square metre. Contact Concrete Concepts Group for a detailed, fixed-price quote."
+      a: "The price for a concrete driveway in Strathpine is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote."
     },
     {
       q: "Do I need council approval for a retaining wall in Strathpine?",
@@ -1521,13 +1521,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Goodna",
   region: "Ipswich",
   postcode: "4300",
-  metaTitle: "Concreter Goodna | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Goodna? Concrete Concepts offers expert services for driveways, shed slabs, and retaining walls. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Goodna | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Goodna? Concrete Concepts Group offers expert services for driveways, shed slabs, and retaining walls. QBCC licensed and fully insured.",
     h1: "Concreting Goodna — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Goodna, concreters Goodna, concrete driveway Goodna, exposed aggregate Goodna, retaining wall Goodna",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
-  heroAlt: "Exposed aggregate concrete driveway in Goodna by Concrete Concepts",
-  intro: "Goodna is a suburb on the rise, with many homeowners undertaking renovations to modernise their properties. Concrete Concepts is the trusted local expert for all concreting projects, delivering high-quality finishes that add value and appeal to your Goodna home.",
+  heroAlt: "Exposed aggregate concrete driveway in Goodna by Concrete Concepts Group",
+  intro: "Goodna is a suburb on the rise, with many homeowners undertaking renovations to modernise their properties. Concrete Concepts Group is the trusted local expert for all concreting projects, delivering high-quality finishes that add value and appeal to your Goodna home.",
   areaDescription: "Goodna is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Goodna and surrounding areas.",
   popularServices: [
     {
@@ -1551,7 +1551,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       description: "Exposed aggregate is a popular choice for Goodna driveways and patios, offering a decorative and non-slip surface. We have a wide range of aggregate mixes to suit any home style."
     }
   ],
-  testimonialSnippet: { name: "Mark T.", text: "Concrete Concepts did an amazing job on our new driveway in Goodna. The team was professional, the finish is flawless, and it has completely transformed the look of our home. Highly recommended!", service: "Concreting — Goodna" },
+  testimonialSnippet: { name: "Mark T.", text: "Concrete Concepts Group did an amazing job on our new driveway in Goodna. The team was professional, the finish is flawless, and it has completely transformed the look of our home. Highly recommended!", service: "Concreting — Goodna" },
   nearbySuburbs: [
     { name: "Redbank Plains", slug: "redbank-plains" },
     { name: "Springfield", slug: "springfield" },
@@ -1560,7 +1560,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   faqs: [
     {
       q: "How much does a new concrete driveway cost in Goodna?",
-      a: "The cost of a new driveway in Goodna depends on the size, finish, and site access. On average, you can expect to pay between $80 and $150 per square metre. Contact Concrete Concepts Group for a detailed, fixed-price quote."
+      a: "The price for a concrete driveway in Goodna is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote."
     },
     {
       q: "Do I need council approval for a retaining wall in Goodna?",
@@ -1575,7 +1575,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       a: "A typical driveway or slab project in Goodna takes 2-4 days, depending on size and weather. This includes excavation, formwork, pouring, and finishing. We provide a clear timeline with every quote."
     },
     {
-      q: "Why should I choose Concrete Concepts for my Goodna project?",
+      q: "Why should I choose Concrete Concepts Group for my Goodna project?",
       a: "We are local Ipswich concreters with a reputation for quality and reliability. We are fully licensed and insured, use only high-quality materials, and guarantee our workmanship, ensuring a perfect result for your Goodna home."
     }
   ]
@@ -1585,13 +1585,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Brassall",
   region: "Ipswich",
   postcode: "4305",
-  metaTitle: "Concreter Brassall | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Looking for a reliable concreter in Brassall? Concrete Concepts offers expert services for new driveways, patios, and concrete slabs. QBCC licensed for quality assurance.",
+  metaTitle: "Concreter Brassall | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Looking for a reliable concreter in Brassall? Concrete Concepts Group offers expert services for new driveways, patios, and concrete slabs. QBCC licensed for quality assurance.",
     h1: "Concreting Brassall — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Brassall, concreters Brassall, concrete driveway Brassall, exposed aggregate Brassall, retaining wall Brassall",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/exposed-aggregate-driveway_803ff92a.jpeg",
   heroAlt: "Modern exposed aggregate driveway in a Brassall home.",
-  intro: "Brassall, a well-established Ipswich suburb, is known for its beautiful character homes. Concrete Concepts is the trusted local choice for concreting services that enhance property value, from stylish new driveways to functional and attractive outdoor living areas.",
+  intro: "Brassall, a well-established Ipswich suburb, is known for its beautiful character homes. Concrete Concepts Group is the trusted local choice for concreting services that enhance property value, from stylish new driveways to functional and attractive outdoor living areas.",
   areaDescription: "Brassall is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Brassall and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We specialize in replacing old driveways in Brassall with durable, high-quality concrete solutions that complement your home's character." },
@@ -1599,14 +1599,14 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Concrete Patios", slug: "concrete-patios-brisbane", description: "Create the perfect outdoor entertaining space with a custom-designed concrete patio, built to last in the Ipswich climate." },
     { name: "Concrete Slabs", slug: "concrete-slabs-brisbane", description: "From shed slabs to house foundations, we provide professionally engineered and poured concrete slabs for any project in Brassall." }
   ],
-  testimonialSnippet: { name: "David R.", text: "Concrete Concepts did an amazing job on our new driveway in Brassall. The exposed aggregate finish is flawless and has completely transformed the look of our home. The team was professional and efficient from start to finish.", service: "Concreting — Brassall" },
+  testimonialSnippet: { name: "David R.", text: "Concrete Concepts Group did an amazing job on our new driveway in Brassall. The exposed aggregate finish is flawless and has completely transformed the look of our home. The team was professional and efficient from start to finish.", service: "Concreting — Brassall" },
   nearbySuburbs: [
     { name: "Ipswich CBD", slug: "ipswich-cbd" },
     { name: "North Ipswich", slug: "north-ipswich" },
     { name: "Booval", slug: "booval" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Brassall?", a: "The cost varies based on size, finish, and site access. On average, a standard driveway in Brassall can range from $80 to $130 per square metre. Contact Concrete Concepts Group for a precise, obligation-free quote." },
+    { q: "How much does a new concrete driveway cost in Brassall?", a: "The price for a concrete driveway in Brassall is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Is exposed aggregate a good choice for Brassall homes?", a: "Absolutely. Exposed aggregate is extremely durable, slip-resistant, and handles the Ipswich climate well. It provides a modern look that complements both new and older character homes in Brassall." },
     { q: "Do I need council approval for a new driveway in Ipswich?", a: "Typically, replacing an existing driveway does not require council approval, but new crossovers or significant changes might. We can advise on the specific requirements for your Brassall property." },
     { q: "How long does it take to complete a concrete project?", a: "A standard driveway or patio in Brassall usually takes 2-4 days, depending on weather and project complexity. We always aim to minimise disruption and complete the job efficiently." },
@@ -1618,13 +1618,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Redbank Plains",
   region: "Ipswich",
   postcode: "4301",
-  metaTitle: "Concreter Redbank Plains | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Leading concreters in Redbank Plains. QBCC licensed experts in new home driveways, shed slabs, and pathways. Get a free quote from Concrete Concepts today!",
+  metaTitle: "Concreter Redbank Plains | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Leading concreters in Redbank Plains. QBCC licensed experts in new home driveways, shed slabs, and pathways. Get a free quote from Concrete Concepts Group today!",
     h1: "Concreting Redbank Plains — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Redbank Plains, concreters Redbank Plains, concrete driveway Redbank Plains, exposed aggregate Redbank Plains, retaining wall Redbank Plains",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
-  heroAlt: "New concrete driveway in Redbank Plains by Concrete Concepts",
-  intro: "Redbank Plains is one of SEQ's fastest-growing suburbs, with thousands of new homes being built. Concrete Concepts is the trusted local concreter for residents, delivering high-quality driveways, shed slabs, and pathways that stand the test of time.",
+  heroAlt: "New concrete driveway in Redbank Plains by Concrete Concepts Group",
+  intro: "Redbank Plains is one of SEQ's fastest-growing suburbs, with thousands of new homes being built. Concrete Concepts Group is the trusted local concreter for residents, delivering high-quality driveways, shed slabs, and pathways that stand the test of time.",
   areaDescription: "Redbank Plains is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Redbank Plains and surrounding areas.",
   popularServices: [
     { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "We specialize in durable and stylish concrete driveways for new homes in Redbank Plains, tailored to complement your property." },
@@ -1632,18 +1632,18 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     { name: "Exposed Aggregate", slug: "exposed-aggregate-brisbane", description: "Enhance your home's curb appeal with a stunning exposed aggregate driveway, a popular and modern choice for new builds in Redbank Plains." },
     { name: "Retaining Walls", slug: "retaining-walls-brisbane", description: "We construct strong and functional retaining walls to manage sloping blocks and create usable land for your Redbank Plains property." }
   ],
-  testimonialSnippet: { name: "John S.", text: "Concrete Concepts did an amazing job on our new driveway in Redbank Plains. The team was professional, efficient, and the final result exceeded our expectations. Highly recommended for anyone building in the area!", service: "Concreting — Redbank Plains" },
+  testimonialSnippet: { name: "John S.", text: "Concrete Concepts Group did an amazing job on our new driveway in Redbank Plains. The team was professional, efficient, and the final result exceeded our expectations. Highly recommended for anyone building in the area!", service: "Concreting — Redbank Plains" },
   nearbySuburbs: [
     { name: "Springfield", slug: "springfield" },
     { name: "Goodna", slug: "goodna" },
     { name: "Collingwood Park", slug: "collingwood-park" },
   ],
   faqs: [
-    { q: "How much does a new concrete driveway cost in Redbank Plains?", a: "The cost of a new driveway in Redbank Plains depends on the size, finish, and site access. On average, you can expect to pay between $80 and $150 per square meter. Contact Concrete Concepts Group for a detailed, fixed-price quote." },
+    { q: "How much does a new concrete driveway cost in Redbank Plains?", a: "The price for a concrete driveway in Redbank Plains is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     { q: "Do I need council approval for a shed slab in Ipswich?", a: "For most standard-sized sheds in the Ipswich City Council area, you won't need approval for the slab itself, but the structure might. We can advise on local regulations to ensure your project is compliant." },
     { q: "What is the best concrete finish for a new home?", a: "For new homes in Redbank Plains, exposed aggregate is a very popular and stylish choice. However, a classic broom finish is also a durable and cost-effective option. We can show you samples to help you decide." },
     { q: "How long does it take to pour a concrete slab?", a: "A standard shed or patio slab can usually be prepared and poured in a single day. Larger or more complex slabs may take 2-3 days. We always provide a clear timeline before starting work." },
-    { q: "Why should I choose Concrete Concepts for my Redbank Plains project?", a: "With over a decade of experience in the Ipswich region and a focus on new housing estates, we have the expertise to deliver a high-quality result on time and on budget. We are QBCC licensed and fully insured for your peace of mind." },
+    { q: "Why should I choose Concrete Concepts Group for my Redbank Plains project?", a: "With over a decade of experience in the Ipswich region and a focus on new housing estates, we have the expertise to deliver a high-quality result on time and on budget. We are QBCC licensed and fully insured for your peace of mind." },
     { q: "Can you handle excavation for my project?", a: "Yes, we provide a complete service that includes any necessary excavation and site preparation. This ensures a solid foundation for your new concrete driveway, slab, or patio." }
   ]
 },
@@ -1652,13 +1652,13 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   name: "Ripley",
   region: "Ipswich",
   postcode: "4306",
-  metaTitle: "Concreter Ripley | Driveways, Slabs & More | Concrete Concepts",
-  metaDescription: "Need a reliable concreter in Ripley? Concrete Concepts offers expert concrete driveways, shed slabs, and retaining walls. QBCC licensed and fully insured.",
+  metaTitle: "Concreter Ripley | Driveways, Slabs & More | Concrete Concepts Group",
+  metaDescription: "Need a reliable concreter in Ripley? Concrete Concepts Group offers expert concrete driveways, shed slabs, and retaining walls. QBCC licensed and fully insured.",
     h1: "Concreting Ripley — Driveways, Slabs & Retaining Walls",
   keywords: "concreting Ripley, concreters Ripley, concrete driveway Ripley, exposed aggregate Ripley, retaining wall Ripley",
 heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/new-concrete-driveway_963e8b9e.png",
   heroAlt: "A new, modern concrete driveway in a brand new estate in Ripley.",
-  intro: "Ripley is one of Australia's fastest-growing master-planned communities, with thousands of new homes being built. For new homeowners, getting the foundational concrete work right is essential. Concrete Concepts is the trusted local expert for Ripley, delivering high-quality driveways, slabs, and retaining walls that perfectly complement your new home.",
+  intro: "Ripley is one of Australia's fastest-growing master-planned communities, with thousands of new homes being built. For new homeowners, getting the foundational concrete work right is essential. Concrete Concepts Group is the trusted local expert for Ripley, delivering high-quality driveways, slabs, and retaining walls that perfectly complement your new home.",
   areaDescription: "Ripley is a vibrant suburb with growing demand for quality concreting services. From new home builds to renovations and outdoor upgrades, Concrete Concepts Group has the experience and expertise to deliver outstanding results across Ripley and surrounding areas.",
   popularServices: [
     {
@@ -1682,7 +1682,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       description: "For a premium, non-slip surface, consider an exposed aggregate finish for your driveway or pathways. It's a popular and stylish choice for new homes throughout the Ripley area."
     }
   ],
-  testimonialSnippet: { name: "David R.", text: "We just built our home in Ripley and needed a driveway and slab for our shed. The team at Concrete Concepts was fantastic—professional, efficient, and the final result is flawless. Highly recommend them for any new builds in the area.", service: "Concreting — Ripley" },
+  testimonialSnippet: { name: "David R.", text: "We just built our home in Ripley and needed a driveway and slab for our shed. The team at Concrete Concepts Group was fantastic—professional, efficient, and the final result is flawless. Highly recommend them for any new builds in the area.", service: "Concreting — Ripley" },
   nearbySuburbs: [
     { name: "Springfield", slug: "springfield" },
     { name: "Yamanto", slug: "yamanto" },
@@ -1691,7 +1691,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
   faqs: [
     {
       q: "How much does a new concrete driveway cost in Ripley?",
-      a: "The cost for a new driveway in Ripley depends on size, finish, and site access. As a guide, prices typically range from $80 to $150 per square metre. Contact Concrete Concepts Group for a detailed, fixed-price quote based on your specific new home plans."
+      a: "The price for a concrete driveway in Ripley is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote."
     },
     {
       q: "Do I need council approval for a shed slab in Ipswich?",
@@ -1717,7 +1717,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Brisbane Northside",
     postcode: "4017",
     h1: "Concreting Bracken Ridge \u2014 Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Bracken Ridge | Driveways & Slabs from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Bracken Ridge | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Bracken Ridge, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Bracken Ridge, concreters Bracken Ridge, concrete driveway Bracken Ridge, exposed aggregate Bracken Ridge, retaining wall Bracken Ridge",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1738,7 +1738,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Bald Hills", slug: "bald-hills" },
     ],
     faqs: [
-      { q: "How much does a concrete driveway cost in Bracken Ridge?", a: "Concrete driveways in Bracken Ridge typically range from $65/m\u00B2 for plain concrete to $150/m\u00B2 for premium exposed aggregate. A standard double-car driveway (50m\u00B2) costs between $3,250 and $7,500. We provide free on-site quotes." },
+      { q: "How much does a concrete driveway cost in Bracken Ridge?", a: "The price for a concrete driveway in Bracken Ridge is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you replace old driveways in Bracken Ridge?", a: "Yes, we handle full driveway replacements including removal of the old concrete, site preparation, and pouring the new driveway. Many Bracken Ridge homes have older driveways that are cracking or sinking \u2014 we fix that." },
       { q: "How long does concreting take in Bracken Ridge?", a: "Most residential projects in Bracken Ridge take 2-4 days of on-site work. Bracken Ridge's generally flat terrain and good access make projects efficient. After pouring, concrete needs 7 days before foot traffic and 28 days for vehicles." },
     ],
@@ -1750,7 +1750,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Redlands Coast",
     postcode: "4164",
     h1: "Concreting Thornlands \u2014 Driveways, Patios & Exposed Aggregate",
-    metaTitle: "Concreting Thornlands | Driveways & Patios from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Thornlands | Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Thornlands, Redlands. Driveways, exposed aggregate, patios, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Thornlands, concreters Thornlands, concrete driveway Thornlands, exposed aggregate Thornlands, patio Thornlands, retaining wall Thornlands",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1771,7 +1771,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Redland Bay", slug: "redland-bay" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Thornlands?", a: "Concreting in Thornlands typically ranges from $65/m\u00B2 for plain concrete to $150/m\u00B2 for premium exposed aggregate. Patios and driveways are the most common projects. We provide free on-site quotes with no obligation." },
+      { q: "How much does concreting cost in Thornlands?", a: "The price for concreting work in Thornlands is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "What's the most popular concrete finish in Thornlands?", a: "Exposed aggregate is by far the most popular finish in Thornlands and across the Redlands. It offers a beautiful natural stone look that's slip-resistant and perfect for the bayside lifestyle." },
       { q: "Do you service all of the Redlands from Thornlands?", a: "Yes! We service the entire Redlands Coast including Thornlands, Cleveland, Alexandra Hills, Victoria Point, Capalaba, Wellington Point, and Redland Bay." },
     ],
@@ -1783,7 +1783,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Brisbane Southside",
     postcode: "4116",
     h1: "Concreting Calamvale \u2014 Driveways, Slabs & Outdoor Areas",
-    metaTitle: "Concreting Calamvale | Driveways & Slabs from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Calamvale | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting services in Calamvale, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Calamvale, concreters Calamvale, concrete driveway Calamvale, exposed aggregate Calamvale, concrete slab Calamvale",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1804,7 +1804,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Drewvale", slug: "drewvale" },
     ],
     faqs: [
-      { q: "How much does a driveway cost in Calamvale?", a: "Driveways in Calamvale typically cost $65-$150/m\u00B2 depending on the finish. A standard double driveway (50m\u00B2) ranges from $3,250 to $7,500. We provide free on-site quotes." },
+      { q: "How much does a driveway cost in Calamvale?", a: "The price for a concrete driveway in Calamvale is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you do townhouse concreting in Calamvale?", a: "Yes, we work on both houses and townhouses in Calamvale. For townhouse complexes, we coordinate with body corporates and strata managers to ensure smooth project delivery." },
       { q: "What soil conditions should I know about in Calamvale?", a: "Calamvale has predominantly clay soils that can be reactive. We always ensure proper compaction, sub-base preparation, and reinforcement to prevent cracking and movement over time." },
     ],
@@ -1816,7 +1816,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Brisbane Southside",
     postcode: "4109",
     h1: "Concreting Sunnybank Hills \u2014 Driveways, Paths & Retaining Walls",
-    metaTitle: "Concreting Sunnybank Hills | Driveways from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Sunnybank Hills | Driveways | Concrete Concepts Group",
     metaDescription: "Professional concreting in Sunnybank Hills, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Sunnybank Hills, concreters Sunnybank Hills, concrete driveway Sunnybank Hills, exposed aggregate Sunnybank Hills",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1838,7 +1838,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     ],
     faqs: [
       { q: "Can you handle steep driveways in Sunnybank Hills?", a: "Absolutely. We're experienced with Sunnybank Hills' hilly terrain. We design driveways with proper gradients, drainage channels, and non-slip finishes to handle the slopes safely." },
-      { q: "How much does a retaining wall cost in Sunnybank Hills?", a: "Retaining walls in Sunnybank Hills typically cost $300-$600 per lineal metre depending on height and material. Many properties in the area need walls between 0.5m and 1.5m. We provide free quotes." },
+      { q: "How much does a retaining wall cost in Sunnybank Hills?", a: "The price for a retaining wall in Sunnybank Hills is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you need council approval for retaining walls in Sunnybank Hills?", a: "Retaining walls over 1 metre high in Brisbane generally require council approval and engineering certification. We handle the full process and advise you during our free site inspection." },
     ],
     testimonialSnippet: { name: "Jenny W", text: "Great retaining wall and new driveway. The team handled the steep block perfectly.", service: "Retaining Wall & Driveway \u2014 Sunnybank Hills" },
@@ -1849,7 +1849,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Redlands Coast",
     postcode: "4161",
     h1: "Concreting Alexandra Hills \u2014 Driveways, Patios & Exposed Aggregate",
-    metaTitle: "Concreting Alexandra Hills | Driveways from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Alexandra Hills | Driveways | Concrete Concepts Group",
     metaDescription: "Professional concreting in Alexandra Hills, Redlands. Driveways, exposed aggregate, patios, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Alexandra Hills, concreters Alexandra Hills, concrete driveway Alexandra Hills, exposed aggregate Alexandra Hills",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1870,7 +1870,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Ormiston", slug: "ormiston" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Alexandra Hills?", a: "Concreting in Alexandra Hills ranges from $65/m\u00B2 for plain concrete to $150/m\u00B2 for exposed aggregate. Most driveway projects cost between $3,250 and $7,500. Free on-site quotes available." },
+      { q: "How much does concreting cost in Alexandra Hills?", a: "The price for concreting work in Alexandra Hills is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "What's the best concrete finish for Alexandra Hills?", a: "Exposed aggregate is the most popular choice in Alexandra Hills and across the Redlands. It offers a natural stone look that's slip-resistant and complements the area's established homes." },
       { q: "Do you handle old concrete removal in Alexandra Hills?", a: "Yes, we provide full driveway replacement services including demolition and removal of old concrete, site preparation, and pouring the new surface. We dispose of all waste responsibly." },
     ],
@@ -1882,7 +1882,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Redlands Coast",
     postcode: "4165",
     h1: "Concreting Redland Bay \u2014 Driveways, Patios & Pool Surrounds",
-    metaTitle: "Concreting Redland Bay | Driveways & Patios from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Redland Bay | Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Professional concreting in Redland Bay, QLD. Driveways, exposed aggregate, patios, pool surrounds. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Redland Bay, concreters Redland Bay, concrete driveway Redland Bay, exposed aggregate Redland Bay, pool surround Redland Bay",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1915,7 +1915,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Brisbane Southside",
     postcode: "4113",
     h1: "Concreting Eight Mile Plains \u2014 Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Eight Mile Plains | Driveways from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Eight Mile Plains | Driveways | Concrete Concepts Group",
     metaDescription: "Professional concreting in Eight Mile Plains, Brisbane. Driveways, exposed aggregate, slabs, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Eight Mile Plains, concreters Eight Mile Plains, concrete driveway Eight Mile Plains, exposed aggregate Eight Mile Plains",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1936,7 +1936,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Calamvale", slug: "calamvale" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Eight Mile Plains?", a: "Concreting in Eight Mile Plains typically ranges from $65/m\u00B2 for plain concrete to $150/m\u00B2 for exposed aggregate. We provide free on-site quotes with detailed pricing." },
+      { q: "How much does concreting cost in Eight Mile Plains?", a: "The price for concreting work in Eight Mile Plains is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you work around the technology park area?", a: "Yes, we service all of Eight Mile Plains including residential areas near the Brisbane Technology Park. We also handle commercial concreting for businesses in the area." },
       { q: "What about the clay soils in Eight Mile Plains?", a: "Eight Mile Plains has reactive clay soils that require proper preparation. We always ensure adequate compaction, sub-base, and reinforcement to prevent cracking and movement." },
     ],
@@ -1948,7 +1948,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Brisbane Southside",
     postcode: "4123",
     h1: "Concreting Rochedale \u2014 New Builds, Driveways & Outdoor Areas",
-    metaTitle: "Concreting Rochedale | New Builds & Driveways from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Rochedale | New Builds & Driveways | Concrete Concepts Group",
     metaDescription: "Professional concreting in Rochedale, Brisbane. New builds, driveways, exposed aggregate, slabs. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Rochedale, concreters Rochedale, concrete driveway Rochedale, new build concreting Rochedale, exposed aggregate Rochedale",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -1971,7 +1971,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     faqs: [
       { q: "Do you work with builders in Rochedale?", a: "Yes, we regularly work with builders across Rochedale Estates and other developments. We can coordinate directly with your builder for seamless project delivery." },
       { q: "What's the best driveway for a new build in Rochedale?", a: "Exposed aggregate is the most popular choice for new builds in Rochedale. It complements modern home designs, is low-maintenance, and adds significant street appeal and property value." },
-      { q: "How much does a house slab cost in Rochedale?", a: "House slabs in Rochedale typically cost $65-$85/m\u00B2 depending on engineering requirements and site conditions. We work to your engineer's specifications and provide competitive quotes." },
+      { q: "How much does a house slab cost in Rochedale?", a: "The price for a house slab in Rochedale is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     ],
     testimonialSnippet: { name: "Tom H", text: "Excellent work on our new build driveway and paths. Highly recommend for Rochedale builds.", service: "New Build Concreting \u2014 Rochedale" },
   },
@@ -1981,7 +1981,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Gold Coast North",
     postcode: "4209",
     h1: "Concreting Pimpama \u2014 New Builds, Driveways & Slabs",
-    metaTitle: "Concreting Pimpama | New Builds & Driveways from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Pimpama | New Builds & Driveways | Concrete Concepts Group",
     metaDescription: "Professional concreting in Pimpama, Gold Coast. New builds, driveways, slabs, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Pimpama, concreters Pimpama, concrete driveway Pimpama, new build concreting Pimpama, concrete slab Pimpama",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2003,7 +2003,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     ],
     faqs: [
       { q: "Do you work with builders in Pimpama estates?", a: "Yes, we regularly work with builders across Pimpama's master-planned communities including Gainsborough Greens and The Heights. We coordinate directly with builders for efficient project delivery." },
-      { q: "How much does a new driveway cost in Pimpama?", a: "New driveways in Pimpama typically cost $65-$150/m\u00B2 depending on the finish. Most new build driveways range from $3,000 to $7,000. We provide free quotes." },
+      { q: "How much does a new driveway cost in Pimpama?", a: "The price for a concrete driveway in Pimpama is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you do the driveway before we move in?", a: "Absolutely. We work with your builder's timeline to ensure your driveway, paths, and outdoor areas are ready before handover. We can also return after settlement for additional work." },
     ],
     testimonialSnippet: { name: "Lisa M", text: "Great work on our new build. Driveway and paths look fantastic.", service: "New Build Concreting \u2014 Pimpama" },
@@ -2014,7 +2014,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Moreton Bay",
     postcode: "4509",
     h1: "Concreting Mango Hill \u2014 Driveways, Slabs & Outdoor Areas",
-    metaTitle: "Concreting Mango Hill | Driveways & Slabs from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Mango Hill | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Mango Hill, Moreton Bay. Driveways, exposed aggregate, slabs, patios. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Mango Hill, concreters Mango Hill, concrete driveway Mango Hill, exposed aggregate Mango Hill",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2035,7 +2035,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Deception Bay", slug: "deception-bay" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Mango Hill?", a: "Concreting in Mango Hill ranges from $65/m\u00B2 for plain concrete to $150/m\u00B2 for exposed aggregate. We provide free on-site quotes with no obligation." },
+      { q: "How much does concreting cost in Mango Hill?", a: "The price for concreting work in Mango Hill is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you service the newer estates in Mango Hill?", a: "Yes, we work across all of Mango Hill including the newer estates and established areas. We also service neighbouring North Lakes, Griffin, and Kallangur." },
       { q: "Can you match existing concrete paths?", a: "We do our best to match existing finishes, though exact colour matching can be difficult with aged concrete. We'll discuss options during your free site inspection." },
     ],
@@ -2047,7 +2047,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Ipswich",
     postcode: "4300",
     h1: "Concreting Bellbird Park \u2014 New Builds, Driveways & Slabs",
-    metaTitle: "Concreting Bellbird Park | New Builds & Driveways from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Bellbird Park | New Builds & Driveways | Concrete Concepts Group",
     metaDescription: "Professional concreting in Bellbird Park, Ipswich. New builds, driveways, slabs, retaining walls. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Bellbird Park, concreters Bellbird Park, concrete driveway Bellbird Park, new build Bellbird Park, concrete slab Bellbird Park",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2069,7 +2069,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     ],
     faqs: [
       { q: "Do you work with builders in Bellbird Park?", a: "Yes, we work with builders across Bellbird Park's new estates. We coordinate directly with your builder for seamless project delivery and can handle multiple trades scheduling." },
-      { q: "How much does a driveway cost in Bellbird Park?", a: "Driveways in Bellbird Park typically cost $65-$150/m\u00B2 depending on the finish. New build driveways usually range from $3,000 to $6,000. We provide free quotes." },
+      { q: "How much does a driveway cost in Bellbird Park?", a: "The price for a concrete driveway in Bellbird Park is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you do paths and driveways together?", a: "Absolutely \u2014 and it's more cost-effective to do them at the same time. We can pour your driveway, paths, and patio in one visit, saving on mobilisation costs." },
     ],
     testimonialSnippet: { name: "Joe S", text: "Excellent job done and quick and reliable.", service: "Concreting \u2014 Collingwood Park" },
@@ -2080,7 +2080,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Redlands Coast",
     postcode: "4165",
     h1: "Concreting Victoria Point \u2014 Driveways, Patios & Pool Surrounds",
-    metaTitle: "Concreting Victoria Point | Driveways & Patios from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Victoria Point | Driveways & Patios | Concrete Concepts Group",
     metaDescription: "Professional concreting in Victoria Point, Redlands. Driveways, exposed aggregate, patios, pool surrounds. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Victoria Point, concreters Victoria Point, concrete driveway Victoria Point, exposed aggregate Victoria Point, pool surround Victoria Point",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2101,7 +2101,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Wellington Point", slug: "wellington-point" },
     ],
     faqs: [
-      { q: "How much does concreting cost in Victoria Point?", a: "Concreting in Victoria Point ranges from $65/m\u00B2 for plain concrete to $150/m\u00B2 for exposed aggregate. Pool surrounds and patios are popular projects. Free on-site quotes available." },
+      { q: "How much does concreting cost in Victoria Point?", a: "The price for concreting work in Victoria Point is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you do pool surrounds in Victoria Point?", a: "Yes, pool surrounds are one of our most popular services in Victoria Point. We use non-slip exposed aggregate and textured finishes for safety around the pool area." },
       { q: "What's the turnaround for a driveway in Victoria Point?", a: "Most driveways in Victoria Point take 2-3 days of on-site work. After pouring, allow 7 days for foot traffic and 28 days before driving on it." },
     ],
@@ -2113,7 +2113,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Gold Coast North",
     postcode: "4209",
     h1: "Concreting Upper Coomera \u2014 Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Upper Coomera | Driveways & Slabs from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Upper Coomera | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Upper Coomera, Gold Coast. Driveways, slabs, retaining walls, exposed aggregate. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Upper Coomera, concreters Upper Coomera, concrete driveway Upper Coomera, retaining wall Upper Coomera, concrete slab Upper Coomera",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2135,7 +2135,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     ],
     faqs: [
       { q: "Do you handle steep blocks in Upper Coomera?", a: "Yes, we're experienced with Upper Coomera's hilly terrain. We design driveways and retaining walls that work with the natural slope, including proper drainage and non-slip surfaces." },
-      { q: "How much does a retaining wall cost in Upper Coomera?", a: "Retaining walls in Upper Coomera typically cost $300-$600 per lineal metre depending on height and material. Many properties need walls between 0.5m and 2m. We provide free quotes." },
+      { q: "How much does a retaining wall cost in Upper Coomera?", a: "The price for a retaining wall in Upper Coomera is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you work with my builder in Upper Coomera?", a: "Absolutely. We regularly coordinate with builders across Upper Coomera's estates for new build concreting including slabs, driveways, and retaining walls." },
     ],
     testimonialSnippet: { name: "Mark D", text: "Great retaining wall work. Handled the steep block perfectly.", service: "Retaining Wall \u2014 Upper Coomera" },
@@ -2146,7 +2146,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Moreton Bay",
     postcode: "4503",
     h1: "Concreting Kallangur \u2014 Driveways, Slabs & Outdoor Areas",
-    metaTitle: "Concreting Kallangur | Driveways & Slabs from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Kallangur | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Kallangur, Moreton Bay. Driveways, exposed aggregate, slabs, patios. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Kallangur, concreters Kallangur, concrete driveway Kallangur, exposed aggregate Kallangur, concrete slab Kallangur",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2167,7 +2167,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
       { name: "Murrumba Downs", slug: "murrumba-downs" },
     ],
     faqs: [
-      { q: "How much does a driveway cost in Kallangur?", a: "Driveways in Kallangur typically cost $65-$150/m\u00B2 depending on the finish. A standard double driveway (50m\u00B2) ranges from $3,250 to $7,500. We provide free on-site quotes." },
+      { q: "How much does a driveway cost in Kallangur?", a: "The price for a concrete driveway in Kallangur is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you remove old concrete in Kallangur?", a: "Yes, we handle full driveway replacements including demolition, removal, and disposal of old concrete. Many Kallangur homes have 30+ year old driveways that need replacing." },
       { q: "How long does a driveway take in Kallangur?", a: "Most driveways in Kallangur take 2-3 days of on-site work. The flat terrain and good access in Kallangur make projects very efficient." },
     ],
@@ -2179,7 +2179,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     region: "Moreton Bay",
     postcode: "4504",
     h1: "Concreting Narangba \u2014 Driveways, Slabs & Retaining Walls",
-    metaTitle: "Concreting Narangba | Driveways & Slabs from $65/m\u00B2 | Concrete Concepts",
+    metaTitle: "Concreting Narangba | Driveways & Slabs | Concrete Concepts Group",
     metaDescription: "Professional concreting in Narangba, Moreton Bay. Driveways, slabs, retaining walls, exposed aggregate. QBCC Licensed #15299707. Free quotes \u2014 call 0424 463 268.",
     keywords: "concreting Narangba, concreters Narangba, concrete driveway Narangba, retaining wall Narangba, concrete slab Narangba",
     heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/project-exposed-agg_3890c724.jpeg",
@@ -2201,7 +2201,7 @@ heroImage: "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3c
     ],
     faqs: [
       { q: "Do you service acreage properties in Narangba?", a: "Yes, we service both residential and acreage properties in Narangba. Larger driveways and rural properties are no problem \u2014 we have the equipment for projects of all sizes." },
-      { q: "How much does a shed slab cost in Narangba?", a: "Shed slabs in Narangba typically cost $65-$85/m\u00B2 depending on size and engineering requirements. A standard 6x9m shed slab might cost between $3,500 and $4,600. We provide free quotes." },
+      { q: "How much does a shed slab cost in Narangba?", a: "The price for a shed slab in Narangba is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you need council approval for retaining walls in Narangba?", a: "Retaining walls over 1 metre high in the Moreton Bay region generally require council approval and engineering certification. We advise on requirements during our free site inspection." },
     ],
     testimonialSnippet: { name: "Chris W", text: "Great shed slab and retaining wall. Professional team who know what they're doing.", service: "Shed Slab & Retaining Wall \u2014 Narangba" },
@@ -2348,7 +2348,7 @@ export default function SuburbPage() {
     "@context": "https://schema.org",
     "@type": "HomeAndConstructionBusiness",
     "@id": `https://concreteconceptsgroup.com/areas/${suburb.slug}#business`,
-    name: "Concrete Concepts Group Pty Ltd",
+    name: "Concrete Concepts Group",
     alternateName: "Concrete Concepts Group",
     description: `Professional concreting services in ${suburb.name}, ${suburb.region}. Driveways, slabs, retaining walls, exposed aggregate, patios, pool surrounds & excavation. QBCC Licensed #15299707.`,
     telephone: "+61424463268",
@@ -2420,7 +2420,7 @@ export default function SuburbPage() {
           },
           provider: {
             "@type": "HomeAndConstructionBusiness",
-            name: "Concrete Concepts Group Pty Ltd",
+            name: "Concrete Concepts Group",
           },
         },
       })),

@@ -33,7 +33,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
       { name: "Mount Gravatt", slug: "mount-gravatt" },
     ],
     faqs: [
-      { q: "How much does a concrete driveway cost in Sunnybank?", a: "Concrete driveways in Sunnybank typically range from $80-$150/m² depending on the finish. Plain concrete starts around $80/m², while exposed aggregate is $120-$150/m². We provide free on-site quotes with exact pricing." },
+      { q: "How much does a concrete driveway cost in Sunnybank?", a: "The price for a concrete driveway in Sunnybank is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you work on sloped blocks in Sunnybank?", a: "Yes, many Sunnybank properties have sloped blocks. We handle all earthworks, retaining walls, and drainage to ensure your concrete is properly supported and water flows away from your home." },
       { q: "How long does a driveway take to complete in Sunnybank?", a: "Most residential driveways in Sunnybank take 2-3 days from excavation to finished pour. You can drive on it after 7 days. We work efficiently to minimise disruption to your daily routine." },
     ],
@@ -97,7 +97,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
     faqs: [
       { q: "Do you work on small inner-city blocks in Kelvin Grove?", a: "Yes, we're experienced with tight-access inner-city sites. We use smaller equipment and pumps to access narrow driveways and courtyards common in Kelvin Grove's older properties." },
       { q: "What concrete finishes suit heritage homes in Kelvin Grove?", a: "For heritage Queenslanders, we recommend exposed aggregate with warm-toned stone blends or coloured concrete that complements the home's character. We can match existing paths and driveways for extensions." },
-      { q: "How much does concreting cost in Kelvin Grove?", a: "Concreting in Kelvin Grove ranges from $80/m² for plain concrete to $150/m² for premium exposed aggregate. Inner-city access can add 10-15% due to logistics. We provide free on-site quotes." },
+      { q: "How much does concreting cost in Kelvin Grove?", a: "The price for concreting work in Kelvin Grove is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     ],
     testimonialSnippet: { name: "Sophie M", text: "Great job on our courtyard and driveway. The team worked efficiently in our tight space and the finish is beautiful.", service: "Driveway & Courtyard — Kelvin Grove" },
   },
@@ -157,7 +157,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
       { name: "Bracken Ridge", slug: "bracken-ridge" },
     ],
     faqs: [
-      { q: "How much does a shed slab cost in Banyo?", a: "Shed slabs in Banyo typically cost $70-$90/m² for plain concrete, depending on size and site preparation needed. A standard 6x9m shed slab costs approximately $4,500-$6,000 including excavation and formwork." },
+      { q: "How much does a shed slab cost in Banyo?", a: "The price for a shed slab in Banyo is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Do you pour concrete on weekends in Banyo?", a: "We primarily work Monday to Saturday. Saturday pours are available for residential projects. We always notify neighbours beforehand and keep noise to a minimum." },
       { q: "Can you remove my old concrete before pouring new?", a: "Yes, we handle full concrete removal and disposal. We'll break up and remove your old driveway, paths, or slab, prepare the base properly, and pour fresh concrete — all in one project." },
     ],
@@ -251,7 +251,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
     ],
     faqs: [
       { q: "Do you service Caboolture and Moreton Bay?", a: "Yes, we regularly service Caboolture, Morayfield, Narangba, Burpengary, and the wider Moreton Bay region. We have crews working in the area weekly." },
-      { q: "How much does a driveway cost in Caboolture?", a: "Driveways in Caboolture typically range from $75-$140/m². Plain concrete starts around $75/m², coloured concrete $90-$110/m², and exposed aggregate $120-$140/m². We provide free quotes with exact pricing." },
+      { q: "How much does a driveway cost in Caboolture?", a: "The price for a concrete driveway in Caboolture is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
       { q: "Can you do crossovers in Caboolture?", a: "Yes, we handle council crossovers (vehicle crossings) including the application process with Moreton Bay Regional Council. We ensure compliance with council specifications for width, thickness, and finish." },
     ],
     testimonialSnippet: { name: "Jason R", text: "Great job on our new driveway and crossover. The team was efficient and the price was very competitive for the Caboolture area.", service: "Driveway & Crossover — Caboolture" },
@@ -267,7 +267,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
     keywords: "concreting Morayfield, concreters Morayfield, concrete driveway Morayfield, patio Morayfield",
     heroImage: `${CDN}/new-gallery-5_d25c6ec1.jpeg`,
     intro: "Looking for a concreter in Morayfield? Concrete Concepts Group delivers quality concreting for Morayfield's new estates and established homes. From driveways and shed slabs to pool surrounds and outdoor patios, we bring professional workmanship to the Moreton Bay region.",
-    areaDescription: "Morayfield is a thriving Moreton Bay suburb with a mix of new housing estates and established residential areas. The suburb's rapid growth means constant demand for quality concrete work — new home driveways, backyard patios, shed slabs, and pool surrounds. Families investing in their outdoor spaces choose Concrete Concepts for reliable, affordable quality.",
+    areaDescription: "Morayfield is a thriving Moreton Bay suburb with a mix of new housing estates and established residential areas. The suburb's rapid growth means constant demand for quality concrete work — new home driveways, backyard patios, shed slabs, and pool surrounds. Families investing in their outdoor spaces choose Concrete Concepts Group for reliable, affordable quality.",
     popularServices: [
       { name: "Concrete Driveways", slug: "concrete-driveways-brisbane", description: "Driveways for new builds and upgrades for established Morayfield homes." },
       { name: "Pool Surrounds", slug: "pool-surrounds-brisbane", description: "Non-slip pool surrounds in exposed aggregate or textured concrete finishes." },
@@ -343,7 +343,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
       { name: "North Lakes", slug: "north-lakes" },
     ],
     faqs: [
-      { q: "What's the cheapest concrete option for a Burpengary driveway?", a: "Plain grey concrete with a broom finish is the most affordable option at $75-$85/m². It's durable, low-maintenance, and provides good grip. For a step up in appearance, coloured concrete adds $15-20/m²." },
+      { q: "What's the cheapest concrete option for a Burpengary driveway?", a: "Plain broom-finished concrete can be a practical option for a concrete driveway, but the right choice depends on the site's preparation needs, intended use, finish and drainage. Use our detailed quote form so we can verify the final measure, access, excavation, disposal, pumping, thickness and reinforcement before providing an itemised written quote." },
       { q: "Do you handle council approvals for crossovers?", a: "Yes, we manage the Moreton Bay Regional Council crossover application process. We ensure your vehicle crossing meets all council specifications for width, thickness, and drainage requirements." },
       { q: "Can you match my existing concrete colour?", a: "We can get very close colour matches for extensions and repairs. We use oxide pigments that can be adjusted to match existing concrete. For the best result, we recommend doing the entire visible area in one pour." },
     ],
@@ -499,7 +499,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
     ],
     faqs: [
       { q: "Do you do commercial concrete in Richlands?", a: "Yes, we handle commercial concrete work including warehouse floors, loading docks, car parks, and hardstand areas. We work around business hours and can schedule weekend pours for minimal disruption." },
-      { q: "What's the cheapest way to get a new driveway?", a: "Plain grey concrete with a broom finish is the most affordable option at $75-$85/m². For a standard double driveway (50m²), that's approximately $3,750-$4,250. We provide free quotes with exact pricing." },
+      { q: "What's the cheapest way to get a new driveway?", a: "Plain broom-finished concrete can be a practical option for a concrete driveway, but the right choice depends on the site's preparation needs, intended use, finish and drainage. Use our detailed quote form so we can verify the final measure, access, excavation, disposal, pumping, thickness and reinforcement before providing an itemised written quote." },
       { q: "Can you repair cracked concrete in Richlands?", a: "We assess each case individually. Minor cracks can sometimes be repaired, but for extensive cracking we recommend replacement for a lasting result. We'll give honest advice on the best approach for your situation." },
     ],
     testimonialSnippet: { name: "Tony V", text: "Good honest work at a fair price. Our new driveway and shed slab are exactly what we needed.", service: "Driveway & Shed Slab — Richlands" },
@@ -624,7 +624,7 @@ export const MORE_SUBURBS: Record<string, SuburbData> = {
     faqs: [
       { q: "What premium finishes do you offer for Manly properties?", a: "For Manly's prestige properties, we offer premium exposed aggregate with hand-selected stone blends, honed concrete, coloured concrete with custom tones, and polished concrete for covered areas. We source premium materials for the best results." },
       { q: "Do you handle waterfront properties in Manly?", a: "Yes, we work on waterfront and near-water properties in Manly. We use marine-grade concrete mixes and quality sealers to protect against salt air and moisture. Proper drainage is essential for waterfront work." },
-      { q: "How much does premium concreting cost in Manly?", a: "Premium exposed aggregate in Manly ranges from $130-$180/m² depending on stone selection and complexity. Pool surrounds with honed finishes start from $150/m². We provide detailed quotes for each project." },
+      { q: "How much does premium concreting cost in Manly?", a: "The price for concreting work in Manly is confirmed only after we verify the scope on site. Your detailed quote accounts for the finish, final measure, access, excavation, disposal, drainage, pumping, required thickness and reinforcement. Submit the detailed quote form for an itemised written quote." },
     ],
     testimonialSnippet: { name: "Andrew & Sarah", text: "Exceptional quality on our pool surround and driveway. The premium exposed aggregate is stunning and perfectly suits our Manly home.", service: "Pool Surround & Driveway — Manly" },
   },

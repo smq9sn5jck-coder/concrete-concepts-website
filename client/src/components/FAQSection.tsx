@@ -16,7 +16,7 @@ const faqs: FAQItem[] = [
   {
     question: "How much does a concrete driveway cost in Brisbane?",
     answer:
-      "Concrete driveway costs in Brisbane typically range from $65 to $150 per square metre, depending on the finish you choose. Standard grey concrete is the most affordable, while exposed aggregate and decorative finishes sit at the higher end. Factors like site access, slope, drainage requirements, and demolition of existing surfaces also affect the final price. We provide free, no-obligation quotes so you know exactly what to expect before any work begins.",
+      "Concrete driveway pricing is confirmed after we verify the scope on site. The detailed quote accounts for the chosen finish, final measure, access, slope, excavation, disposal, drainage, pumping, thickness and reinforcement. Complete the detailed quote form and we will provide an itemised written quote before work begins.",
   },
   {
     question: "What types of concrete finishes do you offer?",

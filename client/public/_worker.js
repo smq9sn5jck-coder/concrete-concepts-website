@@ -239,7 +239,11 @@ const WORKER_SERVICE_LABELS = {
 const WORKER_VALUE_LABELS = {
   phone: "Phone call", sms: "SMS", email: "Email",
   new: "New work", replacement: "Replacement", extension: "Extension", repair: "Repair", not_sure: "Not sure",
-  plain: "Plain concrete", coloured: "Coloured concrete", exposed: "Exposed aggregate", stencilled: "Stencilled / stamped",
+  plain: "Plain Concrete — Broom Finish", oxide: "Coloured Concrete — Oxide Finish",
+  exposed_raven: "Exposed Aggregate — Raven", exposed_sp: "Exposed Aggregate — Salt & Pepper",
+  exposed_jersey: "Exposed Aggregate — Jersey", exposed_casper: "Exposed Aggregate — Casper",
+  stencil: "Stencilled / Stamped Concrete", honed: "Honed / Ground Concrete",
+  coloured: "Coloured Concrete — Oxide Finish", exposed: "Exposed Aggregate — named mix required", stencilled: "Stencilled / Stamped Concrete",
   asap: "ASAP — ready to go", within_1_month: "Within one month", one_to_three_months: "One to three months", three_plus_months: "Three or more months", planning: "Planning only",
   easy: "Easy vehicle access", restricted: "Restricted vehicle access", no_vehicle: "No vehicle access",
   flat: "Flat", slight: "Slight slope", steep: "Steep slope",

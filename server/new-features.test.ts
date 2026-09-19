@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 /**
  * Tests for new features:
- * 1. Cost Calculator page data and pricing logic
+ * 1. Project planner finish and quote-handoff behaviour
  * 2. Before/After Gallery page structure
  * 3. Expanded service pages content
  * 4. Google Maps on suburb pages
@@ -10,92 +12,20 @@ import { describe, expect, it } from "vitest";
  * 6. Navigation includes new links
  */
 
-// Cost Calculator pricing constants (must match CostCalculator.tsx)
-const CONCRETE_TYPES = [
-  { id: "plain", label: "Plain Concrete", lowPerSqm: 75, highPerSqm: 90 },
-  { id: "coloured", label: "Coloured Concrete", lowPerSqm: 85, highPerSqm: 115 },
-  { id: "exposed", label: "Exposed Aggregate", lowPerSqm: 110, highPerSqm: 150 },
-  { id: "stamped", label: "Stencilled / Stamped", lowPerSqm: 100, highPerSqm: 145 },
-];
+describe("Project planner - safe quote handoff", () => {
+  const planner = readFileSync(resolve("client/src/pages/CostCalculator.tsx"), "utf8");
 
-const EXTRAS = [
-  { id: "excavation", label: "Excavation Required", lowPerSqm: 18, highPerSqm: 28 },
-  { id: "removal", label: "Old Concrete Removal", lowPerSqm: 22, highPerSqm: 32 },
-];
-
-describe("Cost Calculator - Pricing Logic", () => {
-  it("calculates correct price range for plain concrete 50sqm", () => {
-    const area = 50;
-    const type = CONCRETE_TYPES.find(t => t.id === "plain")!;
-    const low = area * type.lowPerSqm;
-    const high = area * type.highPerSqm;
-
-    expect(low).toBe(3750);
-    expect(high).toBe(4500);
+  it("saves the scope before sending the visitor to the detailed quote", () => {
+    expect(planner).toContain("saveQuoteDraft");
+    expect(planner).toContain('href="/get-quote"');
+    expect(planner).toContain("measurementMode: \"area\"");
   });
 
-  it("calculates correct price range for exposed aggregate 80sqm", () => {
-    const area = 80;
-    const type = CONCRETE_TYPES.find(t => t.id === "exposed")!;
-    const low = area * type.lowPerSqm;
-    const high = area * type.highPerSqm;
-
-    expect(low).toBe(8800);
-    expect(high).toBe(12000);
-  });
-
-  it("adds excavation cost correctly", () => {
-    const area = 60;
-    const type = CONCRETE_TYPES.find(t => t.id === "coloured")!;
-    const excavation = EXTRAS.find(e => e.id === "excavation")!;
-
-    const baseLow = area * type.lowPerSqm;
-    const baseHigh = area * type.highPerSqm;
-    const extraLow = area * excavation.lowPerSqm;
-    const extraHigh = area * excavation.highPerSqm;
-
-    const totalLow = baseLow + extraLow;
-    const totalHigh = baseHigh + extraHigh;
-
-    expect(totalLow).toBe(60 * 85 + 60 * 18); // 5100 + 1080 = 6180
-    expect(totalHigh).toBe(60 * 115 + 60 * 28); // 6900 + 1680 = 8580
-  });
-
-  it("adds multiple extras correctly", () => {
-    const area = 40;
-    const type = CONCRETE_TYPES.find(t => t.id === "stamped")!;
-    const excavation = EXTRAS.find(e => e.id === "excavation")!;
-    const removal = EXTRAS.find(e => e.id === "removal")!;
-
-    const totalLow = area * type.lowPerSqm + area * excavation.lowPerSqm + area * removal.lowPerSqm;
-    const totalHigh = area * type.highPerSqm + area * excavation.highPerSqm + area * removal.highPerSqm;
-
-    expect(totalLow).toBe(40 * 100 + 40 * 18 + 40 * 22); // 4000 + 720 + 880 = 5600
-    expect(totalHigh).toBe(40 * 145 + 40 * 28 + 40 * 32); // 5800 + 1120 + 1280 = 8200
-  });
-
-  it("handles zero area", () => {
-    const area = 0;
-    const type = CONCRETE_TYPES.find(t => t.id === "plain")!;
-    const low = area * type.lowPerSqm;
-    const high = area * type.highPerSqm;
-
-    expect(low).toBe(0);
-    expect(high).toBe(0);
-  });
-
-  it("all concrete types have valid pricing (low < high)", () => {
-    for (const type of CONCRETE_TYPES) {
-      expect(type.lowPerSqm).toBeGreaterThan(0);
-      expect(type.highPerSqm).toBeGreaterThan(type.lowPerSqm);
+  it("captures operational site factors instead of applying generic price uplifts", () => {
+    for (const factor of ["excavation", "removal", "access", "slope", "drainage", "pump"]) {
+      expect(planner).toContain(`\"${factor}\"`);
     }
-  });
-
-  it("all extras have valid pricing (low < high)", () => {
-    for (const extra of EXTRAS) {
-      expect(extra.lowPerSqm).toBeGreaterThan(0);
-      expect(extra.highPerSqm).toBeGreaterThan(extra.lowPerSqm);
-    }
+    expect(planner).not.toMatch(/lowPerM2|highPerM2|percentage:\s*15/);
   });
 });
 

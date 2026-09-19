@@ -16,8 +16,29 @@ export const quoteServices = [
   "other",
 ] as const;
 
-export const quoteFinishes = ["plain", "coloured", "exposed", "stencilled", "not_sure"] as const;
+export const quoteFinishes = [
+  "plain",
+  "oxide",
+  "exposed_raven",
+  "exposed_sp",
+  "exposed_jersey",
+  "exposed_casper",
+  "stencil",
+  "honed",
+  "not_sure",
+] as const;
 export const quoteTimeframes = ["asap", "within_1_month", "one_to_three_months", "three_plus_months", "planning"] as const;
+
+export type QuoteFinish = (typeof quoteFinishes)[number];
+
+export function normalizeQuoteFinish(value: unknown): QuoteFinish {
+  if (typeof value !== "string") return "not_sure";
+  if ((quoteFinishes as readonly string[]).includes(value)) return value as QuoteFinish;
+  if (value === "coloured") return "oxide";
+  if (value === "stencilled" || value === "stamped") return "stencil";
+  // A historical generic exposed value cannot identify an approved named mix.
+  return "not_sure";
+}
 
 const optionalShortText = z.string().trim().max(500).optional().default("");
 const optionalMeasurement = z.number().finite().positive().max(100_000).optional();
@@ -71,7 +92,7 @@ export const comprehensiveQuoteSchema = z
     scope: z.object({
       services: z.array(z.enum(quoteServices)).min(1, "Select at least one service").max(8),
       workType: z.enum(["new", "replacement", "extension", "repair", "not_sure"]),
-      finish: z.enum(quoteFinishes),
+      finish: z.preprocess(normalizeQuoteFinish, z.enum(quoteFinishes)),
       timeframe: z.enum(quoteTimeframes),
       description: z.string().trim().min(20, "Please add a useful description of the work").max(5_000),
     }),
@@ -131,10 +152,14 @@ const valueLabels: Record<string, string> = {
   extension: "Extension",
   repair: "Repair",
   not_sure: "Not sure",
-  plain: "Plain concrete",
-  coloured: "Coloured concrete",
-  exposed: "Exposed aggregate",
-  stencilled: "Stencilled / stamped",
+  plain: "Plain Concrete — Broom Finish",
+  oxide: "Coloured Concrete — Oxide Finish",
+  exposed_raven: "Exposed Aggregate — Raven",
+  exposed_sp: "Exposed Aggregate — Salt & Pepper",
+  exposed_jersey: "Exposed Aggregate — Jersey",
+  exposed_casper: "Exposed Aggregate — Casper",
+  stencil: "Stencilled / Stamped Concrete",
+  honed: "Honed / Ground Concrete",
   asap: "ASAP — ready to go",
   within_1_month: "Within one month",
   one_to_three_months: "One to three months",

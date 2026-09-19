@@ -31,12 +31,12 @@ const faqCategories: FAQCategory[] = [
       {
         question: "How much does a concrete driveway cost in Brisbane?",
         answer:
-          "Concrete driveway costs in Brisbane typically range from $65 to $150 per square metre for standard finishes, and $100 to $200+ per square metre for exposed aggregate or decorative finishes. A standard two-car driveway (40–50m²) usually costs between $3,500 and $8,000 depending on the finish, site access, slope, and whether demolition of an existing surface is required. We provide free, detailed quotes so you know exactly what to expect.",
+          "Concrete driveway pricing is confirmed after a site assessment. Your detailed quote verifies the final measure, finish, access, slope, excavation, disposal, drainage, pumping, thickness and reinforcement, then sets out the included scope in writing. Complete the detailed quote form to start that process.",
       },
       {
         question: "How much does a concrete slab cost in Brisbane?",
         answer:
-          "Concrete slab costs in Brisbane range from $75 to $120 per square metre for a standard 100mm slab, depending on size, thickness, reinforcement, and site preparation required. A typical garage slab (36m²) costs $3,000–$5,000, while a house slab (100m²+) can range from $8,000 to $15,000+. Factors like soil type, slope, plumbing penetrations, and edge beams all affect the final price.",
+          "Concrete slab pricing is confirmed after we review the final measure, soil conditions, engineering, thickness, reinforcement, excavation, access, drainage, pumping and any penetrations. Submit the detailed quote form with your plans or site photos for an itemised written quote.",
       },
       {
         question: "Do you offer free quotes?",
@@ -72,7 +72,7 @@ const faqCategories: FAQCategory[] = [
       {
         question: "What is the difference between exposed aggregate and plain concrete?",
         answer:
-          "Plain concrete has a smooth or broom-finished surface and costs $65–$100/m². Exposed aggregate reveals decorative stones for a textured look and costs $100–$180/m². Exposed aggregate offers better slip resistance, hides minor imperfections, requires less frequent sealing, and significantly boosts your property's street appeal. For driveways, exposed aggregate is the most popular choice in Brisbane.",
+          "Plain concrete has a smooth or broom-finished surface. Exposed aggregate reveals decorative stones for a textured look. Exposed aggregate offers better slip resistance, hides minor imperfections, requires less frequent sealing, and can strengthen your property's street appeal. The right option depends on your intended use, drainage and finish preference; the detailed quote confirms the scope after assessment.",
       },
       {
         question: "Can I choose the colour of my concrete?",
@@ -129,7 +129,7 @@ const faqCategories: FAQCategory[] = [
       {
         question: "What is a driveway crossover and do I need a permit?",
         answer:
-          "A driveway crossover is the section of driveway that crosses the council footpath and connects your property to the road. In Brisbane, you need a Brisbane City Council (BCC) permit for any new crossover or modification to an existing one. The permit costs approximately $200–$500 and takes 2–4 weeks to process. We can handle the permit application on your behalf as part of our service.",
+          "A driveway crossover is the section of driveway that crosses the council footpath and connects your property to the road. In Brisbane, you need a Brisbane City Council (BCC) permit for any new crossover or modification to an existing one. Processing time and council fees vary. We can handle the permit application on your behalf as part of our service and confirm the current requirements in your detailed quote.",
       },
       {
         question: "Are you licensed and insured?",
