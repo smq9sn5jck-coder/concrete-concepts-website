@@ -102,6 +102,72 @@ function trpcErrorResponse(message, status = 400) {
   }, status);
 }
 
+const BOOKING_TOKEN_PATTERN = /^[a-f0-9]{64}$/;
+const BOOKING_GATEWAY_STATUSES = new Set([
+  "sent",
+  "already_sent",
+  "invalid",
+  "expired",
+  "failed",
+  "unknown",
+  "unavailable",
+]);
+
+function bookingGatewayConfigured(env) {
+  return Boolean(String(env.BOOKING_GATE_URL || "").trim() && String(env.BOOKING_GATE_SECRET || "").trim());
+}
+
+async function postBookingGateway(env, path, body) {
+  const baseUrl = String(env.BOOKING_GATE_URL || "").replace(/\/+$/, "");
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+  try {
+    return await fetch(`${baseUrl}${path}`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-booking-gate-secret": env.BOOKING_GATE_SECRET,
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+async function createBookingDeliveryToken(env, formData) {
+  if (!formData.jobBrief || !bookingGatewayConfigured(env)) return null;
+  try {
+    const response = await postBookingGateway(env, "/api/public/booking-link/create", {
+      customerName: formData.name,
+      customerPhone: formData.phone,
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok || !BOOKING_TOKEN_PATTERN.test(String(data.token || ""))) {
+      console.error("Booking gateway token creation failed:", response.status);
+      return null;
+    }
+    return data.token;
+  } catch (error) {
+    console.error("Booking gateway token creation failed:", error?.message || "request failed");
+    return null;
+  }
+}
+
+async function sendBookingLinkViaGateway(env, token) {
+  if (!BOOKING_TOKEN_PATTERN.test(String(token || ""))) return { status: "invalid" };
+  if (!bookingGatewayConfigured(env)) return { status: "unavailable" };
+  try {
+    const response = await postBookingGateway(env, "/api/public/booking-link/send", { token });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) return { status: response.status === 503 ? "unavailable" : "failed" };
+    return { status: BOOKING_GATEWAY_STATUSES.has(data.status) ? data.status : "unknown" };
+  } catch {
+    return { status: "unavailable" };
+  }
+}
+
 const leadRateLimits = new Map();
 
 function normalizeWorkerPhone(value) {
@@ -1153,9 +1219,18 @@ async function handleQuoteSubmit(env, formData) {
     }
 
     const delivered = results.email === "sent" || results.sheets === "logged" || results.jotform === "logged";
-    return delivered
-      ? { success: true, message: "Quote submitted successfully", channels: results, serviceAreaStatus: validation.serviceAreaStatus }
-      : { success: false, error: "We couldn't confirm delivery. Please call 0424 463 268.", status: 503, channels: results };
+    if (!delivered) {
+      return { success: false, error: "We couldn't confirm delivery. Please call 0424 463 268.", status: 503, channels: results };
+    }
+
+    const bookingDeliveryToken = await createBookingDeliveryToken(env, formData);
+    return {
+      success: true,
+      message: "Quote submitted successfully",
+      channels: results,
+      serviceAreaStatus: validation.serviceAreaStatus,
+      ...(bookingDeliveryToken ? { bookingDeliveryToken } : {}),
+    };
   } catch (err) {
     return { success: false, error: err.message };
   }
@@ -1362,6 +1437,13 @@ export default {
         return result.success
           ? trpcResponse(result)
           : trpcErrorResponse(result.error || "Quote submission failed", result.status || 500);
+      }
+
+      // Route: Send the one-time site-inspection booking link by SMS.
+      if (path === "/api/trpc/quote.sendBookingLink") {
+        const body = await request.json();
+        const input = parseTrpcBody(body);
+        return trpcResponse(await sendBookingLinkViaGateway(env, input.token));
       }
 
       // Route: Homeowner guide lead (email-first, phone optional)
