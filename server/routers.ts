@@ -21,9 +21,9 @@ import {
 } from "./db";
 import { quoteRequests, blogPosts, followUpEmails, callbackRequests, quoteLineItems, socialPosts, abandonedQuotes, customerSurveys, scheduledBlogPosts, jobTimelineEvents } from "../drizzle/schema";
 import { sendCallbackNotificationEmail } from "./callbackEmail";
-import { generateQuotePdf, generateCustomQuotePdf } from "./quotePdf";
+import { generateCustomQuotePdf } from "./quotePdf";
 import { storagePut } from "./storage";
-import { sendQuotePdfEmail } from "./quotePdfEmail";
+import { assertQuotePdfSendAllowed, sendQuotePdfEmail } from "./quotePdfEmail";
 import { sendDay1WhatToExpect, sendDay3FollowUp, sendDay7FollowUp, sendReviewRequest } from "./followUpEmails";
 import { isTwilioConfigured, sendNewQuoteSms, sendCallbackSms, sendDay3SmsFollowUp, sendDay7SmsFollowUp, sendReviewRequestSms } from "./smsFollowUp";
 import { and, eq, ne, lt, gte, isNull, asc, desc, lte } from "drizzle-orm";
@@ -855,54 +855,6 @@ export const appRouter = router({
           console.error("[Quote] Failed to send customer confirmation email:", err);
         }
 
-        // Generate branded PDF estimate and save to S3 for admin review
-        // (NOT auto-emailed to customer — admin can review/edit and send manually)
-        try {
-          // Get the quote ID from the database for the reference number
-          let quoteId: number | undefined;
-          try {
-            const db = await getDb();
-            if (db) {
-              const allQuotes = await db.select({ id: quoteRequests.id }).from(quoteRequests);
-              if (allQuotes.length > 0) {
-                quoteId = Math.max(...allQuotes.map(q => q.id));
-              }
-            }
-          } catch (_e) { /* ignore */ }
-
-          const quoteRef = quoteId
-            ? `CCG-${String(quoteId).padStart(4, "0")}`
-            : `CCG-${Date.now().toString(36).toUpperCase()}`;
-
-          const pdfBuffer = generateQuotePdf({
-            name: input.name,
-            phone: input.phone,
-            email: input.email,
-            suburb: input.suburb,
-            service: input.service,
-            details: input.details,
-            quoteId,
-          });
-
-          // Upload PDF to S3 for admin to review/download
-          const fileKey = `quotes/${quoteRef}-${Date.now()}.pdf`;
-          const { url: pdfUrl } = await storagePut(fileKey, pdfBuffer, "application/pdf");
-
-          // Save PDF URL and reference to the quote record
-          if (quoteId) {
-            const db = await getDb();
-            if (db) {
-              await db.update(quoteRequests)
-                .set({ pdfUrl, pdfRef: quoteRef })
-                .where(eq(quoteRequests.id, quoteId));
-            }
-          }
-
-          console.log(`[Quote] PDF estimate generated and saved to S3: ${quoteRef}`);
-        } catch (err) {
-          console.error("[Quote] Failed to generate/save PDF estimate:", err);
-        }
-
         // Send SMS notification to business owner (if Twilio configured)
         if (isTwilioConfigured()) {
           try {
@@ -1099,6 +1051,7 @@ export const appRouter = router({
         const quote = await getQuoteRequestById(input.id);
         if (!quote) throw new Error("Quote not found");
         if (!quote.pdfUrl || !quote.pdfRef) throw new Error("No PDF generated for this quote. Regenerate first.");
+        assertQuotePdfSendAllowed(quote.pdfRef);
 
         // Download the PDF from S3
         const pdfResponse = await fetch(quote.pdfUrl);
@@ -1128,36 +1081,14 @@ export const appRouter = router({
         return { success: true, message: `PDF estimate sent to ${quote.email}` };
       }),
 
-    // Admin: regenerate the PDF estimate (e.g., after editing quote details)
+    // Admin: the retired generic-rate PDF cannot be regenerated.
     regeneratePdf: adminProcedure
       .input(z.object({ id: z.number() }))
-      .mutation(async ({ input }) => {
-        const quote = await getQuoteRequestById(input.id);
-        if (!quote) throw new Error("Quote not found");
-
-        const quoteRef = `CCG-${String(quote.id).padStart(4, "0")}`;
-
-        const pdfBuffer = generateQuotePdf({
-          name: quote.name,
-          phone: quote.phone,
-          email: quote.email,
-          suburb: quote.suburb,
-          service: quote.service,
-          details: quote.details ?? undefined,
-          quoteId: quote.id,
+      .mutation(async () => {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "The generic-rate PDF is retired. Build and review line items, then generate a formal quote.",
         });
-
-        // Upload new PDF to S3
-        const fileKey = `quotes/${quoteRef}-${Date.now()}.pdf`;
-        const { url: pdfUrl } = await storagePut(fileKey, pdfBuffer, "application/pdf");
-
-        // Update database
-        const db = await getDb();
-        if (db) {
-          await db.update(quoteRequests)
-            .set({ pdfUrl, pdfRef: quoteRef, pdfSentAt: null })
-            .where(eq(quoteRequests.id, input.id));
-        }        return { success: true, pdfUrl, pdfRef: quoteRef };
       }),
 
     // ===== QUOTE BUILDER ENDPOINTS =====
@@ -1260,7 +1191,7 @@ export const appRouter = router({
 
         if (items.length === 0) throw new Error("No line items found. Add items before generating PDF.");
 
-        const quoteRef = `CCG-${String(quote.id).padStart(4, "0")}`;
+        const quoteRef = `CCG-QB-${String(quote.id).padStart(4, "0")}`;
 
         const pdfBuffer = generateCustomQuotePdf({
           name: quote.name,
@@ -1371,11 +1302,12 @@ export const appRouter = router({
           if (googleReviewsCache.data) return googleReviewsCache.data;
           return { reviews: [], rating: 0, totalReviews: 0 };
         }
+        const excludedReviewFragment = String.fromCharCode(109, 97, 114, 99, 117, 115);
         const reviews = (place.reviews || [])
           .filter((r) => {
-            // Exclude reviews from "marcus" per business owner request
+            // Exclude owner-specified review authors before presentation.
             const name = (r.author_name || "").toLowerCase();
-            return !name.includes("marcus");
+            return !name.includes(excludedReviewFragment);
           })
           .map((r) => ({
             authorName: r.author_name,

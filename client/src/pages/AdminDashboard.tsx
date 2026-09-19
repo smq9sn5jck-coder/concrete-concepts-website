@@ -35,7 +35,6 @@ import {
   Save,
   Download,
   Send,
-  RefreshCw,
   Eye,
   Share2,
 } from "lucide-react";
@@ -75,29 +74,15 @@ function PdfActions({ quoteId, pdfUrl, pdfRef, pdfSentAt, customerEmail, onUpdat
     onError: (err) => toast.error(err.message),
   });
 
-  const regeneratePdf = trpc.quote.regeneratePdf.useMutation({
-    onSuccess: () => {
-      toast.success("PDF estimate regenerated");
-      onUpdate();
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
   if (!pdfUrl) {
     return (
-      <div className="flex items-center gap-3">
-        <p className="text-sm text-gray-500">No PDF generated yet.</p>
-        <button
-          onClick={(e) => { e.stopPropagation(); regeneratePdf.mutate({ id: quoteId }); }}
-          disabled={regeneratePdf.isPending}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
-        >
-          {regeneratePdf.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-          Generate PDF
-        </button>
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2">
+        <p className="text-xs font-medium text-amber-900">Add and review line items in Quote Builder, then generate the formal PDF.</p>
       </div>
     );
   }
+
+  const isApprovedFormalQuote = Boolean(pdfRef?.startsWith("CCG-QB-"));
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -122,38 +107,27 @@ function PdfActions({ quoteId, pdfUrl, pdfRef, pdfSentAt, customerEmail, onUpdat
         Download
       </a>
 
-      {/* Send to Customer */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          if (confirm(`Send PDF estimate to ${customerEmail}?`)) {
-            sendPdf.mutate({ id: quoteId });
-          }
-        }}
-        disabled={sendPdf.isPending}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50 ${
-          pdfSentAt
-            ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
-            : "bg-indigo-600 text-white hover:bg-indigo-700"
-        }`}
-      >
-        {sendPdf.isPending ? (
-          <Loader2 className="w-3.5 h-3.5 animate-spin" />
-        ) : (
-          <Send className="w-3.5 h-3.5" />
-        )}
-        {pdfSentAt ? "Resend to Customer" : "Send to Customer"}
-      </button>
-
-      {/* Regenerate */}
-      <button
-        onClick={(e) => { e.stopPropagation(); regeneratePdf.mutate({ id: quoteId }); }}
-        disabled={regeneratePdf.isPending}
-        className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-gray-600 text-xs font-medium rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors disabled:opacity-50"
-      >
-        {regeneratePdf.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-        Regenerate
-      </button>
+      {isApprovedFormalQuote ? (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (confirm(`Send the owner-reviewed formal quotation to ${customerEmail}?`)) {
+              sendPdf.mutate({ id: quoteId });
+            }
+          }}
+          disabled={sendPdf.isPending}
+          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg transition-colors disabled:opacity-50 ${
+            pdfSentAt
+              ? "bg-green-50 text-green-700 border border-green-200 hover:bg-green-100"
+              : "bg-indigo-600 text-white hover:bg-indigo-700"
+          }`}
+        >
+          {sendPdf.isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
+          {pdfSentAt ? "Resend formal quote" : "Send formal quote"}
+        </button>
+      ) : (
+        <span className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700">Legacy PDF blocked from sending</span>
+      )}
     </div>
   );
 }

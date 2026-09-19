@@ -38,8 +38,8 @@ const CORE_METADATA = {
     description: "Download CCG's Brisbane homeowner guide covering concrete finishes, project planning, costs, approvals, maintenance and common mistakes.",
   },
   "/calculator": {
-    title: "Concrete Cost Calculator Brisbane | CCG",
-    description: "Estimate a starting range for a Brisbane concrete project, compare common options and request a detailed site-specific quote from Concrete Concepts Group.",
+    title: "Concrete Project Planner Brisbane | Concrete Concepts Group",
+    description: "Prepare a structured Brisbane concrete project brief with the area, actual finish choice and site factors, then request a scope-based estimate from Concrete Concepts Group.",
   },
   "/faq": {
     title: "Concreting FAQs Brisbane | Concrete Concepts Group",
