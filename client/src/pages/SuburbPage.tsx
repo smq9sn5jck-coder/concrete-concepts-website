@@ -16,6 +16,9 @@ import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trackPhoneCallClick } from "@/components/ConversionTracking";
 import { NEW_SUBURBS } from "@/data/newSuburbs";
 import { MORE_SUBURBS, MORE_SUBURB_COORDS } from "@/data/moreSuburbs";
+import BatchOneLocalityPage from "@/components/BatchOneLocalityPage";
+import { BATCH_ONE_LOCALITY_BY_SLUG } from "@shared/localityContent";
+import { isBatchOneLocalityAvailable } from "@shared/batchOnePublication";
 
 interface SuburbData {
   slug: string;
@@ -2321,9 +2324,23 @@ const SUBURB_COORDS: Record<string, { lat: number; lng: number }> = {
 export default function SuburbPage() {
   const params = useParams<{ suburbSlug: string }>();
   const suburbSlug = params.suburbSlug || "";
+  const batchOneRecord = BATCH_ONE_LOCALITY_BY_SLUG[suburbSlug];
+  const customerHost = typeof window !== "undefined" && [
+    "concreteconceptsgroup.com",
+    "www.concreteconceptsgroup.com",
+  ].includes(window.location.hostname);
+  const previewEnabled = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true";
+  const batchOneAvailable = batchOneRecord && isBatchOneLocalityAvailable(suburbSlug, {
+    customerHost,
+    previewEnabled,
+  });
   const suburb = SUBURBS[suburbSlug];
 
-  if (!suburb) {
+  if (batchOneAvailable) {
+    return <BatchOneLocalityPage record={batchOneRecord} />;
+  }
+
+  if (!suburb || batchOneRecord) {
     return (
       <div className="min-h-screen bg-brand-offwhite">
         <Navbar />

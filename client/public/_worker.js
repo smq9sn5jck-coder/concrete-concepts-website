@@ -1,10 +1,34 @@
 // Metadata source: seo-manifest.json is generated from the same verified route map.
 import { applySeoMetadata, filterPublicSitemap } from "./seo-manifest.js";
+import {
+  GENERATED_BATCH_ONE_BY_SLUG,
+  GENERATED_BATCH_ONE_PREVIEW_ENABLED,
+  getLocalityRouteAccess,
+} from "./locality-content.js";
 
 const CUSTOMER_WEBSITE_HOSTS = new Set([
   "concreteconceptsgroup.com",
   "www.concreteconceptsgroup.com",
 ]);
+
+function batchOneSlugFromPath(path) {
+  const match = path.match(/^\/areas\/([a-z0-9-]+)\/?$/);
+  return match?.[1] && GENERATED_BATCH_ONE_BY_SLUG[match[1]] ? match[1] : null;
+}
+
+function notFoundHtmlResponse(response, url, method = "GET") {
+  const html = applySeoMetadata(
+    '<!doctype html><html lang="en-AU"><head><title>Area Not Found</title><meta name="description" content=""><meta name="robots" content="noindex, nofollow"><link rel="canonical" href=""></head><body><main><h1>Area Not Found</h1><p>The area page you requested is not available.</p><p><a href="/areas">View service areas</a></p></main></body></html>',
+    url.pathname,
+    "noindex, nofollow",
+  );
+  const headers = new Headers(response.headers);
+  headers.set("Content-Type", "text/html; charset=utf-8");
+  headers.set("X-Robots-Tag", "noindex, nofollow");
+  headers.set("Cache-Control", "no-store");
+  headers.delete("Content-Length");
+  return new Response(method === "HEAD" ? null : html, { status: 404, headers });
+}
 
 /**
  * Cloudflare Pages Worker for Concrete Concepts Group
@@ -1345,10 +1369,9 @@ async function prepareStaticResponse(response, url, path, method) {
     });
   }
 
-  if (method === "GET" && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
+  if ((method === "GET" || method === "HEAD") && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
     const isCustomerWebsiteHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
     const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
-    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride);
     const headers = new Headers(response.headers);
     headers.set("Content-Type", "text/html; charset=utf-8");
     headers.delete("Content-Length");
@@ -1357,6 +1380,14 @@ async function prepareStaticResponse(response, url, path, method) {
     } else if (path.startsWith("/lp/")) {
       headers.set("X-Robots-Tag", "noindex, follow");
     }
+    if (method === "HEAD") {
+      return new Response(null, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride);
     return new Response(html, {
       status: response.status,
       statusText: response.statusText,
@@ -1392,8 +1423,22 @@ export default {
       }
     }
 
+    const isStaticRead = request.method === "GET" || request.method === "HEAD";
+    const batchOneSlug = isStaticRead ? batchOneSlugFromPath(path) : null;
+    if (batchOneSlug && getLocalityRouteAccess(
+      batchOneSlug,
+      CUSTOMER_WEBSITE_HOSTS.has(url.hostname),
+      GENERATED_BATCH_ONE_PREVIEW_ENABLED,
+    ) === "not-found") {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+
     // Static assets: use CF Cache API to avoid cold-start penalty on repeat visits
     if (request.method !== "POST" || !path.startsWith("/api/")) {
+      if (request.method === "HEAD") {
+        const response = await env.ASSETS.fetch(request);
+        return prepareStaticResponse(response, url, path, request.method);
+      }
       const cache = caches.default;
       const cacheKey = new Request(url.toString(), { method: "GET" });
       let response = await cache.match(cacheKey);
@@ -1526,6 +1571,6 @@ export default {
 
     // Unknown POST API routes fall through without being cached.
     const response = await env.ASSETS.fetch(request);
-    return prepareStaticResponse(response, url, path, request.method);
+    return prepareStaticResponse(response, url, path, request.method, env);
   },
 };

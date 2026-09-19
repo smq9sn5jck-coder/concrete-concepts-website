@@ -3,6 +3,7 @@
   Acts as a pillar page linking to all suburb landing pages
   Strong internal linking for SEO topical authority
 */
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { MapPin, ArrowRight, Phone, Shield, ClipboardList } from "lucide-react";
@@ -13,8 +14,11 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { trackPhoneCallClick, trackWhatsAppClick } from "@/components/ConversionTracking";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
+import { BATCH_ONE_LOCALITIES } from "@shared/localityContent";
+import { BATCH_ONE_CREATE_SLUGS } from "@shared/batchOnePublication";
+import { scrollToServiceAreaHash } from "@/lib/serviceAreaHash";
 
-const REGIONS = [
+const BASE_REGIONS = [
   {
     name: "Brisbane CBD & Inner City",
     suburbs: [
@@ -181,6 +185,44 @@ const REGIONS = [
   },
 ];
 
+const BATCH_ONE_DIRECTORY_REGION: Record<string, string> = {
+  moggill: "Brisbane Western Suburbs",
+  murarrie: "Brisbane Inner-East & Bayside",
+  "mermaid-waters": "Gold Coast & Northern GC",
+  "clear-island-waters": "Gold Coast & Northern GC",
+  "white-rock": "Ipswich & Springfield",
+  silkstone: "Ipswich & Springfield",
+  "spring-mountain": "Ipswich & Springfield",
+  "south-ripley": "Ipswich & Springfield",
+  flagstone: "Logan & Beenleigh",
+  crestmead: "Logan & Beenleigh",
+  yarrabilba: "Logan & Beenleigh",
+  clontarf: "Moreton Bay & North",
+};
+
+const REGION_ANCHOR_BY_NAME: Record<string, string> = {
+  "Brisbane CBD & Inner City": "brisbane",
+  "Moreton Bay & North": "moreton-bay",
+  "Logan & Beenleigh": "logan",
+  "Gold Coast & Northern GC": "gold-coast",
+  "Ipswich & Springfield": "ipswich",
+};
+
+const stagingDirectoryAdditions = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true"
+  ? BATCH_ONE_LOCALITIES.filter(record => (BATCH_ONE_CREATE_SLUGS as readonly string[]).includes(record.slug))
+  : [];
+
+const REGIONS = BASE_REGIONS.map(region => ({
+  ...region,
+  anchorId: REGION_ANCHOR_BY_NAME[region.name],
+  suburbs: [
+    ...region.suburbs,
+    ...stagingDirectoryAdditions
+      .filter(record => BATCH_ONE_DIRECTORY_REGION[record.slug] === region.name)
+      .map(record => ({ name: record.locality, slug: record.slug })),
+  ],
+}));
+
 const totalSuburbs = REGIONS.reduce((acc, r) => acc + r.suburbs.length, 0);
 
 const structuredData = {
@@ -204,6 +246,13 @@ const breadcrumbs = [
 ];
 
 export default function ServiceAreasPage() {
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      scrollToServiceAreaHash(window.location.hash);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
   const goToQuote = () => {
     window.location.href = "/get-quote";
   };
@@ -291,11 +340,12 @@ export default function ServiceAreasPage() {
             {REGIONS.map((region, ri) => (
               <motion.div
                 key={region.name}
+                id={region.anchorId}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: ri * 0.1 }}
-                className="bg-white rounded-xl border border-border/50 shadow-sm overflow-hidden"
+                className="scroll-mt-28 bg-white rounded-xl border border-border/50 shadow-sm overflow-hidden"
               >
                 {/* Region header */}
                 <div className="bg-brand-charcoal px-6 py-4">

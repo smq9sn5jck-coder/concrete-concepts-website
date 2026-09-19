@@ -40,6 +40,10 @@ const FinishesVisualizer = lazy(() => import("./pages/FinishesVisualizer"));
 const SurveyPage = lazy(() => import("./pages/SurveyPage"));
 const MyQuote = lazy(() => import("./pages/MyQuote"));
 const Visualiser = lazy(() => import("./pages/Visualiser"));
+const batchOnePreviewEnabled = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true";
+const BatchOneReviewPage = batchOnePreviewEnabled
+  ? lazy(() => import("./pages/BatchOneReviewPage"))
+  : null;
 
 /** Minimal loading fallback for lazy routes */
 function PageLoader() {
@@ -65,6 +69,9 @@ function Router() {
         <Route path={"/blog/:slug"} component={BlogPost} />
         <Route path={"/services/:serviceSlug"} component={ServicePage} />
         <Route path={"/areas"} component={ServiceAreasPage} />
+        {BatchOneReviewPage && (
+          <Route path={"/batch-one-review"} component={BatchOneReviewPage} />
+        )}
         <Route path={"/calculator"} component={CostCalculator} />
         <Route path={"/areas/:suburbSlug"} component={SuburbPage} />
         <Route path={"/reviews"} component={ReviewsPage} />

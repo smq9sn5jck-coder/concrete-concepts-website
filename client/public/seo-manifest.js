@@ -1,78 +1,29 @@
+import {
+  GENERATED_BATCH_ONE_BY_SLUG,
+  GENERATED_PUBLIC_LOCALITY_SLUGS,
+} from "./locality-content.js";
+
 const SITE_ORIGIN = "https://concreteconceptsgroup.com";
 
 const CORE_METADATA = {
-  "/": {
-    title: "Concrete Concepts Group | Brisbane Concreting & Concrete Services",
-    description: "QBCC licensed Brisbane concreters for driveways, slabs, exposed aggregate, paths, patios, pool surrounds, steps and retaining walls across SEQ.",
-  },
-  "/get-quote": {
-    title: "Get a Free Concrete Quote | Brisbane & SEQ | Concrete Concepts",
-    description: "Request a detailed concrete quote in five guided steps. Add your Brisbane or SEQ location, job details, measurements, access information and optional photos.",
-  },
-  "/services": {
-    title: "Concrete Services Brisbane | Driveways, Slabs, Paths & More",
-    description: "Explore CCG concrete services across Brisbane and SEQ, including driveways, slabs, paths, patios, pool surrounds, exposed aggregate, stairs and retaining walls.",
-  },
-  "/areas": {
-    title: "Brisbane & SEQ Concreting Service Areas | CCG",
-    description: "Find Concrete Concepts Group concreting services across Brisbane, Ipswich, Logan, Moreton Bay, Redlands and surrounding South East Queensland suburbs.",
-  },
-  "/blog": {
-    title: "Brisbane Concreting Advice & Project Guides | CCG Blog",
-    description: "Read practical Brisbane concreting guides covering costs, finishes, driveways, slabs, site preparation, approvals, maintenance and project planning.",
-  },
-  "/gallery": {
-    title: "Brisbane Concrete Project Gallery | Concrete Concepts Group",
-    description: "View completed Brisbane and SEQ concrete driveways, slabs, paths, patios, pool surrounds, exposed aggregate and retaining wall projects by CCG.",
-  },
-  "/gallery/process-technology": {
-    title: "Concrete Process & Technology | Concrete Concepts Group",
-    description: "See how Concrete Concepts Group plans, prepares and delivers concrete projects across Brisbane and South East Queensland.",
-  },
-  "/visualiser": {
-    title: "Concrete Finish Visualiser | Preview Your Brisbane Project",
-    description: "Preview concrete finishes, stone mixes and border colours for your Brisbane or SEQ project, then request a detailed CCG quote.",
-  },
-  "/guide": {
-    title: "Free Homeowner's Guide to Concreting | Concrete Concepts Group",
-    description: "Download CCG's Brisbane homeowner guide covering concrete finishes, project planning, costs, approvals, maintenance and common mistakes.",
-  },
-  "/calculator": {
-    title: "Concrete Cost Calculator Brisbane | CCG",
-    description: "Estimate a starting range for a Brisbane concrete project, compare common options and request a detailed site-specific quote from Concrete Concepts Group.",
-  },
-  "/faq": {
-    title: "Concreting FAQs Brisbane | Concrete Concepts Group",
-    description: "Find practical answers about Brisbane concrete quotes, preparation, access, finishes, curing, approvals, maintenance and project planning.",
-  },
-  "/finishes": {
-    title: "Concrete Finishes Brisbane | Compare Options with CCG",
-    description: "Compare plain, coloured, exposed aggregate, honed and patterned concrete finishes for Brisbane and South East Queensland projects.",
-  },
-  "/gallery/before-after": {
-    title: "Concrete Before & After Gallery Brisbane | CCG",
-    description: "View before-and-after examples of concrete driveways, slabs, paths, patios and outdoor areas completed across Brisbane and surrounding SEQ.",
-  },
-  "/projects": {
-    title: "Brisbane Concrete Projects | Concrete Concepts Group",
-    description: "Explore selected Concrete Concepts Group driveway, slab, path, patio, pool surround and retaining wall projects across Brisbane and SEQ.",
-  },
-  "/referral": {
-    title: "Concrete Project Referrals Brisbane | CCG",
-    description: "Read how Concrete Concepts Group handles suitable concrete project referrals across Brisbane and surrounding South East Queensland areas.",
-  },
-  "/reviews": {
-    title: "Concrete Concepts Group Reviews | Brisbane Projects",
-    description: "Read published customer feedback about Concrete Concepts Group projects and request a detailed quote for concrete work in Brisbane and SEQ.",
-  },
-  "/privacy": {
-    title: "Privacy Policy | Concrete Concepts Group",
-    description: "Read how Concrete Concepts Group handles website enquiries and customer information.",
-  },
-  "/terms": {
-    title: "Website Terms | Concrete Concepts Group",
-    description: "Read the website terms for Concrete Concepts Group.",
-  },
+  "/": ["Concrete Concepts Group | Brisbane Concreting & Concrete Services", "QBCC licensed Brisbane concreters for driveways, slabs, exposed aggregate, paths, patios, pool surrounds, steps and retaining walls across SEQ."],
+  "/get-quote": ["Get a Free Concrete Quote | Brisbane & SEQ | Concrete Concepts", "Request a detailed concrete quote in five guided steps. Add your Brisbane or SEQ location, job details, measurements, access information and optional photos."],
+  "/services": ["Concrete Services Brisbane | Driveways, Slabs, Paths & More", "Explore CCG concrete services across Brisbane and SEQ, including driveways, slabs, paths, patios, pool surrounds, exposed aggregate, stairs and retaining walls."],
+  "/areas": ["Brisbane & SEQ Concreting Service Areas | CCG", "Find Concrete Concepts Group concreting services across Brisbane, Ipswich, Logan, Moreton Bay, Redlands and surrounding South East Queensland suburbs."],
+  "/blog": ["Brisbane Concreting Advice & Project Guides | CCG Blog", "Read practical Brisbane concreting guides covering costs, finishes, driveways, slabs, site preparation, approvals, maintenance and project planning."],
+  "/gallery": ["Brisbane Concrete Project Gallery | Concrete Concepts Group", "View completed Brisbane and SEQ concrete driveways, slabs, paths, patios, pool surrounds, exposed aggregate and retaining wall projects by CCG."],
+  "/gallery/process-technology": ["Concrete Process & Technology | Concrete Concepts Group", "See how Concrete Concepts Group plans, prepares and delivers concrete projects across Brisbane and South East Queensland."],
+  "/visualiser": ["Concrete Finish Visualiser | Preview Your Brisbane Project", "Preview concrete finishes, stone mixes and border colours for your Brisbane or SEQ project, then request a detailed CCG quote."],
+  "/guide": ["Free Homeowner's Guide to Concreting | Concrete Concepts Group", "Download CCG's Brisbane homeowner guide covering concrete finishes, project planning, costs, approvals, maintenance and common mistakes."],
+  "/calculator": ["Concrete Cost Calculator Brisbane | CCG", "Estimate a starting range for a Brisbane concrete project, compare common options and request a detailed site-specific quote from Concrete Concepts Group."],
+  "/faq": ["Concreting FAQs Brisbane | Concrete Concepts Group", "Find practical answers about Brisbane concrete quotes, preparation, access, finishes, curing, approvals, maintenance and project planning."],
+  "/finishes": ["Concrete Finishes Brisbane | Compare Options with CCG", "Compare plain, coloured, exposed aggregate, honed and patterned concrete finishes for Brisbane and South East Queensland projects."],
+  "/gallery/before-after": ["Concrete Before & After Gallery Brisbane | CCG", "View before-and-after examples of concrete driveways, slabs, paths, patios and outdoor areas completed across Brisbane and surrounding SEQ."],
+  "/projects": ["Brisbane Concrete Projects | Concrete Concepts Group", "Explore selected Concrete Concepts Group driveway, slab, path, patio, pool surround and retaining wall projects across Brisbane and SEQ."],
+  "/referral": ["Concrete Project Referrals Brisbane | CCG", "Read how Concrete Concepts Group handles suitable concrete project referrals across Brisbane and surrounding South East Queensland areas."],
+  "/reviews": ["Concrete Concepts Group Reviews | Brisbane Projects", "Read published customer feedback about Concrete Concepts Group projects and request a detailed quote for concrete work in Brisbane and SEQ."],
+  "/privacy": ["Privacy Policy | Concrete Concepts Group", "Read how Concrete Concepts Group handles website enquiries and customer information."],
+  "/terms": ["Website Terms | Concrete Concepts Group", "Read the website terms for Concrete Concepts Group."],
 };
 
 const SERVICE_METADATA = {
@@ -93,59 +44,59 @@ const SERVICE_METADATA = {
 };
 
 function titleCaseSlug(slug) {
-  return decodeURIComponent(slug || "")
-    .split("-")
-    .filter(Boolean)
-    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+  return decodeURIComponent(slug || "").split("-").filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
+}
+
+function escapeHtml(value) {
+  return String(value || "").replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+}
+
+function getBatchOneRecord(path) {
+  if (!path.startsWith("/areas/")) return undefined;
+  return GENERATED_BATCH_ONE_BY_SLUG[path.split("/").pop()];
+}
+
+export function renderLocalityContentShell(pathname) {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  const record = getBatchOneRecord(path);
+  if (!record) return "";
+  const services = record.services.map(service => `<li><a href="/services/${escapeHtml(service.slug)}">${escapeHtml(service.name)}</a>: ${escapeHtml(service.description)}</li>`).join("");
+  const faqs = record.faqs.map(faq => `<article><h3>${escapeHtml(faq.question)}</h3><p>${escapeHtml(faq.answer)}</p></article>`).join("");
+  const nearby = record.nearbyLocalitySlugs.map(slug => `<li><a href="/areas/${escapeHtml(slug)}">${escapeHtml(titleCaseSlug(slug))}</a></li>`).join("");
+  const sources = record.localityContext.sourceUrls.map((sourceUrl, index) => `<li><a href="${escapeHtml(sourceUrl)}">${escapeHtml(record.localityContext.sourceLabel)}${record.localityContext.sourceUrls.length > 1 ? ` — source ${index + 1}` : ""}</a></li>`).join("");
+  return `<main data-edge-locality-shell="true"><article><p>${escapeHtml(record.region)} · ${escapeHtml(record.lga)} · ${escapeHtml(record.postcode)}</p><h1>${escapeHtml(record.h1)}</h1><p>${escapeHtml(record.intro)}</p><h2>Practical site considerations</h2><p>${escapeHtml(record.practicalConsiderations)}</p><h2>Locality context</h2><p>${escapeHtml(record.localityContext.attribution)}</p><p>Sources reviewed: ${escapeHtml(record.localityContext.claimDate)}</p><ul>${sources}</ul><h2>Relevant concrete services</h2><ul>${services}</ul><h2>Frequently asked questions</h2>${faqs}<h2>Nearby live locality guides</h2><ul>${nearby}</ul><p><a href="${escapeHtml(record.regionalHub.path)}">${escapeHtml(record.regionalHub.label)}</a></p><p><a href="/get-quote">Start a detailed quote</a></p></article></main>`;
 }
 
 export function getSeoMetadata(pathname) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
-  if (CORE_METADATA[path]) return { ...CORE_METADATA[path], canonical: `${SITE_ORIGIN}${path === "/" ? "" : path}`, robots: "index, follow" };
-  if (SERVICE_METADATA[path]) {
-    return { title: SERVICE_METADATA[path][0], description: SERVICE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
-  }
+  if (CORE_METADATA[path]) return { title: CORE_METADATA[path][0], description: CORE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path === "/" ? "" : path}`, robots: "index, follow" };
+  if (SERVICE_METADATA[path]) return { title: SERVICE_METADATA[path][0], description: SERVICE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
+  const batchOne = getBatchOneRecord(path);
+  if (batchOne) return { title: batchOne.title, description: batchOne.description, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
   if (path.startsWith("/areas/")) {
-    const suburb = titleCaseSlug(path.split("/").pop());
-    return {
-      title: `Concreting ${suburb} | Local Concrete Quotes from CCG`,
-      description: `Request a detailed concreting quote in ${suburb} for driveways, slabs, paths, patios, exposed aggregate and other concrete projects.`,
-      canonical: `${SITE_ORIGIN}${path}`,
-      robots: "index, follow",
-    };
+    const slug = path.split("/").pop();
+    if (GENERATED_PUBLIC_LOCALITY_SLUGS.includes(slug)) {
+      const suburb = titleCaseSlug(slug);
+      return { title: `Concreting ${suburb} | Local Concrete Quotes from CCG`, description: `Request a detailed concreting quote in ${suburb} for driveways, slabs, paths, patios, exposed aggregate and other concrete projects.`, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
+    }
+    return { title: "Area Not Found | Concrete Concepts Group", description: "The requested Concrete Concepts Group service-area page could not be found.", canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, follow" };
   }
   if (path.startsWith("/blog/")) {
     const topic = titleCaseSlug(path.split("/").pop());
-    return {
-      title: `${topic} | CCG Brisbane Concreting Guide`,
-      description: `Read CCG's Brisbane and SEQ guide to ${topic.toLowerCase()}, with practical project planning information and quote options.`,
-      canonical: `${SITE_ORIGIN}${path}`,
-      robots: "index, follow",
-    };
+    return { title: `${topic} | CCG Brisbane Concreting Guide`, description: `Read CCG's Brisbane and SEQ guide to ${topic.toLowerCase()}, with practical project planning information and quote options.`, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
   }
   if (path.startsWith("/lp/")) {
     const topic = titleCaseSlug(path.split("/").pop());
-    return {
-      title: `${topic} | Concrete Concepts Group`,
-      description: `Request a detailed CCG quote for ${topic.toLowerCase()} in Brisbane and surrounding South East Queensland.`,
-      canonical: `${SITE_ORIGIN}${path}`,
-      robots: "noindex, follow",
-    };
+    return { title: `${topic} | Concrete Concepts Group`, description: `Request a detailed CCG quote for ${topic.toLowerCase()} in Brisbane and surrounding South East Queensland.`, canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, follow" };
   }
   const topic = titleCaseSlug(path.split("/").pop()) || "Concrete Concepts Group";
-  return {
-    title: `${topic} | Concrete Concepts Group Brisbane`,
-    description: `Concrete Concepts Group provides detailed concreting information and quote options across Brisbane and South East Queensland.`,
-    canonical: `${SITE_ORIGIN}${path}`,
-    robots: "noindex, follow",
-  };
+  return { title: `${topic} | Concrete Concepts Group Brisbane`, description: "Concrete Concepts Group provides detailed concreting information and quote options across Brisbane and South East Queensland.", canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, follow" };
 }
 
 function replaceOrInsert(html, pattern, replacement) {
-  return pattern.test(html)
-    ? html.replace(pattern, replacement)
-    : html.replace("</head>", `  ${replacement}\n</head>`);
+  return pattern.test(html) ? html.replace(pattern, replacement) : html.replace("</head>", `  ${replacement}\n</head>`);
 }
 
 export function applySeoMetadata(html, pathname, robotsOverride) {
@@ -158,11 +109,17 @@ export function applySeoMetadata(html, pathname, robotsOverride) {
   output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${meta.title}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${meta.description}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${meta.canonical}">`);
+  const localityShell = renderLocalityContentShell(pathname);
+  if (localityShell) {
+    output = output.replace(
+      /(<div\s+id=["']root["'][^>]*>)[\s\S]*?<\/div>(\s*(?=<script\b))/i,
+      `$1${localityShell}</div>$2`,
+    );
+  }
   return output;
 }
 
 export function filterPublicSitemap(xml) {
-  return xml
-    .replace(/\s*<url>\s*<loc>https:\/\/concreteconceptsgroup\.com\/lp\/[^<]+<\/loc>[\s\S]*?<\/url>/g, "")
+  return xml.replace(/\s*<url>\s*<loc>https:\/\/concreteconceptsgroup\.com\/lp\/[^<]+<\/loc>[\s\S]*?<\/url>/g, "")
     .replace(/\s*<lastmod>2026-07-19<\/lastmod>/g, "");
 }
