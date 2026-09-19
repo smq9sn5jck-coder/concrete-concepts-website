@@ -1,0 +1,40 @@
+{
+  "description": "Redirect retired and shorthand partner routes to the retained Partner Portal.",
+  "kind": "zone",
+  "name": "CCG retired Trade Partner Network redirects",
+  "phase": "http_request_dynamic_redirect",
+  "rules": [
+    {
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "preserve_query_string": false,
+          "status_code": 308,
+          "target_url": {
+            "value": "https://partners.concreteconceptsgroup.com/partners"
+          }
+        }
+      },
+      "description": "Permanently redirect public partner shorthands and retired Trade Partner Network pages to the retained portal.",
+      "enabled": true,
+      "expression": "((((http.host in {\"concreteconceptsgroup.com\" \"www.concreteconceptsgroup.com\"}) and (http.request.uri.path eq \"/partners\" or starts_with(http.request.uri.path, \"/partners/\") or http.request.uri.path eq \"/trade-partners\" or starts_with(http.request.uri.path, \"/trade-partners/\"))) or http.host eq \"trade.concreteconceptsgroup.com\") and http.request.method in {\"GET\" \"HEAD\"})",
+      "ref": "retain_partner_portal_get_head"
+    },
+    {
+      "action": "redirect",
+      "action_parameters": {
+        "from_value": {
+          "preserve_query_string": false,
+          "status_code": 302,
+          "target_url": {
+            "value": "https://partners.concreteconceptsgroup.com/partners"
+          }
+        }
+      },
+      "description": "Redirect other methods without replaying request bodies to the retained portal.",
+      "enabled": true,
+      "expression": "((((http.host in {\"concreteconceptsgroup.com\" \"www.concreteconceptsgroup.com\"}) and (http.request.uri.path eq \"/partners\" or starts_with(http.request.uri.path, \"/partners/\") or http.request.uri.path eq \"/trade-partners\" or starts_with(http.request.uri.path, \"/trade-partners/\"))) or http.host eq \"trade.concreteconceptsgroup.com\") and http.request.method ne \"GET\" and http.request.method ne \"HEAD\")",
+      "ref": "retain_partner_portal_other_methods"
+    }
+  ]
+}
