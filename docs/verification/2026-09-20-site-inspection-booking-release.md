@@ -54,4 +54,4 @@ The intercepted quote submission created no request. The one deliberate real cal
 
 ## Release Conclusion
 
-The implementation satisfies the approved post-quote workflow. Final source diff review and repository commit are the only remaining release-preparation steps.
+The implementation satisfies the approved post-quote workflow. Source review, guarded build verification, focused tests, full-suite baseline comparison, browser checks and repository commit are complete. Production release requires applying migration `0016_moaning_marvel_boy.sql` before or with the application deployment.
