@@ -3,55 +3,53 @@
 **Author:** Manus AI
 
 **Date:** 20 September 2026
-**Status:** Verified
+**Status:** Production verified
 
 ## Scope
 
-This release adds an optional post-quote Calendly site-inspection action and an explicit one-time SMS booking-link action. It keeps the quote receipt, tracked telephone action, emergency external-form fallback and primary quote-conversion semantics intact.
+This release adds an optional post-quote site-inspection booking workflow to the detailed quote form. After a verified quote submission, the client can either open the existing 30-minute Calendly booking page or explicitly request a one-time SMS containing the same booking link. Homepage quick quotes do not receive an SMS-delivery token. The existing quote receipt, tracked call action, sharing action, lead-delivery channels and primary conversion semantics remain intact.
+
+## Production Architecture
+
+The client-facing website is deployed through Cloudflare Pages. Its production Pages Worker creates and sends booking deliveries through the authenticated `ccg-lead-gate` Worker. The lead-gate service stores delivery state in its existing D1 database and sends the transactional message through its existing Twilio configuration. The shared server-to-server secret is configured in both Cloudflare services and is never exposed to the browser.
+
+The D1 table records only the token hash, customer name, normalized mobile number, expiry and delivery state. The send operation uses an atomic state transition. Confirmed provider failures may be retried; concurrent claims, transport ambiguity and accepted-provider outcomes remain non-retryable to prevent duplicate messages.
 
 ## Automated Evidence
 
-The focused quote and booking suite passes **44/44** tests across the booking token, SMS delivery, booking presentation, success receipt, sharing, comprehensive quote and funnel integration contracts. The router-level booking suite includes passing contracts for token-only access, malformed-token rejection and Twilio-unavailable behavior. The tests also verify that quick-quote submissions cannot receive a booking SMS token and that ambiguous provider outcomes cannot be retried. TypeScript passes and the guarded production build completes successfully with the quote build contract intact.
+The exact production main branch passes TypeScript and the guarded production build. The focused production suite passes **64 tests across 12 files**, covering the Pages Worker, booking gateway, route authorization, success receipt, booking presentation, quote funnel, release workflow, live-route guard and concurrent homepage consolidation.
 
-The full repository suite passes **611 tests across 54 test files**. The remaining 21 failures are existing environment- or seeded-data-dependent checks for missing Resend, Google Ads, Windsor.ai and BFL credentials, plus blog fixtures unavailable without the configured database. None of the new booking, quote, success, routing or migration tests fail.
+The Pages Worker runtime suite directly verifies four production-specific behaviors: successful detailed quotes receive a booking token, homepage quick quotes do not receive one, the SMS mutation is proxied through the authenticated gateway, and missing gateway configuration returns a safe unavailable state without contacting a provider. The release guard now rejects source or built artifacts that omit either booking-token creation or the SMS route.
+
+The full repository baseline records **620 passing tests, 21 failures and one skipped test across 64 files**. The 21 failures are the established environment- or fixture-dependent checks for missing Resend, Google Ads, Windsor.ai and BFL credentials, together with blog data unavailable without the configured database. No booking, quote-success, routing, funnel, homepage or release-guard test fails.
 
 ## Calendly Evidence
 
-The existing event **Free Site Inspection & Fixed Quote** remains active at 30 minutes in the `Australia/Brisbane` timezone. Its existing hours remain Monday to Friday from 7:00 am to 4:00 pm and Saturday from 8:00 am to 12:00 pm. The event now uses the invitee-supplied physical location and its description asks the customer to confirm the site address and access notes.
+The existing event **Free Site Inspection & Fixed Quote** remains active at 30 minutes in the `Australia/Brisbane` timezone. Its hours remain Monday to Friday from 7:00 am to 4:00 pm and Saturday from 8:00 am to 12:00 pm. The event uses the invitee-supplied physical location, and its description asks the client to confirm the site address and access notes.
 
-## Desktop Browser Evidence
+## Browser Evidence
 
-The production build was served locally and the detailed quote workflow was completed with synthetic data. The final `quote.submit` network call was intercepted and replaced with a local success response, so the test created no lead, advertising conversion, email or SMS.
+The production build was exercised locally with a fully synthetic, intercepted quote submission, so the browser checks created no lead, conversion, email or SMS. At 1366 pixels wide and at a 390 × 844 mobile viewport, the booking panel stayed within the page bounds and preserved the quote receipt hierarchy. Both actions remained full-width on mobile, the destination mobile number was masked, and the status feedback remained accessible through a polite live region.
 
-At 1366 pixels wide, the success receipt remained focused and announced as a polite status. The new optional panel appeared beneath the existing three next steps. It showed:
+The direct action opened Calendly with only the client name and email prefilled. The URL contained no phone number, physical address, project notes, photos, material choice, quantity, tracking identifier or delivery token. The unavailable state preserved direct booking and telephone fallbacks. An intercepted successful response changed the SMS action to **Booking link sent** and disabled it to prevent a duplicate click.
 
-- **Book site inspection now**, opening the approved Calendly page in a new tab with only name and email prefilled.
-- **Text me the booking link**, available only because the intercepted primary response contained a delivery token.
-- The masked destination `04•• ••• 678`.
-- The retained tracked call action and existing Share CCG action.
+## Production Deployment Evidence
 
-The Calendly URL contained no phone number, physical address, project notes, photos, material choice, quantity, tracking identifier or delivery token.
+Cloudflare Pages production deployment `b0bcd192-4162-467d-8afa-1dfa7c3c907a` serves runtime commit `7bddaf3bccd76b7df24dbacf3152cd17c5e7cffe`. The deployment completed successfully with Pages Functions enabled, 57 static assets and both canonical aliases attached:
 
-Desktop screenshot evidence was saved as `site-inspection-booking-desktop.png` in the Playwright workspace. The next responsive check uses a 390 × 844 pixel viewport.
+- `https://concreteconceptsgroup.com`
+- `https://www.concreteconceptsgroup.com`
 
-## Mobile Browser Evidence
+The canonical domains initially retained their prior 60-second HTML cache entry after deployment. Only the homepage and `/get-quote` URLs for both hosts were purged. Both domains then referenced the exact current-main assets `index-BhXYGrUU.js` and `GetQuote-B71ySgvN.js`.
 
-At 390 × 844 pixels, the receipt and booking panel remained within the 390-pixel viewport with no horizontal overflow in the accessibility bounds. Both booking actions remained full-width and at least 52 pixels tall. The masked destination, call action, Share CCG action and final confirmation copy wrapped without clipping. The success heading retained focus and the new feedback region remained polite and atomic. Mobile screenshot evidence was saved as `site-inspection-booking-mobile.png` in the Playwright workspace.
+The repository live-route verifier passed on both canonical `/get-quote` routes on its first attempt. The booking UI strings were present in the exact production quote asset. The authenticated website-to-gateway path was tested on both canonical domains and the immutable deployment URL with a deliberately invalid 64-character token. All three calls returned HTTP 200 with `{ status: "invalid" }`. A D1 query confirmed that the smoke-test token hash had no delivery record, so the test could not invoke Twilio or send a client message.
 
-The local runtime had no Twilio credentials. Selecting **Text me the booking link** therefore exercised the real unavailable branch without sending a message. The interface displayed an accessible alert, retained the direct Calendly action and retained the call fallback.
+## Release History and Rollback
 
-For the success-state check, the `quote.sendBookingLink` network call was intercepted with a local `sent` response before selecting the retry action. This prevented any provider request or customer message.
+Website pull request [#4](https://github.com/smq9sn5jck-coder/concrete-concepts-website/pull/4) introduced the approved client workflow. Internal pull request [#2](https://github.com/smq9sn5jck-coder/concrete-concepts-internal/pull/2) versioned and released the lead-gate endpoint and D1 migration. Production smoke testing then identified that Cloudflare Pages handled API traffic through its own Worker rather than the Node router; website pull request [#5](https://github.com/smq9sn5jck-coder/concrete-concepts-website/pull/5) added the missing production route, executable regression tests and release guards.
 
-The successful state changed the action to **Booking link sent**, disabled the button to prevent a duplicate click, and announced **Booking link sent to 04•• ••• 678** in the polite live region. The direct Calendly, call and sharing actions remained available. Screenshot evidence was saved as `site-inspection-booking-sms-sent-mobile.png` in the Playwright workspace.
+The prior working Pages deployment `0bf847b2-a33f-4ac3-8995-a3afb13b0138` remains the immediate rollback point. The lead-gate Worker was deployed with existing bindings preserved, and the additive D1 migration was applied before the website release.
 
-The server state machine permits a retry only after a confirmed provider rejection. A transport exception, concurrent claim or post-provider persistence fault leaves the delivery non-retryable and tells the customer to check existing messages before using the direct booking or call fallback.
+## Conclusion
 
-## Console and Network Review
-
-The only browser-console errors were the existing local-build analytics placeholder attempting to load `%VITE_ANALYTICS_ENDPOINT%/umami` as a script. They are unrelated to the booking feature and do not occur when the production analytics environment is supplied. No booking-component exception, React error or accessibility runtime error appeared.
-
-The intercepted quote submission created no request. The one deliberate real call was the local `quote.sendBookingLink` request used to verify the no-Twilio fallback; it returned HTTP 200 and did not contact a provider because all three local Twilio variables were confirmed unset. The successful SMS state was then tested with a browser-local intercepted response.
-
-## Release Conclusion
-
-The implementation satisfies the approved post-quote workflow. Source review, guarded build verification, focused tests, full-suite baseline comparison, browser checks and repository commit are complete. Production release requires applying migration `0016_moaning_marvel_boy.sql` before or with the application deployment.
+The approved post-quote Calendly and one-time SMS workflow is live and verified in production. The final deployment contains the exact current main branch, including the concurrently merged homepage consolidation. Both canonical domains serve the current assets, the booking gateway authentication boundary is working, quick quotes remain excluded, and the no-side-effect production smoke test passed end to end.
