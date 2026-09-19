@@ -1,12 +1,7 @@
-/*
-  Quote PDF Email
-  Sends the auto-generated branded PDF estimate to the customer
-  within minutes of their quote submission.
-*/
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY ?? "";
 const RESEND_API_URL = "https://api.resend.com/emails";
-const FROM_EMAIL = "Concrete Concepts Group <info@concreteconceptsgroup.com>";
+
+export const QUOTE_EMAIL_FROM = "Concrete Concepts <info@concreteconceptsgroup.com>";
+export const quotePdfEmailBrand = Object.freeze({ gold: "#C9A44D", navy: "#0F2A44" });
 
 interface QuotePdfEmailData {
   name: string;
@@ -17,125 +12,106 @@ interface QuotePdfEmailData {
   quoteRef: string;
 }
 
-/**
- * Send the auto-generated quote PDF to the customer
- */
+export function assertQuotePdfSendAllowed(quoteRef: string) {
+  if (/^CCG-\d{4,}$/i.test(quoteRef)) {
+    throw new Error("Legacy generic-rate PDF references cannot be sent to customers.");
+  }
+  if (!/^CCG-QB-[A-Z0-9-]+$/i.test(quoteRef)) {
+    throw new Error("Only an owner-built formal quote can be sent to a customer.");
+  }
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 export async function sendQuotePdfEmail(data: QuotePdfEmailData): Promise<boolean> {
-  if (!RESEND_API_KEY) {
+  assertQuotePdfSendAllowed(data.quoteRef);
+  const apiKey = process.env.RESEND_API_KEY ?? "";
+  if (!apiKey) {
     console.error("[QuotePDF] RESEND_API_KEY is not set");
     return false;
   }
 
-  const subject = `Your ${data.service} Estimate — Concrete Concepts Group (${data.quoteRef})`;
-
+  const name = escapeHtml(data.name);
+  const service = escapeHtml(data.service);
+  const suburb = escapeHtml(data.suburb);
+  const quoteRef = escapeHtml(data.quoteRef);
+  const subject = `Your ${data.service} quotation — Concrete Concepts (${data.quoteRef})`;
   const html = `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; color: #333333; border-radius: 8px; overflow: hidden; border: 1px solid #e5e5e5;">
-      <div style="background-color: #1a1a1a; padding: 24px 30px; text-align: center;">
-        <h1 style="margin: 0; font-size: 24px; color: #D4A843; letter-spacing: 1px;">CONCRETE CONCEPTS</h1>
-        <p style="margin: 4px 0 0; font-size: 12px; color: #999; letter-spacing: 2px;">GROUP PTY LTD</p>
+    <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;color:#2A323A;border:1px solid #d9e0e6;border-radius:8px;overflow:hidden;">
+      <div style="background:${quotePdfEmailBrand.navy};padding:24px 30px;text-align:center;">
+        <h1 style="margin:0;font-size:24px;color:${quotePdfEmailBrand.gold};letter-spacing:1px;">CONCRETE CONCEPTS</h1>
+        <p style="margin:5px 0 0;font-size:11px;color:#d2dae2;letter-spacing:2px;">GROUP PTY LTD</p>
       </div>
-      <div style="padding: 30px;">
-        <h2 style="margin: 0 0 16px; font-size: 20px; color: #1a1a1a;">
-          Here's your preliminary estimate, ${data.name}!
-        </h2>
-        <p style="margin: 0 0 16px; line-height: 1.6; color: #555;">
-          Thanks for your interest in our <strong>${data.service.toLowerCase()}</strong> services in <strong>${data.suburb}</strong>.
-          We've attached a preliminary cost estimate to give you an idea of pricing.
-        </p>
-        
-        <div style="background: linear-gradient(135deg, #f9f7f2 0%, #f5f5f0 100%); border-left: 4px solid #D4A843; border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 20px 0;">
-          <p style="margin: 0 0 8px; font-size: 14px; color: #1a1a1a; font-weight: bold;">
-            &#128196; Your Estimate PDF is Attached
-          </p>
-          <p style="margin: 0; font-size: 13px; color: #666; line-height: 1.5;">
-            Reference: <strong>${data.quoteRef}</strong><br>
-            This is an indicative estimate. We'll provide an accurate quote after a free on-site inspection.
-          </p>
+      <div style="padding:30px;">
+        <h2 style="margin:0 0 16px;font-size:20px;color:${quotePdfEmailBrand.navy};">Your formal quotation is ready, ${name}</h2>
+        <p style="margin:0 0 16px;line-height:1.6;color:#4c5965;">Your owner-reviewed quotation for the ${service} project in ${suburb} is attached.</p>
+        <div style="background:#f7f9fb;border-left:4px solid ${quotePdfEmailBrand.gold};border-radius:0 8px 8px 0;padding:16px 20px;margin:20px 0;">
+          <p style="margin:0 0 8px;font-size:14px;color:${quotePdfEmailBrand.navy};font-weight:bold;">Formal quotation attached</p>
+          <p style="margin:0;font-size:13px;color:#5e6973;line-height:1.5;">Reference: <strong>${quoteRef}</strong><br>Review the scope, inclusions, exclusions, assumptions, payment schedule and validity period before acceptance.</p>
         </div>
-
-        <p style="margin: 20px 0 16px; line-height: 1.6; color: #555;">
-          <strong>What happens next?</strong>
-        </p>
-        <ol style="margin: 0 0 20px; padding-left: 20px; color: #555; line-height: 1.8;">
-          <li>One of our team will call you within <strong>24 hours</strong></li>
-          <li>We'll arrange a <strong>free on-site inspection</strong> at your convenience</li>
-          <li>You'll receive a <strong>detailed, fixed-price quote</strong> — no surprises</li>
-        </ol>
-
-        <p style="margin: 0 0 16px; line-height: 1.6; color: #555;">
-          Want to speed things up? Give us a call now:
-        </p>
-
-        <div style="text-align: center; margin: 24px 0;">
-          <a href="tel:0424463268" style="display: inline-block; background-color: #D4A843; color: #1a1a1a; text-decoration: none; padding: 12px 28px; border-radius: 6px; font-weight: bold; font-size: 15px;">
-            Call 0424 463 268
-          </a>
+        <p style="margin:20px 0 12px;line-height:1.6;color:#4c5965;"><strong>Questions about the scope?</strong> Contact us before accepting so we can clarify or revise the quotation.</p>
+        <div style="text-align:center;margin:24px 0;">
+          <a href="tel:0424463268" style="display:inline-block;background:${quotePdfEmailBrand.gold};color:${quotePdfEmailBrand.navy};text-decoration:none;padding:12px 28px;border-radius:6px;font-weight:bold;font-size:15px;">Call 0424 463 268</a>
         </div>
-
-        <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid #eee;">
-          <p style="margin: 0 0 4px; font-size: 14px; color: #333; font-weight: 600;">Concrete Concepts Group Pty Ltd</p>
-          <p style="margin: 0 0 2px; font-size: 13px; color: #888;">QBCC Licensed #15299707 | Fully Insured</p>
-          <p style="margin: 0 0 2px; font-size: 13px; color: #888;">Brisbane & South East Queensland</p>
-          <p style="margin: 0; font-size: 13px; color: #888;">
-            <a href="https://concreteconceptsgroup.com" style="color: #D4A843; text-decoration: none;">concreteconceptsgroup.com</a>
-          </p>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid #e2e7eb;">
+          <p style="margin:0 0 4px;font-size:14px;color:${quotePdfEmailBrand.navy};font-weight:600;">Concrete Concepts Group Pty Ltd</p>
+          <p style="margin:0 0 2px;font-size:13px;color:#687581;">QBCC Licence #15299707 | Fully Insured</p>
+          <p style="margin:0 0 2px;font-size:13px;color:#687581;">Brisbane &amp; South East Queensland</p>
+          <p style="margin:0;font-size:13px;"><a href="https://concreteconceptsgroup.com" style="color:${quotePdfEmailBrand.gold};text-decoration:none;">concreteconceptsgroup.com</a></p>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 
   const text = [
-    `Here's your preliminary estimate, ${data.name}!`,
-    ``,
-    `Thanks for your interest in our ${data.service.toLowerCase()} services in ${data.suburb}.`,
-    `We've attached a preliminary cost estimate (Reference: ${data.quoteRef}).`,
-    ``,
-    `What happens next:`,
-    `1. One of our team will call you within 24 hours`,
-    `2. We'll arrange a free on-site inspection`,
-    `3. You'll receive a detailed, fixed-price quote`,
-    ``,
-    `Call us: 0424 463 268`,
-    ``,
-    `Concrete Concepts Group Pty Ltd`,
-    `QBCC Licensed #15299707`,
-    `concreteconceptsgroup.com`,
+    `Your formal quotation is ready, ${data.name}`,
+    "",
+    `Your owner-reviewed quotation for the ${data.service} project in ${data.suburb} is attached.`,
+    `Reference: ${data.quoteRef}`,
+    "",
+    "Review the scope, inclusions, exclusions, assumptions, payment schedule and validity period before acceptance.",
+    "Questions? Call 0424 463 268.",
+    "",
+    "Concrete Concepts Group Pty Ltd",
+    "QBCC Licence #15299707",
+    "concreteconceptsgroup.com",
   ].join("\n");
 
   try {
     const response = await fetch(RESEND_API_URL, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: FROM_EMAIL,
+        from: QUOTE_EMAIL_FROM,
         to: [data.email],
         subject,
         html,
         text,
         attachments: [
           {
-            filename: `Concrete-Concepts-Estimate-${data.quoteRef}.pdf`,
+            filename: `Concrete-Concepts-Quotation-${data.quoteRef}.pdf`,
             content: data.pdfBuffer.toString("base64"),
             type: "application/pdf",
           },
         ],
       }),
     });
-
     if (!response.ok) {
-      const errorBody = await response.text();
-      console.error("[QuotePDF] Resend API error:", response.status, errorBody);
+      console.error("[QuotePDF] Resend API error:", response.status);
       return false;
     }
-
-    const result = await response.json();
-    console.log("[QuotePDF] Quote PDF email sent successfully, id:", result.id);
     return true;
-  } catch (err) {
-    console.error("[QuotePDF] Failed to send quote PDF email:", err);
+  } catch (error) {
+    console.error("[QuotePDF] Failed to send quote PDF email:", error);
     return false;
   }
 }
