@@ -25,7 +25,7 @@ import { generateQuotePdf, generateCustomQuotePdf } from "./quotePdf";
 import { storagePut } from "./storage";
 import { sendQuotePdfEmail } from "./quotePdfEmail";
 import { sendDay1WhatToExpect, sendDay3FollowUp, sendDay7FollowUp, sendReviewRequest } from "./followUpEmails";
-import { isTwilioConfigured, sendNewQuoteSms, sendCallbackSms, sendDay3SmsFollowUp, sendDay7SmsFollowUp, sendReviewRequestSms, sendTransactionalSms } from "./smsFollowUp";
+import { isTwilioConfigured, sendNewQuoteSms, sendCallbackSms, sendDay3SmsFollowUp, sendDay7SmsFollowUp, sendReviewRequestSms } from "./smsFollowUp";
 import { and, eq, ne, lt, gte, isNull, asc, desc, lte } from "drizzle-orm";
 import { isMetaConfigured, isInstagramConfigured, postToFacebook, postToInstagram, postToBothPlatforms, generateHashtags } from "./metaApi";
 import { sendAbandonedQuoteEmail } from "./abandonedQuoteEmail";
@@ -45,8 +45,11 @@ import {
   validateAustralianPhone,
 } from "@shared/leadValidation";
 import { comprehensiveQuoteSchema, toLegacyQuoteFields } from "@shared/quoteBrief";
-import { deliverBookingLink } from "./quoteBookingSms";
-import { createQuoteBookingDelivery, createQuoteBookingDeliveryStore } from "./quoteBookingDeliveryStore";
+import {
+  createBookingDeliveryViaGateway,
+  isBookingGatewayConfigured,
+  sendBookingLinkViaGateway,
+} from "./quoteBookingGateway";
 
 // Static fallback reviews (from Google Business Profile, manually curated)
 // Used when Google Maps API quota is exhausted or unavailable
@@ -780,12 +783,21 @@ export const appRouter = router({
               statusToken,
             });
             savedQuoteId = Number(inserted.insertId);
-            if (savedQuoteId > 0 && input.jobBrief) {
-              bookingDeliveryToken = await createQuoteBookingDelivery(db, savedQuoteId);
-            }
           }
         } catch (err) {
           console.error("[Quote] Failed to save to database:", err);
+        }
+
+        if (input.jobBrief && isBookingGatewayConfigured()) {
+          try {
+            const delivery = await createBookingDeliveryViaGateway({
+              customerName: input.name,
+              customerPhone: input.phone,
+            });
+            bookingDeliveryToken = delivery.token;
+          } catch (err) {
+            console.error("[Quote] Failed to create booking SMS delivery:", err);
+          }
         }
 
         // Send notification to owner via Manus notification service
@@ -972,16 +984,9 @@ export const appRouter = router({
           });
         }
 
-        if (!isTwilioConfigured()) return { status: "unavailable" } as const;
+        if (!isBookingGatewayConfigured()) return { status: "unavailable" } as const;
 
-        const db = await getDb();
-        if (!db) return { status: "unavailable" } as const;
-
-        return deliverBookingLink({
-          rawToken: input.token,
-          store: createQuoteBookingDeliveryStore(db),
-          send: sendTransactionalSms,
-        });
+        return sendBookingLinkViaGateway({ token: input.token });
       }),
 
     // Admin: list all quote requests

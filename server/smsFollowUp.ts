@@ -19,10 +19,6 @@ const TWILIO_AUTH_TOKEN = process.env.TWILIO_AUTH_TOKEN ?? "";
 const TWILIO_PHONE_NUMBER = process.env.TWILIO_PHONE_NUMBER ?? "";
 const BUSINESS_PHONE = "+61424463268"; // Jarrod's number
 
-export type TransactionalSmsResult =
-  | { ok: true; providerMessageId: string | null }
-  | { ok: false; errorClass: "not_configured" | "provider_rejected" | "provider_exception" };
-
 /**
  * Check if Twilio is configured and ready to send SMS
  */
@@ -54,12 +50,13 @@ function formatPhoneE164(phone: string): string {
 /**
  * Send SMS via Twilio API
  */
-export async function sendTransactionalSms(input: { to: string; body: string }): Promise<TransactionalSmsResult> {
+async function sendSms(to: string, body: string): Promise<boolean> {
   if (!isTwilioConfigured()) {
-    return { ok: false, errorClass: "not_configured" };
+    console.log("[SMS] Twilio not configured, skipping SMS");
+    return false;
   }
 
-  const toFormatted = formatPhoneE164(input.to);
+  const toFormatted = formatPhoneE164(to);
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
 
   try {
@@ -72,29 +69,23 @@ export async function sendTransactionalSms(input: { to: string; body: string }):
       body: new URLSearchParams({
         To: toFormatted,
         From: TWILIO_PHONE_NUMBER,
-        Body: input.body,
+        Body: body,
       }).toString(),
     });
 
     if (!response.ok) {
-      console.error("[SMS] Twilio API rejected a message with status", response.status);
-      return { ok: false, errorClass: "provider_rejected" };
+      const errorBody = await response.text();
+      console.error("[SMS] Twilio API error:", response.status, errorBody);
+      return false;
     }
 
-    const result = await response.json() as { sid?: unknown };
-    return {
-      ok: true,
-      providerMessageId: typeof result.sid === "string" ? result.sid : null,
-    };
-  } catch {
-    console.error("[SMS] Twilio request failed before provider acceptance");
-    return { ok: false, errorClass: "provider_exception" };
+    const result = await response.json();
+    console.log("[SMS] Message sent successfully, SID:", result.sid);
+    return true;
+  } catch (err) {
+    console.error("[SMS] Failed to send SMS:", err);
+    return false;
   }
-}
-
-async function sendSms(to: string, body: string): Promise<boolean> {
-  const result = await sendTransactionalSms({ to, body });
-  return result.ok;
 }
 
 /**

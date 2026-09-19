@@ -22,7 +22,7 @@ After the primary quote submission succeeds, the existing receipt displays three
 
 The SMS action identifies its destination with a masked mobile number, such as `04•• ••• 268`. While the request is running, the action is disabled and reports progress. A successful request changes the message to **Booking link sent**. A duplicate request reports **Booking link already sent** and does not send a second message.
 
-The external-form emergency fallback continues to show the direct Calendly and call actions. It does not show the SMS action because that branch has no locally persisted quote record or scoped delivery token.
+The external-form emergency fallback continues to show the direct Calendly and call actions. It does not show the SMS action because that branch cannot receive a scoped delivery token from the production booking gateway.
 
 ## Calendly Configuration
 
@@ -46,28 +46,31 @@ The message identifies the sender, states the transactional purpose, uses the ap
 
 ## Server Data Flow
 
-A successful primary quote submission will return an opaque delivery token only after the quote record has been persisted. The token will be random, scoped to the saved quote and valid for 24 hours. The browser stores it only in the active success-screen state.
+Production discovery confirmed that the website is a direct-upload Cloudflare Pages project without a database or Twilio binding. The existing `ccg-lead-gate` Worker already owns the CCG D1 database and Twilio credentials. The implementation therefore uses that Worker as a narrow server-to-server booking gateway rather than duplicating customer data and provider secrets in the website project.
 
-A new public tRPC mutation will accept the delivery token. It will not accept a phone number, customer name or arbitrary message body. The server will:
+After a detailed quote has been accepted, the website server sends only the submitted name and validated mobile to the authenticated gateway creation endpoint. The gateway returns a random 24-hour opaque delivery token, stores only its SHA-256 hash and retains the destination in the existing CCG D1 environment. The browser stores the raw token only in the active success-screen state.
 
-1. Hash the supplied token and find the matching unexpired quote delivery record.
-2. Reject unknown, malformed or expired tokens without exposing quote data.
-3. Validate the stored Australian mobile number again.
-4. Claim the one-time send before contacting Twilio so concurrent clicks cannot create duplicate messages.
-5. Build the message from fixed server-side copy and the saved first name.
-6. Send through the existing Twilio transport.
-7. Record the final delivery state and a customer-originated timeline event.
+The public website tRPC mutation accepts only that opaque token. It forwards the token to the authenticated gateway send endpoint and never accepts a phone number, customer name or arbitrary message body. The gateway then:
 
-The customer response contains only a status such as `sent`, `already_sent`, `unavailable` or `failed`. It never returns the stored phone number, quote details, Twilio credentials or provider message identifier.
+1. Hashes the supplied token and finds the matching unexpired delivery record in D1.
+2. Rejects unknown, malformed or expired tokens without exposing customer data.
+3. Validates the stored Australian mobile number again.
+4. Claims the one-time send atomically before contacting Twilio so concurrent clicks cannot create duplicate messages.
+5. Builds the message from fixed Worker-side copy and the saved first name.
+6. Sends through the existing `ccg-lead-gate` Twilio binding.
+7. Records the final delivery state in D1.
+
+Both website-to-gateway routes require a shared `BOOKING_GATE_SECRET` supplied as an encrypted Cloudflare environment variable and Worker secret. The customer response contains only a status such as `sent`, `already_sent`, `unavailable` or `failed`. It never returns the stored phone number, quote details, gateway secret, Twilio credentials or provider message identifier.
 
 ## Persistence
 
-A dedicated `quote_booking_deliveries` table will keep the delivery workflow separate from quote status and marketing follow-ups. Each row will contain:
+A dedicated `booking_link_deliveries` table in the existing `ccg-lead-gate` D1 database keeps the delivery workflow separate from lead status and marketing follow-ups. Each row contains:
 
 | Field | Purpose |
 |---|---|
-| `quoteRequestId` | Associates the request with the saved detailed quote. |
 | `tokenHash` | Stores a one-way hash rather than the browser token. |
+| `customerName` | Supplies the first name for fixed transactional copy. |
+| `customerPhone` | Stores the server-validated Australian mobile destination inside the existing CCG lead environment. |
 | `expiresAt` | Enforces the 24-hour success-screen window. |
 | `status` | Tracks `available`, `sending`, `sent`, `failed` or non-retryable `uncertain`. |
 | `requestedAt` | Records the customer’s explicit click. |
@@ -77,11 +80,11 @@ A dedicated `quote_booking_deliveries` table will keep the delivery workflow sep
 | `providerMessageId` | Optional operational reference; never returned to the client. |
 | `createdAt` and `updatedAt` | Support audit and troubleshooting. |
 
-The table will enforce one booking-delivery row per quote and a unique token hash. Customer-facing retries may move a confirmed `failed` result back to `sending` within the token lifetime. Both `sent` and `uncertain` are terminal for customer retries. Twilio notes that duplicate messages almost always mean the application submitted multiple provider requests, so an ambiguous network result must not trigger an automatic or customer-initiated retry.[2]
+The table enforces a unique token hash. Customer-facing retries may move a confirmed `failed` result back to `sending` within the token lifetime. Both `sent` and `uncertain` are terminal for customer retries. Twilio notes that duplicate messages almost always mean the application submitted multiple provider requests, so an ambiguous network result must not trigger an automatic or customer-initiated retry.[2]
 
 ## Security and Abuse Controls
 
-The raw delivery token will never be logged or stored. The server will hash it with SHA-256 before lookup. The mutation will use strict Zod validation, the existing request context for an address fingerprint, a dedicated per-token limit, and an address-level rate limit.
+The raw delivery token will never be logged or stored. The gateway hashes it with SHA-256 before lookup. The website mutation uses strict Zod validation, the existing request context for an address fingerprint, a dedicated per-token limit and an address-level rate limit. The D1 routes additionally require the server-held shared secret.
 
 The system will claim a delivery atomically before calling Twilio. A successful claim is required before any provider request. This prevents rapid double-clicks or parallel requests from sending duplicate texts.
 
@@ -105,7 +108,7 @@ A database, Twilio or network failure must not invalidate or duplicate the alrea
 
 The customer interface will live in a small `QuoteSuccessBooking` component under `client/src/components/quote/`. It receives the customer’s name and email for approved Calendly prefilling, a masked display number, and the optional delivery token. It does not receive Twilio credentials, a provider identifier or an editable booking URL.
 
-Server-side message composition will be isolated from the Twilio transport. Token creation, hashing, expiry, state transitions and customer-safe result mapping will be testable without a database or live provider call. The quote mutation will create the delivery record only after confirmed database persistence and return the raw token only in that branch.
+Server-side message composition is isolated inside `ccg-lead-gate` from the public website. Token creation, hashing, expiry, state transitions and customer-safe result mapping are tested with an in-memory D1 double and mocked provider call. The quote mutation requests a delivery token only for the detailed quote branch and returns no token when the gateway is unavailable.
 
 ## CalendarBridge Role
 
@@ -116,7 +119,7 @@ CalendarBridge remains connected to the business Google and Microsoft calendars.
 Before implementation, failing tests will require the following behaviour:
 
 1. The quote success screen shows the direct booking action and existing call action on both verified delivery branches.
-2. Only the primary persisted branch receives and renders the SMS delivery token.
+2. Only the detailed quote branch receives and renders an SMS delivery token from the production gateway.
 3. The booking URL contains only the approved Calendly destination plus permitted name and email prefill values.
 4. The SMS component masks the mobile number and reports loading, sent, already-sent, retry and unavailable states accessibly.
 5. Message composition uses fixed copy, the saved first name, the approved booking URL, the business phone number and the opt-out instruction.
@@ -127,13 +130,13 @@ Before implementation, failing tests will require the following behaviour:
 10. The quote conversion tracker remains limited to the existing two confirmed-delivery branches.
 11. No real SMS is sent by the automated test suite.
 
-After implementation, focused tests, the full Vitest suite, TypeScript, database migration generation, the guarded production build and browser checks at mobile and desktop sizes must pass.
+After implementation, focused tests, the full Vitest suite, TypeScript, the additive D1 migration, the guarded production build and browser checks at mobile and desktop sizes must pass.
 
 ## Release and Rollback
 
-The feature will be prepared as a focused website change. Before production release, the deployment environment must be checked for `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN` and `TWILIO_PHONE_NUMBER` without exposing their values. The active Calendly event and physical-address question will be re-read after configuration.
+The feature is split across the website and the versioned `ccg-lead-gate` Worker. Before production release, the Worker bindings must be checked for D1 and Twilio without exposing their values. The website receives only `BOOKING_GATE_URL` and encrypted `BOOKING_GATE_SECRET`; it does not receive Twilio credentials. The active Calendly event and physical-address question will be re-read after configuration.
 
-The deployment will be accepted only after the quote route, primary success screen, emergency fallback, direct Calendly action, SMS-disabled state and accessible feedback are verified. The preceding accepted production deployment remains the rollback point. The database migration is additive; rollback may leave the unused table in place while restoring the previous application build.
+The D1 migration is applied first, followed by the Worker and then the website. The deployment is accepted only after the gateway authentication boundary, quote route, primary success screen, emergency fallback, direct Calendly action, SMS-disabled state and accessible feedback are verified. The preceding accepted Worker version and Pages deployment remain the rollback points. The migration is additive; rollback may leave the unused table in place while restoring the previous Worker and website builds.
 
 ## References
 
