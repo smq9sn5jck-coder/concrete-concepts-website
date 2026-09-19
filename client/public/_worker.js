@@ -1120,6 +1120,13 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
 
+    // Protected CCG pricing service. The bundle is generated from the shared
+    // TypeScript estimator after Vite copies this Worker into dist/public.
+    if (path === "/api/v1/pricing/estimate") {
+      const { handlePricingWorkerRequest } = await import("./pricing-api.js");
+      return handlePricingWorkerRequest(request, env);
+    }
+
     // Handle CORS preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders() });

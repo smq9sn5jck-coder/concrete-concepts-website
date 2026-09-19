@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 import { FINISH_CATALOG, getFinishDefinition } from "./finishCatalog";
 import type {
   CanonicalFinishId,
@@ -227,7 +226,13 @@ function calculateScenario(
 }
 
 function stableHash(value: unknown) {
-  return createHash("sha256").update(JSON.stringify(value)).digest("hex");
+  const input = JSON.stringify(value);
+  let hash = 2_166_136_261;
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16_777_619);
+  }
+  return (hash >>> 0).toString(16).padStart(8, "0");
 }
 
 function calculateOption(
