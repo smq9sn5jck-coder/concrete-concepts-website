@@ -48,6 +48,10 @@ const batchOnePreviewEnabled = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true"
 const BatchOneReviewPage = batchOnePreviewEnabled
   ? lazy(() => import("./pages/BatchOneReviewPage"))
   : null;
+const southsidePreviewEnabled = import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true";
+const SouthsideReviewPage = southsidePreviewEnabled
+  ? lazy(() => import("./pages/SouthsideReviewPage"))
+  : null;
 
 /** Minimal loading fallback for lazy routes */
 function PageLoader() {
@@ -80,6 +84,9 @@ function Router() {
         <Route path={"/areas"} component={ServiceAreasPage} />
         {BatchOneReviewPage && (
           <Route path={"/batch-one-review"} component={BatchOneReviewPage} />
+        )}
+        {SouthsideReviewPage && (
+          <Route path={"/southside-review"} component={SouthsideReviewPage} />
         )}
         <Route path={"/calculator"} component={CostCalculator} />
         <Route path={"/areas/:suburbSlug"} component={SuburbPage} />

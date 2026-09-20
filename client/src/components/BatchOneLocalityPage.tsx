@@ -1,6 +1,7 @@
-import { ArrowRight, CheckCircle, ClipboardList, ExternalLink, MapPin, Phone, Shield } from "lucide-react";
+import { ArrowRight, CheckCircle, ClipboardList, ExternalLink, MapPin, Phone } from "lucide-react";
 import { Link } from "wouter";
 import type { LocalityContentRecord } from "@shared/localityContent.schema";
+import { buildLocalityStructuredData } from "@shared/localityStructuredData";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
@@ -14,6 +15,9 @@ const LOCALITY_NAMES: Record<string, string> = {
   "stafford": "Stafford", "mitchelton": "Mitchelton", "the-gap": "The Gap",
   "eight-mile-plains": "Eight Mile Plains", "wishart": "Wishart", "mansfield": "Mansfield",
   "cannon-hill": "Cannon Hill", "morningside": "Morningside", "tingalpa": "Tingalpa",
+  "wynnum": "Wynnum", "norman-park": "Norman Park", "camp-hill": "Camp Hill", "carina": "Carina",
+  "carindale": "Carindale", "manly": "Manly", "lota": "Lota", "coorparoo": "Coorparoo",
+  "bulimba": "Bulimba", "hawthorne": "Hawthorne",
   "robina": "Robina", "nerang": "Nerang", "victoria-point": "Victoria Point",
   "coomera": "Coomera", "pimpama": "Pimpama", "ormeau": "Ormeau", "upper-coomera": "Upper Coomera",
   "ripley": "Ripley", "redbank-plains": "Redbank Plains", "springfield": "Springfield",
@@ -24,40 +28,6 @@ const LOCALITY_NAMES: Record<string, string> = {
   "bray-park": "Bray Park", "kallangur": "Kallangur", "morayfield": "Morayfield",
   "burpengary": "Burpengary", "caboolture": "Caboolture", "narangba": "Narangba",
 };
-
-function batchOneStructuredData(record: LocalityContentRecord) {
-  return [
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Service Areas", item: "https://concreteconceptsgroup.com/areas" },
-        { "@type": "ListItem", position: 2, name: record.locality, item: `https://concreteconceptsgroup.com/areas/${record.slug}` },
-      ],
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "Service",
-      name: `Residential concreting in ${record.locality}`,
-      serviceType: record.services.map(service => service.name),
-      areaServed: { "@type": "AdministrativeArea", name: `${record.locality}, ${record.lga}` },
-      provider: {
-        "@type": "HomeAndConstructionBusiness",
-        "@id": "https://concreteconceptsgroup.com/#business",
-        name: "Concrete Concepts Group Pty Ltd",
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: record.faqs.map(faq => ({
-        "@type": "Question",
-        name: faq.question,
-        acceptedAnswer: { "@type": "Answer", text: faq.answer },
-      })),
-    },
-  ];
-}
 
 export default function BatchOneLocalityPage({ record }: { record: LocalityContentRecord }) {
   const startQuote = (serviceSlug?: string) => {
@@ -71,7 +41,7 @@ export default function BatchOneLocalityPage({ record }: { record: LocalityConte
         description={record.description}
         canonical={`/areas/${record.slug}`}
         keywords={`concreting ${record.locality}, concrete driveway ${record.locality}, concrete slabs ${record.locality}`}
-        structuredData={batchOneStructuredData(record)}
+        structuredData={buildLocalityStructuredData(record)}
       />
       <Navbar />
 
@@ -109,7 +79,6 @@ export default function BatchOneLocalityPage({ record }: { record: LocalityConte
 
         <section className="border-b border-border bg-white py-4">
           <div className="container flex flex-wrap justify-center gap-x-8 gap-y-3 text-sm font-semibold text-brand-charcoal">
-            <span className="inline-flex items-center gap-2"><Shield className="w-4 h-4 text-brand-gold" />QBCC licence 15299707</span>
             <span className="inline-flex items-center gap-2"><MapPin className="w-4 h-4 text-brand-gold" />Brisbane &amp; South East Queensland service-area review</span>
             <span className="inline-flex items-center gap-2"><ClipboardList className="w-4 h-4 text-brand-gold" />Detailed five-step quote</span>
           </div>

@@ -19,6 +19,8 @@ import { MORE_SUBURBS, MORE_SUBURB_COORDS } from "@/data/moreSuburbs";
 import BatchOneLocalityPage from "@/components/BatchOneLocalityPage";
 import { BATCH_ONE_LOCALITY_BY_SLUG } from "@shared/localityContent";
 import { isBatchOneLocalityAvailable } from "@shared/batchOnePublication";
+import { SOUTHSIDE_LOCALITY_BY_SLUG } from "@shared/southsideLocalityContent";
+import { isSouthsideLocalityAvailable } from "@shared/southsidePublication";
 
 interface SuburbData {
   slug: string;
@@ -2325,6 +2327,7 @@ export default function SuburbPage() {
   const params = useParams<{ suburbSlug: string }>();
   const suburbSlug = params.suburbSlug || "";
   const batchOneRecord = BATCH_ONE_LOCALITY_BY_SLUG[suburbSlug];
+  const southsideRecord = SOUTHSIDE_LOCALITY_BY_SLUG[suburbSlug];
   const customerHost = typeof window !== "undefined" && [
     "concreteconceptsgroup.com",
     "www.concreteconceptsgroup.com",
@@ -2334,10 +2337,18 @@ export default function SuburbPage() {
     customerHost,
     previewEnabled,
   });
+  const southsideAvailable = southsideRecord && isSouthsideLocalityAvailable(suburbSlug, {
+    customerHost,
+    southsidePreviewEnabled: import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true",
+  });
   const suburb = SUBURBS[suburbSlug];
 
   if (batchOneAvailable) {
     return <BatchOneLocalityPage record={batchOneRecord} />;
+  }
+
+  if (southsideAvailable) {
+    return <BatchOneLocalityPage record={southsideRecord} />;
   }
 
   if (!suburb || batchOneRecord) {

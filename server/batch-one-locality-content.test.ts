@@ -194,7 +194,13 @@ describe("Batch 1 generated edge parity and SEO shell", () => {
   });
 
   it("escapes generated public copy before placing it in raw HTML", () => {
-    expect(renderLocalityContentShell("/areas/moggill")).not.toMatch(/<script|onerror=/i);
+    const html = renderLocalityContentShell("/areas/moggill");
+    expect((html.match(/<script type="application\/ld\+json">/g) ?? [])).toHaveLength(3);
+    const withoutStructuredData = html.replace(
+      /<script type="application\/ld\+json">[\s\S]*?<\/script>/g,
+      "",
+    );
+    expect(withoutStructuredData).not.toMatch(/<script|onerror=|javascript:/i);
   });
 });
 

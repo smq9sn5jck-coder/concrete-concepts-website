@@ -4,12 +4,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEOHead from "@/components/SEOHead";
 import NotFound from "@/pages/NotFound";
+import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
 import { BATCH_ONE_LOCALITIES } from "@shared/localityContent";
-
-const CUSTOMER_HOSTS = new Set(["concreteconceptsgroup.com", "www.concreteconceptsgroup.com"]);
-export function isCustomerWebsiteHost(hostname: string) {
-  return CUSTOMER_HOSTS.has(hostname);
-}
 
 function groupLocalitiesByRegion() {
   return BATCH_ONE_LOCALITIES.reduce((groups, record) => {

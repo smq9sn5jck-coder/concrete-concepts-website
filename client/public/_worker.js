@@ -3,7 +3,10 @@ import { applySeoMetadata, filterPublicSitemap } from "./seo-manifest.js";
 import {
   GENERATED_BATCH_ONE_BY_SLUG,
   GENERATED_BATCH_ONE_PREVIEW_ENABLED,
+  GENERATED_SOUTHSIDE_BY_SLUG,
+  GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
   getLocalityRouteAccess,
+  getSouthsideLocalityRouteAccess,
 } from "./locality-content.js";
 import {
   GENERATED_OTHER_TRADE_CATEGORIES,
@@ -21,9 +24,33 @@ const CUSTOMER_WEBSITE_HOSTS = new Set([
   "www.concreteconceptsgroup.com",
 ]);
 
+function typedLocalitySlugFromPath(path, recordsBySlug) {
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(path);
+  } catch {
+    return null;
+  }
+  const match = decodedPath.match(/^\/areas\/([a-z0-9-]+)\/?$/i);
+  const slug = match?.[1]?.toLowerCase();
+  return slug && recordsBySlug[slug] ? slug : null;
+}
+
 function batchOneSlugFromPath(path) {
-  const match = path.match(/^\/areas\/([a-z0-9-]+)\/?$/);
-  return match?.[1] && GENERATED_BATCH_ONE_BY_SLUG[match[1]] ? match[1] : null;
+  return typedLocalitySlugFromPath(path, GENERATED_BATCH_ONE_BY_SLUG);
+}
+
+function southsideSlugFromPath(path) {
+  return typedLocalitySlugFromPath(path, GENERATED_SOUTHSIDE_BY_SLUG);
+}
+
+function canonicalLocalityRedirect(url, slug) {
+  const canonicalPath = `/areas/${slug}`;
+  if (url.pathname === canonicalPath) return null;
+  const headers = new Headers({ Location: `${canonicalPath}${url.search}` });
+  headers.set("X-Robots-Tag", "noindex, nofollow");
+  headers.set("Cache-Control", "no-store");
+  return new Response(null, { status: 308, headers });
 }
 
 function notFoundHtmlResponse(response, url, method = "GET") {
@@ -1652,6 +1679,10 @@ async function prepareStaticResponse(response, url, path, method) {
 
   if ((method === "GET" || method === "HEAD") && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
     const isCustomerWebsiteHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const localityContext = {
+      customerHost: isCustomerWebsiteHost,
+      southsidePreviewEnabled: GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
+    };
     const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
     const headers = new Headers(response.headers);
     headers.set("Content-Type", "text/html; charset=utf-8");
@@ -1670,7 +1701,7 @@ async function prepareStaticResponse(response, url, path, method) {
         headers,
       });
     }
-    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride);
+    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride, localityContext);
     return new Response(html, {
       status: response.status,
       statusText: response.statusText,
@@ -1700,6 +1731,13 @@ export default {
     }
 
     if (path === "/need-another-trade" && !GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+
+    if (path === "/southside-review" && (
+      !GENERATED_SOUTHSIDE_PREVIEW_ENABLED
+      || CUSTOMER_WEBSITE_HOSTS.has(url.hostname)
+    )) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
     }
 
@@ -1736,12 +1774,26 @@ export default {
 
     const isStaticRead = request.method === "GET" || request.method === "HEAD";
     const batchOneSlug = isStaticRead ? batchOneSlugFromPath(path) : null;
-    if (batchOneSlug && getLocalityRouteAccess(
-      batchOneSlug,
-      CUSTOMER_WEBSITE_HOSTS.has(url.hostname),
-      GENERATED_BATCH_ONE_PREVIEW_ENABLED,
-    ) === "not-found") {
+    const southsideSlug = isStaticRead ? southsideSlugFromPath(path) : null;
+    const customerHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const batchOneAccess = batchOneSlug
+      ? getLocalityRouteAccess(batchOneSlug, customerHost, GENERATED_BATCH_ONE_PREVIEW_ENABLED)
+      : "not-found";
+    const southsideAccess = southsideSlug
+      ? getSouthsideLocalityRouteAccess(southsideSlug, customerHost, GENERATED_SOUTHSIDE_PREVIEW_ENABLED)
+      : "not-found";
+    const typedLocalityAllowed = [batchOneAccess, southsideAccess]
+      .some(access => access === "public" || access === "preview");
+    if (
+      (southsideSlug && southsideAccess === "not-found" && !typedLocalityAllowed)
+      || (batchOneSlug && batchOneAccess === "not-found" && !typedLocalityAllowed)
+    ) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+    const recognizedLocalitySlug = southsideSlug || batchOneSlug;
+    if (recognizedLocalitySlug) {
+      const redirect = canonicalLocalityRedirect(url, recognizedLocalitySlug);
+      if (redirect) return redirect;
     }
 
     // Static assets: use CF Cache API to avoid cold-start penalty on repeat visits

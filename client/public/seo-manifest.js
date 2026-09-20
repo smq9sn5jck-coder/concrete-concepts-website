@@ -1,6 +1,11 @@
 import {
   GENERATED_BATCH_ONE_BY_SLUG,
+  GENERATED_BATCH_ONE_STRUCTURED_DATA_BY_SLUG,
   GENERATED_PUBLIC_LOCALITY_SLUGS,
+  GENERATED_SOUTHSIDE_BY_SLUG,
+  GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
+  GENERATED_SOUTHSIDE_STRUCTURED_DATA_BY_SLUG,
+  getSouthsideLocalityRouteAccess,
 } from "./locality-content.js";
 import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "./other-trade-config.js";
 
@@ -66,15 +71,51 @@ function getBatchOneRecord(path) {
   return GENERATED_BATCH_ONE_BY_SLUG[path.split("/").pop()];
 }
 
-export function renderLocalityContentShell(pathname) {
+function getSouthsideRecord(path, context = {}) {
+  if (!path.startsWith("/areas/")) return undefined;
+  const slug = path.split("/").pop();
+  const record = GENERATED_SOUTHSIDE_BY_SLUG[slug];
+  if (!record) return undefined;
+  const access = getSouthsideLocalityRouteAccess(
+    slug,
+    context.customerHost ?? true,
+    context.southsidePreviewEnabled ?? GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
+  );
+  return access === "public" || access === "preview" ? record : undefined;
+}
+
+function getLocalityRecord(path, context = {}) {
+  return getSouthsideRecord(path, context) || getBatchOneRecord(path);
+}
+
+function getLocalityStructuredData(path, context = {}) {
+  const southsideRecord = getSouthsideRecord(path, context);
+  if (southsideRecord) {
+    return GENERATED_SOUTHSIDE_STRUCTURED_DATA_BY_SLUG[southsideRecord.slug] || [];
+  }
+  const batchOneRecord = getBatchOneRecord(path);
+  if (batchOneRecord) {
+    return GENERATED_BATCH_ONE_STRUCTURED_DATA_BY_SLUG[batchOneRecord.slug] || [];
+  }
+  return [];
+}
+
+function serializeStructuredData(value) {
+  return JSON.stringify(value).replaceAll("<", "\\u003c");
+}
+
+export function renderLocalityContentShell(pathname, context = {}) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
-  const record = getBatchOneRecord(path);
+  const record = getLocalityRecord(path, context);
   if (!record) return "";
   const services = record.services.map(service => `<li><a href="/services/${escapeHtml(service.slug)}">${escapeHtml(service.name)}</a>: ${escapeHtml(service.description)}</li>`).join("");
   const faqs = record.faqs.map(faq => `<article><h3>${escapeHtml(faq.question)}</h3><p>${escapeHtml(faq.answer)}</p></article>`).join("");
   const nearby = record.nearbyLocalitySlugs.map(slug => `<li><a href="/areas/${escapeHtml(slug)}">${escapeHtml(titleCaseSlug(slug))}</a></li>`).join("");
   const sources = record.localityContext.sourceUrls.map((sourceUrl, index) => `<li><a href="${escapeHtml(sourceUrl)}">${escapeHtml(record.localityContext.sourceLabel)}${record.localityContext.sourceUrls.length > 1 ? ` — source ${index + 1}` : ""}</a></li>`).join("");
-  return `<main data-edge-locality-shell="true"><article><p>${escapeHtml(record.region)} · ${escapeHtml(record.lga)} · ${escapeHtml(record.postcode)}</p><h1>${escapeHtml(record.h1)}</h1><p>${escapeHtml(record.intro)}</p><h2>Practical site considerations</h2><p>${escapeHtml(record.practicalConsiderations)}</p><h2>Locality context</h2><p>${escapeHtml(record.localityContext.attribution)}</p><p>Sources reviewed: ${escapeHtml(record.localityContext.claimDate)}</p><ul>${sources}</ul><h2>Relevant concrete services</h2><ul>${services}</ul><h2>Frequently asked questions</h2>${faqs}<h2>Nearby live locality guides</h2><ul>${nearby}</ul><p><a href="${escapeHtml(record.regionalHub.path)}">${escapeHtml(record.regionalHub.label)}</a></p><p><a href="/get-quote">Start a detailed quote</a></p></article></main>`;
+  const structuredData = getLocalityStructuredData(path, context)
+    .map(value => `<script type="application/ld+json">${serializeStructuredData(value)}</script>`)
+    .join("");
+  return `${structuredData}<main data-edge-locality-shell="true"><article><p>${escapeHtml(record.region)} · ${escapeHtml(record.lga)} · ${escapeHtml(record.postcode)}</p><h1>${escapeHtml(record.h1)}</h1><p>${escapeHtml(record.intro)}</p><h2>Practical site considerations</h2><p>${escapeHtml(record.practicalConsiderations)}</p><h2>Locality context</h2><p>${escapeHtml(record.localityContext.attribution)}</p><p>Sources reviewed: ${escapeHtml(record.localityContext.claimDate)}</p><ul>${sources}</ul><h2>Relevant concrete services</h2><ul>${services}</ul><h2>Frequently asked questions</h2>${faqs}<h2>Nearby live locality guides</h2><ul>${nearby}</ul><p><a href="${escapeHtml(record.regionalHub.path)}">${escapeHtml(record.regionalHub.label)}</a></p><p><a href="/get-quote">Start a detailed quote</a></p></article></main>`;
 }
 
 export function renderOtherTradeContentShell(pathname, previewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
@@ -83,13 +124,13 @@ export function renderOtherTradeContentShell(pathname, previewEnabled = GENERATE
   return `<main data-edge-other-trade-shell="true"><article><p>Concrete Concepts Group · Brisbane and South East Queensland</p><h1>Need another trade?</h1><p>Choose a direct CCG concreting quote or send another-trade details to CCG for review.</p><section><h2>Concreting quote</h2><p>CCG handles concreting directly through its detailed five-step quote.</p><p><a href="/get-quote">Start a detailed concreting quote</a></p></section><section><h2>Another trade request</h2><p>Send a separate request for CCG to review. This is not a booking or guaranteed provider match.</p><p>With your separate consent, CCG may share the contact details, job information and optional photos you provide with one suitable independent service provider. Requests are not automatically forwarded.</p></section></article></main>`;
 }
 
-export function getSeoMetadata(pathname, otherTradePreviewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+export function getSeoMetadata(pathname, otherTradePreviewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED, localityContext = {}) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
   if (path === "/need-another-trade" && otherTradePreviewEnabled) return OTHER_TRADE_METADATA;
   if (CORE_METADATA[path]) return { title: CORE_METADATA[path][0], description: CORE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path === "/" ? "" : path}`, robots: "index, follow" };
   if (SERVICE_METADATA[path]) return { title: SERVICE_METADATA[path][0], description: SERVICE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
-  const batchOne = getBatchOneRecord(path);
-  if (batchOne) return { title: batchOne.title, description: batchOne.description, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
+  const localityRecord = getLocalityRecord(path, localityContext);
+  if (localityRecord) return { title: localityRecord.title, description: localityRecord.description, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
   if (path.startsWith("/areas/")) {
     const slug = path.split("/").pop();
     if (GENERATED_PUBLIC_LOCALITY_SLUGS.includes(slug)) {
@@ -114,8 +155,8 @@ function replaceOrInsert(html, pattern, replacement) {
   return pattern.test(html) ? html.replace(pattern, replacement) : html.replace("</head>", `  ${replacement}\n</head>`);
 }
 
-export function applySeoMetadata(html, pathname, robotsOverride) {
-  const meta = getSeoMetadata(pathname);
+export function applySeoMetadata(html, pathname, robotsOverride, localityContext = {}) {
+  const meta = getSeoMetadata(pathname, undefined, localityContext);
   const robots = robotsOverride || meta.robots;
   let output = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${meta.title}</title>`);
   output = replaceOrInsert(output, /<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${meta.description}">`);
@@ -124,7 +165,7 @@ export function applySeoMetadata(html, pathname, robotsOverride) {
   output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${meta.title}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${meta.description}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${meta.canonical}">`);
-  const contentShell = renderLocalityContentShell(pathname) || renderOtherTradeContentShell(pathname);
+  const contentShell = renderLocalityContentShell(pathname, localityContext) || renderOtherTradeContentShell(pathname);
   if (contentShell) {
     output = output.replace(
       /(<div\s+id=["']root["'][^>]*>)[\s\S]*?<\/div>(\s*(?=<script\b))/i,
