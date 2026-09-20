@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { appRouter } from "./routers";
 import type { TrpcContext } from "./_core/context";
 import { sendQuoteNotificationEmail } from "./email";
+import { createOrGetQuoteRequest, getQuoteRequestBySubmissionId } from "./db";
 
 // Mock the notification module
 vi.mock("./_core/notification", () => ({
@@ -10,7 +11,15 @@ vi.mock("./_core/notification", () => ({
 
 // Mock the db module
 vi.mock("./db", () => ({
-  getDb: vi.fn().mockResolvedValue(null), // Return null to skip DB insert in test
+  getDb: vi.fn().mockResolvedValue(null),
+  getQuoteRequestBySubmissionId: vi.fn().mockResolvedValue(undefined),
+  quoteTransactionId: (quoteId: number) => `CCG-Q-${quoteId}`,
+  createOrGetQuoteRequest: vi.fn().mockResolvedValue({
+    quoteId: 5160001,
+    transactionId: "CCG-Q-5160001",
+    duplicate: false,
+    statusToken: "test-status-token",
+  }),
 }));
 
 // Mock the email module to prevent actual email sending
@@ -33,6 +42,77 @@ function createPublicContext(): TrpcContext {
 }
 
 describe("quote.submit", () => {
+  it("returns the persisted quote ID as a stable conversion transaction ID", async () => {
+    vi.mocked(createOrGetQuoteRequest).mockClear();
+    const caller = appRouter.createCaller(createPublicContext());
+    const submissionId = "123e4567-e89b-42d3-a456-426614174000";
+
+    const result = await caller.quote.submit({
+      submissionId,
+      name: "Tracked Lead",
+      phone: "0424 463 268",
+      email: "tracked@example.com",
+      suburb: "Camp Hill 4152",
+      service: "Driveway",
+      details: "Replacement exposed aggregate driveway around 50 square metres.",
+      formStartedAt: Date.now() - 10_000,
+    });
+
+    expect(result).toMatchObject({
+      success: true,
+      quoteId: 5160001,
+      transactionId: "CCG-Q-5160001",
+      duplicate: false,
+    });
+    expect(createOrGetQuoteRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ submissionId }),
+    );
+  });
+
+  it("returns the same transaction ID for an idempotent retry without inserting again", async () => {
+    vi.mocked(createOrGetQuoteRequest).mockClear();
+    vi.mocked(getQuoteRequestBySubmissionId).mockResolvedValueOnce({
+      id: 5160002,
+      statusToken: "existing-status-token",
+    });
+    const caller = appRouter.createCaller(createPublicContext());
+
+    const result = await caller.quote.submit({
+      submissionId: "123e4567-e89b-42d3-a456-426614174003",
+      name: "Retry Lead",
+      phone: "0424 463 269",
+      email: "retry@example.com",
+      suburb: "Morningside 4170",
+      service: "Concrete Slab",
+      details: "A confirmed retry of the same concrete slab request.",
+      formStartedAt: Date.now() - 10_000,
+    });
+
+    expect(result).toMatchObject({
+      success: true,
+      quoteId: 5160002,
+      transactionId: "CCG-Q-5160002",
+      duplicate: true,
+    });
+    expect(createOrGetQuoteRequest).not.toHaveBeenCalled();
+  });
+
+  it("does not report success when durable quote persistence fails", async () => {
+    vi.mocked(createOrGetQuoteRequest).mockRejectedValueOnce(new Error("Database unavailable"));
+    const caller = appRouter.createCaller(createPublicContext());
+
+    await expect(caller.quote.submit({
+      submissionId: "123e4567-e89b-42d3-a456-426614174004",
+      name: "Persistence Failure",
+      phone: "0424 463 270",
+      email: "persistence-failure@example.com",
+      suburb: "Carindale 4152",
+      service: "Driveway",
+      details: "This request must not report a confirmed conversion.",
+      formStartedAt: Date.now() - 10_000,
+    })).rejects.toThrow(/database unavailable/i);
+  });
+
   it("accepts a valid quote submission and returns success", async () => {
     const ctx = createPublicContext();
     const caller = appRouter.createCaller(ctx);

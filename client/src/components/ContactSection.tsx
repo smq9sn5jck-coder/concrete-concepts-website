@@ -62,6 +62,7 @@ export default function ContactSection() {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formStartedAt = useRef(Date.now());
+  const submissionId = useRef(crypto.randomUUID());
   const [website, setWebsite] = useState("");
   const [formData, setFormData] = useState({
     name: "",
@@ -75,6 +76,7 @@ export default function ContactSection() {
   const submitQuote = trpc.quote.submit.useMutation({
     onSuccess: (result) => {
       trackQuoteConversion(
+        { quoteId: result.quoteId, transactionId: result.transactionId },
         { email: formData.email, phone: formData.phone, name: formData.name },
       );
       setSubmitted(true);
@@ -91,6 +93,7 @@ export default function ContactSection() {
       console.warn("[ContactForm] Backend unavailable, trying fallback:", error.message);
       try {
         const result = await submitFormFallback({
+          submissionId: submissionId.current,
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
@@ -102,7 +105,10 @@ export default function ContactSection() {
           formStartedAt: formStartedAt.current,
         });
         if (result.success) {
-          trackQuoteConversion({ email: formData.email, phone: formData.phone, name: formData.name });
+          trackQuoteConversion(
+            { quoteId: result.quoteId, transactionId: result.transactionId },
+            { email: formData.email, phone: formData.phone, name: formData.name },
+          );
           setSubmitted(true);
           toast.success("Quote request sent! We'll be in touch within 24 hours.");
         } else if (result.method === "mailto") {
@@ -240,6 +246,7 @@ export default function ContactSection() {
     }
 
     submitQuote.mutate({
+      submissionId: submissionId.current,
       name: formData.name.trim(),
       phone: phoneValidation.normalized,
       email: formData.email,

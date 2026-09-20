@@ -11,16 +11,17 @@ function createD1Mock(result: D1RunResult) {
   const boundValues: unknown[][] = [];
   const sqlStatements: string[] = [];
   const run = vi.fn(async () => result);
+  const first = vi.fn(async () => null);
   const bind = vi.fn((...values: unknown[]) => {
     boundValues.push(values);
-    return { run };
+    return { run, first };
   });
   const prepare = vi.fn((sql: string) => {
     sqlStatements.push(sql);
     return { bind };
   });
 
-  return { database: { prepare }, prepare, bind, run, boundValues, sqlStatements };
+  return { database: { prepare }, prepare, bind, run, first, boundValues, sqlStatements };
 }
 
 async function loadWorker(testName: string) {
@@ -45,7 +46,7 @@ function callbackRequest(phone: string, ip: string) {
   });
 }
 
-function completeQuoteRequest() {
+function completeQuoteRequest(submissionId = "123e4567-e89b-42d3-a456-426614174002") {
   const jobBrief = {
     version: 1,
     contact: {
@@ -97,6 +98,7 @@ function completeQuoteRequest() {
     method: "POST",
     headers: { "Content-Type": "application/json", "CF-Connecting-IP": "203.0.113.34" },
     body: JSON.stringify({
+      submissionId,
       name: jobBrief.contact.name,
       phone: jobBrief.contact.mobile,
       email: jobBrief.contact.email,
@@ -209,11 +211,42 @@ describe("Cloudflare lead backup reliability", () => {
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({
       success: true,
+      quoteId: "quote_123e4567-e89b-42d3-a456-426614174002",
+      transactionId: "CCG-Q-123e4567-e89b-42d3-a456-426614174002",
+      duplicate: false,
       channels: { email: "failed", sheets: "logged", jotform: "failed" },
       serviceAreaStatus: "in_area",
     });
-    expect(d1.boundValues[0][1]).toBe("quote");
-    expect(String(d1.boundValues[0][10])).toContain("labelled-contract-test.jpg");
-    expect(String(d1.boundValues[0][11])).toContain('"totalAreaM2":50');
+    const insertIndex = d1.sqlStatements.findIndex(sql => sql.includes("INSERT INTO lead_backups"));
+    expect(insertIndex).toBeGreaterThanOrEqual(0);
+    expect(d1.boundValues[insertIndex][0]).toBe("quote_123e4567-e89b-42d3-a456-426614174002");
+    expect(d1.boundValues[insertIndex][1]).toBe("quote");
+    expect(String(d1.boundValues[insertIndex][10])).toContain("labelled-contract-test.jpg");
+    expect(String(d1.boundValues[insertIndex][11])).toContain('"totalAreaM2":50');
+  });
+
+  it("returns the same D1 quote transaction for a retry without redelivering it", async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    const d1 = createD1Mock({ success: true, meta: { changes: 0 } });
+    d1.first.mockResolvedValueOnce({ id: "quote_123e4567-e89b-42d3-a456-426614174005" });
+
+    const edgeWorker = await loadWorker("duplicate-quote");
+    const response = await edgeWorker.fetch(
+      completeQuoteRequest("123e4567-e89b-42d3-a456-426614174005"),
+      { LEAD_BACKUP_DB: d1.database, RESEND_API_KEY: "test-resend-key" },
+      { waitUntil: (_promise: Promise<unknown>) => undefined },
+    );
+
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      success: true,
+      quoteId: "quote_123e4567-e89b-42d3-a456-426614174005",
+      transactionId: "CCG-Q-123e4567-e89b-42d3-a456-426614174005",
+      duplicate: true,
+      channels: { email: "skipped", sheets: "logged", jotform: "skipped" },
+    });
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(d1.sqlStatements.some(sql => sql.includes("INSERT INTO lead_backups"))).toBe(false);
   });
 });

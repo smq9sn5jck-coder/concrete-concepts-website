@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertQuoteRequest, InsertUser, users } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -108,6 +108,63 @@ export async function getQuoteRequestById(id: number) {
   if (!db) return undefined;
   const result = await db.select().from(quoteRequests).where(eq(quoteRequests.id, id)).limit(1);
   return result.length > 0 ? result[0] : undefined;
+}
+
+export function quoteTransactionId(quoteId: number) {
+  return `CCG-Q-${quoteId}`;
+}
+
+export async function getQuoteRequestBySubmissionId(submissionId: string) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const result = await db
+    .select({ id: quoteRequests.id, statusToken: quoteRequests.statusToken })
+    .from(quoteRequests)
+    .where(eq(quoteRequests.submissionId, submissionId))
+    .limit(1);
+  return result[0];
+}
+
+export async function createOrGetQuoteRequest(
+  values: InsertQuoteRequest & { submissionId: string; statusToken: string },
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const existing = await getQuoteRequestBySubmissionId(values.submissionId);
+  if (existing) {
+    return {
+      quoteId: existing.id,
+      transactionId: quoteTransactionId(existing.id),
+      duplicate: true,
+      statusToken: existing.statusToken ?? values.statusToken,
+    };
+  }
+
+  try {
+    const [inserted] = await db.insert(quoteRequests).values(values);
+    const quoteId = Number(inserted.insertId);
+    if (!Number.isSafeInteger(quoteId) || quoteId < 1) {
+      throw new Error("Quote insert did not return a valid ID");
+    }
+    return {
+      quoteId,
+      transactionId: quoteTransactionId(quoteId),
+      duplicate: false,
+      statusToken: values.statusToken,
+    };
+  } catch (error) {
+    const raced = await getQuoteRequestBySubmissionId(values.submissionId);
+    if (raced) {
+      return {
+        quoteId: raced.id,
+        transactionId: quoteTransactionId(raced.id),
+        duplicate: true,
+        statusToken: raced.statusToken ?? values.statusToken,
+      };
+    }
+    throw error;
+  }
 }
 
 export async function updateQuoteStatus(id: number, data: { status?: "new" | "contacted" | "quoted" | "won" | "lost"; notes?: string; quotedAmount?: string }) {

@@ -104,7 +104,11 @@ describe("production Pages Worker booking gateway", () => {
     vi.stubGlobal("fetch", fetchMock);
 
     const response = await worker.fetch(
-      post("/api/trpc/quote.submit", { jobBrief: completeQuote, leadSource: "comprehensive-quote" }),
+      post("/api/trpc/quote.submit", {
+        submissionId: "123e4567-e89b-42d3-a456-426614174010",
+        jobBrief: completeQuote,
+        leadSource: "comprehensive-quote",
+      }),
       testEnv(),
       testContext(),
     );
@@ -112,6 +116,7 @@ describe("production Pages Worker booking gateway", () => {
 
     expect(response.status).toBe(200);
     expect(body.result.data.json.bookingDeliveryToken).toBe(bookingToken);
+    expect(body.result.data.json.transactionId).toBe("CCG-Q-123e4567-e89b-42d3-a456-426614174010");
     expect(fetchMock).toHaveBeenCalledWith(
       "https://leads.concreteconceptsgroup.com/api/public/booking-link/create",
       expect.objectContaining({
@@ -134,6 +139,7 @@ describe("production Pages Worker booking gateway", () => {
 
     const response = await worker.fetch(
       post("/api/trpc/quote.submit", {
+        submissionId: "123e4567-e89b-42d3-a456-426614174011",
         name: "Quick Client",
         phone: "0497 776 655",
         email: "quick@example.com",

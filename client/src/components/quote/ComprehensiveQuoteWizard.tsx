@@ -177,6 +177,7 @@ export default function ComprehensiveQuoteWizard() {
     [leadSource.leadSource]
   );
   const formStartedAt = useRef(Date.now());
+  const submissionId = useRef(crypto.randomUUID());
   const [step, setStep] = useState(1);
   const [data, setData] = useState<QuoteDraftData>(initialData);
   const [photos, setPhotos] = useState<QuotePhoto[]>([]);
@@ -442,7 +443,10 @@ export default function ComprehensiveQuoteWizard() {
     onSuccess: (result) => {
       clearQuoteDraft();
       tracker.submitConfirmed("primary", trafficClass);
-      trackQuoteConversion({ email: data.email, phone: data.mobile, name: data.name });
+      trackQuoteConversion(
+        { quoteId: result.quoteId, transactionId: result.transactionId },
+        { email: data.email, phone: data.mobile, name: data.name },
+      );
       setBookingDeliveryToken(result.bookingDeliveryToken ?? null);
       setSubmitted(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -459,6 +463,7 @@ export default function ComprehensiveQuoteWizard() {
       setFallbackSubmitting(true);
       try {
         const result = await submitFormFallback({
+          submissionId: submissionId.current,
           ...legacy,
           source: leadSource.leadSource || "comprehensive-quote",
           website,
@@ -469,7 +474,10 @@ export default function ComprehensiveQuoteWizard() {
         setBookingDeliveryToken(null);
         clearQuoteDraft();
         tracker.submitConfirmed("fallback", trafficClass);
-        trackQuoteConversion({ email: data.email, phone: data.mobile, name: data.name });
+        trackQuoteConversion(
+          { quoteId: result.quoteId, transactionId: result.transactionId },
+          { email: data.email, phone: data.mobile, name: data.name },
+        );
         setSubmitted(true);
       } catch {
         tracker.submitFailed("primary_and_fallback", trafficClass);
@@ -501,6 +509,7 @@ export default function ComprehensiveQuoteWizard() {
       photos.some((photo) => photo.status === "uploaded") ? "present" : "absent"
     );
     submitQuote.mutate({
+      submissionId: submissionId.current,
       ...legacy,
       jobBrief,
       website,

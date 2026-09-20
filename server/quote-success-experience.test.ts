@@ -47,7 +47,7 @@ describe("approved detailed quote success experience", () => {
     const conversionCalls = source.match(/trackQuoteConversion\(/g) ?? [];
 
     expect(conversionCalls).toHaveLength(2);
-    expect(source).toMatch(/onSuccess:[\s\S]{0,450}trackQuoteConversion[\s\S]{0,180}setSubmitted\(true\)/);
-    expect(source).toMatch(/result\.success[\s\S]{0,450}trackQuoteConversion[\s\S]{0,180}setSubmitted\(true\)/);
+    expect(source).toMatch(/onSuccess:[\s\S]{0,650}trackQuoteConversion[\s\S]{0,260}setSubmitted\(true\)/);
+    expect(source).toMatch(/result\.success[\s\S]{0,650}trackQuoteConversion[\s\S]{0,260}setSubmitted\(true\)/);
   });
 });

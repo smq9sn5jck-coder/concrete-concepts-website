@@ -105,10 +105,10 @@ describe("Phone Call Tracking Coverage", () => {
 describe("Enhanced Conversion Data", () => {
   it("ContactSection passes enhanced data to trackQuoteConversion", () => {
     const content = readComponent("components/ContactSection.tsx");
-    // Should pass email, phone, name
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*email:/);
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*phone:/);
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*name:/);
+    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*quoteId:[^}]*transactionId:/);
+    expect(content).toMatch(/trackQuoteConversion\([\s\S]*?\{[^}]*email:/);
+    expect(content).toMatch(/trackQuoteConversion\([\s\S]*?\{[^}]*phone:/);
+    expect(content).toMatch(/trackQuoteConversion\([\s\S]*?\{[^}]*name:/);
   });
 
   it("HeroSection hands prospects into the detailed wizard without recording a completed conversion", () => {
@@ -120,9 +120,10 @@ describe("Enhanced Conversion Data", () => {
 
   it("ComprehensiveQuoteWizard passes enhanced data to trackQuoteConversion", () => {
     const content = readComponent("components/quote/ComprehensiveQuoteWizard.tsx");
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*email:/);
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*phone:/);
-    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*name:/);
+    expect(content).toMatch(/trackQuoteConversion\(\s*\{[^}]*quoteId:[^}]*transactionId:/);
+    expect(content).toMatch(/trackQuoteConversion\([\s\S]*?\{[^}]*email:/);
+    expect(content).toMatch(/trackQuoteConversion\([\s\S]*?\{[^}]*phone:/);
+    expect(content).toMatch(/trackQuoteConversion\([\s\S]*?\{[^}]*name:/);
   });
 
   it("LandingPage hands paid prospects into the detailed wizard without recording a completed conversion", () => {

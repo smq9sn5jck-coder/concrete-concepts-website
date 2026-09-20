@@ -13,6 +13,7 @@ declare global {
   interface Window {
     gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
+    dataLayer?: unknown[];
   }
 }
 
@@ -24,6 +25,29 @@ interface EnhancedConversionData {
   email?: string;
   phone?: string;
   name?: string;
+}
+
+export interface ConfirmedQuoteConversion {
+  quoteId: number | string;
+  transactionId: string;
+}
+
+function normaliseEnhancedConversionData(data?: EnhancedConversionData) {
+  if (!data) return undefined;
+  const enhancedData: Record<string, string> = {};
+  if (data.email) enhancedData.email = data.email.trim().toLowerCase();
+  if (data.phone) {
+    let phone = data.phone.replace(/[\s\-()]/g, "");
+    if (phone.startsWith("0")) phone = "+61" + phone.slice(1);
+    enhancedData.phone_number = phone;
+  }
+  if (data.name) {
+    const parts = data.name.trim().split(/\s+/);
+    enhancedData.first_name = parts[0];
+    if (parts.length >= 2) enhancedData.last_name = parts.slice(1).join(" ");
+  }
+  enhancedData.country = "AU";
+  return enhancedData;
 }
 
 function waitForGtag(callback: () => void) {
@@ -40,25 +64,8 @@ function waitForGtag(callback: () => void) {
 
 function pushEnhancedConversionData(data: EnhancedConversionData) {
   if (typeof window === "undefined" || !window.gtag) return;
-
-  const enhancedData: Record<string, string> = {};
-  if (data.email) enhancedData.email = data.email.trim().toLowerCase();
-  if (data.phone) {
-    // Normalize AU phone: strip spaces, add +61 prefix
-    let phone = data.phone.replace(/[\s\-()]/g, "");
-    if (phone.startsWith("0")) phone = "+61" + phone.slice(1);
-    enhancedData.phone_number = phone;
-  }
-  if (data.name) {
-    const parts = data.name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-      enhancedData.first_name = parts[0];
-      enhancedData.last_name = parts.slice(1).join(" ");
-    } else {
-      enhancedData.first_name = parts[0];
-    }
-  }
-  enhancedData.country = "AU";
+  const enhancedData = normaliseEnhancedConversionData(data);
+  if (!enhancedData) return;
 
   // Push enhanced conversion data to the data layer
   window.gtag("set", "user_data", enhancedData);
@@ -88,14 +95,35 @@ export function trackRemarketingEvent(params: RemarketingParams) {
 // ─── Conversion Events ───────────────────────────────────────────────────────
 
 /**
- * Fire Google Ads + Meta Pixel conversion when a quote form is submitted.
- * Includes enhanced conversion data for better attribution.
- * Average quote value for a concreter: $3,000–$8,000. We use $5,000 as default.
+ * Record a quote conversion only after the server returns a persistent quote ID.
+ * The data-layer event is the canonical input for server-side GTM. Until the
+ * server container is enabled, the direct Ads event remains as a rollout
+ * fallback but uses the exact same stable transaction ID.
  */
-export function trackQuoteConversion(userData?: EnhancedConversionData, value?: number) {
-  const conversionValue = value || 5000;
+const trackedQuoteTransactions = new Set<string>();
 
-  // Enhanced conversions — push user data before firing
+export function trackQuoteConversion(
+  confirmation: ConfirmedQuoteConversion,
+  userData?: EnhancedConversionData,
+  value = 1,
+) {
+  if (trackedQuoteTransactions.has(confirmation.transactionId)) return;
+  trackedQuoteTransactions.add(confirmation.transactionId);
+
+  if (typeof window === "undefined") return;
+  const enhancedData = normaliseEnhancedConversionData(userData);
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "quote_submitted",
+    quote_id: confirmation.quoteId,
+    ecommerce: {
+      transaction_id: confirmation.transactionId,
+      value,
+      currency: "AUD",
+    },
+    ...(enhancedData ? { user_data: enhancedData } : {}),
+  });
+
   if (userData) {
     pushEnhancedConversionData(userData);
   }
@@ -103,21 +131,20 @@ export function trackQuoteConversion(userData?: EnhancedConversionData, value?: 
   waitForGtag(() => {
     window.gtag!("event", "conversion", {
       send_to: CONVERSION_LABELS.QUOTE_SUBMISSION,
-      value: conversionValue,
+      value,
       currency: "AUD",
-      transaction_id: `QR-${Date.now()}`,
+      transaction_id: confirmation.transactionId,
     });
-    console.log("[Tracking] Google Ads quote conversion fired (enhanced)");
+    console.log("[Tracking] Google Ads quote conversion fired with confirmed ID");
   });
 
-  // Meta Pixel — Lead event with value
-  if (typeof window !== "undefined" && window.fbq) {
+  if (window.fbq) {
     window.fbq("track", "Lead", {
       content_name: "Quote Request",
       content_category: "Concreting Services",
       currency: "AUD",
-      value: conversionValue,
-    });
+      value,
+    }, { eventID: confirmation.transactionId });
     console.log("[Tracking] Meta Pixel Lead event fired");
   }
 }

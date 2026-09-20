@@ -6,7 +6,12 @@ import { notifyOwner } from "./_core/notification";
 import { sendQuoteNotificationEmail, sendCustomerConfirmationEmail } from "./email";
 import { makeRequest, PlaceDetailsResult, PlacesSearchResult } from "./_core/map";
 import { z } from "zod";
-import { getDb } from "./db";
+import {
+  createOrGetQuoteRequest,
+  getDb,
+  getQuoteRequestBySubmissionId,
+  quoteTransactionId,
+} from "./db";
 import {
   getAllQuoteRequests,
   getQuoteRequestById,
@@ -193,6 +198,7 @@ const bookingSmsTokenLimiter = new SubmissionRateLimiter({ windowMs: 60 * 60_000
 const bookingSmsAddressLimiter = new SubmissionRateLimiter({ windowMs: 10 * 60_000, maxAttempts: 20 });
 
 const quoteInputSchema = z.object({
+  submissionId: z.string().uuid().optional(),
   formType: z.enum(["hero_quick_quote"]).optional(),
   name: z.string().trim().min(2, "Name is required").max(100),
   phone: z.string().trim().min(1, "Phone is required").max(30),
@@ -664,6 +670,7 @@ export const appRouter = router({
     submit: publicProcedure
       .input(quoteInputSchema)
       .mutation(async ({ input, ctx }) => {
+        const submissionId = input.submissionId ?? crypto.randomUUID();
         if (input.jobBrief) {
           const compatibleFields = toLegacyQuoteFields(input.jobBrief);
           input.name = compatibleFields.name;
@@ -723,6 +730,31 @@ export const appRouter = router({
           });
         }
 
+        const existingQuote = await getQuoteRequestBySubmissionId(submissionId);
+        if (existingQuote) {
+          let bookingDeliveryToken: string | null = null;
+          if (input.jobBrief && isBookingGatewayConfigured()) {
+            try {
+              const delivery = await createBookingDeliveryViaGateway({
+                customerName: input.name,
+                customerPhone: phoneValidation.normalized,
+              });
+              bookingDeliveryToken = delivery.token;
+            } catch (err) {
+              console.error("[Quote] Failed to recreate booking SMS delivery:", err);
+            }
+          }
+          return {
+            success: true,
+            message: "Quote request already received.",
+            serviceAreaStatus: serviceArea.status,
+            quoteId: existingQuote.id,
+            transactionId: quoteTransactionId(existingQuote.id),
+            duplicate: true,
+            bookingDeliveryToken,
+          };
+        }
+
         const forwardedAddress = ctx.req.headers["x-forwarded-for"];
         const address = Array.isArray(forwardedAddress)
           ? forwardedAddress[0]
@@ -753,40 +785,54 @@ export const appRouter = router({
           ? `[SERVICE AREA REVIEW]\n${input.details || "No additional details provided"}`
           : input.details ?? "";
 
-        // Generate status token for customer tracking portal
-        const statusToken = crypto.randomBytes(32).toString("hex");
-        let savedQuoteId: number | undefined;
         let bookingDeliveryToken: string | null = null;
+        // Persist before any conversion or downstream notification is acknowledged.
+        const persistedQuote = await createOrGetQuoteRequest({
+          submissionId,
+          name: input.name,
+          phone: input.phone,
+          email: input.email,
+          suburb: input.suburb,
+          service: input.service,
+          details: internalDetails,
+          photoUrls: input.photoUrls ? JSON.stringify(input.photoUrls) : null,
+          leadSource: input.leadSource ?? null,
+          utmSource: input.utmSource ?? null,
+          utmMedium: input.utmMedium ?? null,
+          utmCampaign: input.utmCampaign ?? null,
+          utmTerm: input.utmTerm ?? null,
+          utmContent: input.utmContent ?? null,
+          gclid: input.gclid ?? null,
+          fbclid: input.fbclid ?? null,
+          referrer: input.referrer ?? null,
+          landingPage: input.landingPage ?? null,
+          statusToken: crypto.randomBytes(32).toString("hex"),
+        });
 
-        // Save to database
-        try {
-          const db = await getDb();
-          if (db) {
-            const [inserted] = await db.insert(quoteRequests).values({
-              name: input.name,
-              phone: input.phone,
-              email: input.email,
-              suburb: input.suburb,
-              service: input.service,
-              details: internalDetails,
-              photoUrls: input.photoUrls ? JSON.stringify(input.photoUrls) : null,
-              leadSource: input.leadSource ?? null,
-              utmSource: input.utmSource ?? null,
-              utmMedium: input.utmMedium ?? null,
-              utmCampaign: input.utmCampaign ?? null,
-              utmTerm: input.utmTerm ?? null,
-              utmContent: input.utmContent ?? null,
-              gclid: input.gclid ?? null,
-              fbclid: input.fbclid ?? null,
-              referrer: input.referrer ?? null,
-              landingPage: input.landingPage ?? null,
-              statusToken,
-            });
-            savedQuoteId = Number(inserted.insertId);
+        if (persistedQuote.duplicate) {
+          if (input.jobBrief && isBookingGatewayConfigured()) {
+            try {
+              const delivery = await createBookingDeliveryViaGateway({
+                customerName: input.name,
+                customerPhone: input.phone,
+              });
+              bookingDeliveryToken = delivery.token;
+            } catch (err) {
+              console.error("[Quote] Failed to recreate booking SMS delivery:", err);
+            }
           }
-        } catch (err) {
-          console.error("[Quote] Failed to save to database:", err);
+          return {
+            success: true,
+            message: "Quote request already received.",
+            serviceAreaStatus: serviceArea.status,
+            quoteId: persistedQuote.quoteId,
+            transactionId: persistedQuote.transactionId,
+            duplicate: true,
+            bookingDeliveryToken,
+          };
         }
+
+        const { quoteId, transactionId, statusToken } = persistedQuote;
 
         if (input.jobBrief && isBookingGatewayConfigured()) {
           try {
@@ -880,11 +926,7 @@ export const appRouter = router({
         // Generate branded PDF estimate and save to S3 for admin review
         // (NOT auto-emailed to customer — admin can review/edit and send manually)
         try {
-          const quoteId = savedQuoteId;
-
-          const quoteRef = quoteId
-            ? `CCG-${String(quoteId).padStart(4, "0")}`
-            : `CCG-${Date.now().toString(36).toUpperCase()}`;
+          const quoteRef = `CCG-${String(quoteId).padStart(4, "0")}`;
 
           const pdfBuffer = generateQuotePdf({
             name: input.name,
@@ -961,6 +1003,9 @@ export const appRouter = router({
           message: "Quote request submitted successfully!",
           serviceAreaStatus: serviceArea.status,
           bookingDeliveryToken,
+          quoteId,
+          transactionId,
+          duplicate: false,
         };
       }),
 

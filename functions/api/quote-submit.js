@@ -20,10 +20,67 @@ export async function onRequestPost(context) {
     const data = await request.json();
 
     // Validate required fields
-    if (!data.name || !data.phone || !data.email || !data.suburb || !data.service) {
+    if (
+      !data.name || !data.phone || !data.email || !data.suburb || !data.service ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(data.submissionId || ""))
+    ) {
       return new Response(
         JSON.stringify({ success: false, error: "Missing required fields" }),
         { status: 400, headers: corsHeaders }
+      );
+    }
+
+    if (!env.LEAD_BACKUP_DB?.prepare) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Persistent quote storage is unavailable" }),
+        { status: 503, headers: corsHeaders }
+      );
+    }
+
+    const quoteId = `quote_${data.submissionId}`;
+    const transactionId = `CCG-Q-${data.submissionId}`;
+    const existing = await env.LEAD_BACKUP_DB
+      .prepare("SELECT id FROM lead_backups WHERE id = ? AND lead_type = 'quote' LIMIT 1")
+      .bind(quoteId)
+      .first();
+    if (existing?.id === quoteId) {
+      return new Response(
+        JSON.stringify({ success: true, quoteId, transactionId, duplicate: true, message: "Quote request already received" }),
+        { status: 200, headers: corsHeaders }
+      );
+    }
+
+    const persisted = await env.LEAD_BACKUP_DB.prepare(`
+      INSERT INTO lead_backups (
+        id, lead_type, created_at, name, phone, email, service, suburb,
+        details, lead_source, photo_urls_json, job_brief_json
+      ) VALUES (?, 'quote', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO NOTHING
+    `).bind(
+      quoteId,
+      new Date().toISOString(),
+      String(data.name),
+      String(data.phone),
+      String(data.email),
+      String(data.service),
+      String(data.suburb),
+      String(data.details || ""),
+      String(data.leadSource || "Direct"),
+      JSON.stringify(Array.isArray(data.photoUrls) ? data.photoUrls : []),
+      data.jobBrief ? JSON.stringify(data.jobBrief) : null,
+    ).run();
+
+    const changes = Number(persisted?.meta?.changes);
+    if (persisted?.success !== true || (changes !== 1 && changes !== 0)) {
+      return new Response(
+        JSON.stringify({ success: false, error: "Persistent quote storage failed" }),
+        { status: 503, headers: corsHeaders }
+      );
+    }
+    if (changes === 0) {
+      return new Response(
+        JSON.stringify({ success: true, quoteId, transactionId, duplicate: true, message: "Quote request already received" }),
+        { status: 200, headers: corsHeaders }
       );
     }
 
@@ -168,7 +225,7 @@ export async function onRequestPost(context) {
     }
 
     return new Response(
-      JSON.stringify({ success: true, message: "Quote submitted successfully" }),
+      JSON.stringify({ success: true, quoteId, transactionId, duplicate: false, message: "Quote submitted successfully" }),
       { status: 200, headers: corsHeaders }
     );
   } catch (err) {

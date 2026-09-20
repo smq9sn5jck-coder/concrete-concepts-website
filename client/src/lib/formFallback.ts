@@ -26,6 +26,7 @@ const BUSINESS_EMAIL = "info@concreteconceptsgroup.com";
 const BUSINESS_PHONE = "0424 463 268";
 
 interface FormData {
+  submissionId?: string;
   formType?: "hero_quick_quote";
   name: string;
   email?: string;
@@ -65,11 +66,25 @@ type FallbackResult = {
   error?: string;
 };
 
+type QuoteFallbackResult =
+  | {
+      success: true;
+      method: "api";
+      quoteId: string | number;
+      transactionId: string;
+      duplicate: boolean;
+    }
+  | {
+      success: false;
+      method: "api" | "mailto";
+      error?: string;
+    };
+
 /**
  * Submit form data by POSTing to the Pages Function.
  * Validation happens before delivery so invalid data cannot bypass tRPC.
  */
-export async function submitFormFallback(data: FormData): Promise<FallbackResult> {
+export async function submitFormFallback(data: FormData): Promise<QuoteFallbackResult> {
   const phoneValidation = validateAustralianPhone(data.phone);
   if (!phoneValidation.valid) throw new Error(phoneValidation.error);
 
@@ -110,6 +125,7 @@ export async function submitFormFallback(data: FormData): Promise<FallbackResult
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        submissionId: normalizedData.submissionId,
         formType: normalizedData.formType,
         name: normalizedData.name,
         phone: normalizedData.phone,
@@ -126,7 +142,23 @@ export async function submitFormFallback(data: FormData): Promise<FallbackResult
       }),
     });
 
-    if (response.ok) return { success: true, method: "api" };
+    if (response.ok) {
+      const body = await response.json();
+      if (
+        body?.success === true &&
+        (typeof body.quoteId === "string" || typeof body.quoteId === "number") &&
+        typeof body.transactionId === "string"
+      ) {
+        return {
+          success: true,
+          method: "api",
+          quoteId: body.quoteId,
+          transactionId: body.transactionId,
+          duplicate: body.duplicate === true,
+        };
+      }
+      throw new Error("Delivery endpoint did not confirm a persistent quote ID");
+    }
 
     let apiError = `Delivery endpoint returned ${response.status}`;
     try {

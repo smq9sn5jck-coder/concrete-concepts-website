@@ -293,6 +293,9 @@ function releaseLatestWorkerRateLimit(key, timestamp) {
 
 function validateWorkerQuoteSubmission(formData) {
   const now = Date.now();
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(formData.submissionId || ""))) {
+    return { valid: false, status: 400, error: "The quote session has expired. Please refresh and try again." };
+  }
   if (formData.jobBrief) {
     const structured = validateWorkerJobBrief(formData.jobBrief);
     if (!structured.valid) return structured;
@@ -1080,7 +1083,9 @@ async function backupToManusBackend(env, formData) {
     : service === "Homeowner Guide Download"
       ? "guide"
       : "quote";
-  const recordId = `lead_${crypto.randomUUID()}`;
+  const recordId = leadType === "quote" && formData.submissionId
+    ? `quote_${formData.submissionId}`
+    : `lead_${crypto.randomUUID()}`;
   const requestedTimestamp = new Date(formData.timestamp || Date.now());
   const createdAt = Number.isNaN(requestedTimestamp.getTime())
     ? new Date().toISOString()
@@ -1092,6 +1097,7 @@ async function backupToManusBackend(env, formData) {
         id, lead_type, created_at, name, phone, email, service, suburb,
         details, lead_source, photo_urls_json, job_brief_json
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO NOTHING
     `).bind(
       recordId,
       leadType,
@@ -1107,12 +1113,13 @@ async function backupToManusBackend(env, formData) {
       formData.jobBrief ? JSON.stringify(formData.jobBrief) : null,
     ).run();
 
-    if (result?.success !== true || Number(result?.meta?.changes) !== 1) {
+    const changes = Number(result?.meta?.changes);
+    if (result?.success !== true || (changes !== 1 && !(leadType === "quote" && changes === 0))) {
       console.error("Cloudflare D1 lead backup failed: insert was not confirmed");
       return null;
     }
 
-    return { recordId };
+    return { recordId, duplicate: changes === 0 };
   } catch (e) {
     console.error("Cloudflare D1 lead backup failed:", e.message);
     return null;
@@ -1233,6 +1240,34 @@ async function handleGuideSubmit(env, formData) {
 async function handleQuoteSubmit(env, formData) {
   const resendApiKey = env.RESEND_API_KEY;
 
+  const submissionId = String(formData.submissionId || "");
+  const quoteId = `quote_${submissionId}`;
+  const transactionId = `CCG-Q-${submissionId}`;
+
+  if (env.LEAD_BACKUP_DB?.prepare && submissionId) {
+    try {
+      const statement = env.LEAD_BACKUP_DB
+        .prepare("SELECT id FROM lead_backups WHERE id = ? AND lead_type = 'quote' LIMIT 1")
+        .bind(quoteId);
+      const existing = typeof statement.first === "function" ? await statement.first() : null;
+      if (existing?.id === quoteId) {
+        const bookingDeliveryToken = await createBookingDeliveryToken(env, formData);
+        return {
+          success: true,
+          message: "Quote request already received",
+          quoteId,
+          transactionId,
+          duplicate: true,
+          channels: { email: "skipped", sheets: "logged", jotform: "skipped" },
+          serviceAreaStatus: workerServiceArea(formData.suburb).status,
+          ...(bookingDeliveryToken ? { bookingDeliveryToken } : {}),
+        };
+      }
+    } catch (error) {
+      console.error("Cloudflare D1 quote lookup failed:", error.message);
+    }
+  }
+
   const validation = validateWorkerQuoteSubmission(formData);
   if (!validation.valid) return { success: false, error: validation.error, status: validation.status };
 
@@ -1262,10 +1297,34 @@ async function handleQuoteSubmit(env, formData) {
     ${photoSection}
   `;
 
-  // Fire all channels in parallel — never lose a lead
+  // Persist first. D1 is the conversion source of truth and prevents duplicate delivery.
   const results = { email: "pending", sheets: "pending", jotform: "pending" };
   try {
-    const [emailRes, manusRes, jotformRes] = await Promise.allSettled([
+    const persisted = await backupToManusBackend(env, formData);
+    if (!persisted?.recordId) {
+      return {
+        success: false,
+        error: "We couldn't confirm delivery. Please call 0424 463 268.",
+        status: 503,
+        channels: { ...results, sheets: "failed" },
+      };
+    }
+    results.sheets = "logged";
+    if (persisted.duplicate) {
+      const bookingDeliveryToken = await createBookingDeliveryToken(env, formData);
+      return {
+        success: true,
+        message: "Quote request already received",
+        quoteId: persisted.recordId,
+        transactionId,
+        duplicate: true,
+        channels: { email: "skipped", sheets: "logged", jotform: "skipped" },
+        serviceAreaStatus: validation.serviceAreaStatus,
+        ...(bookingDeliveryToken ? { bookingDeliveryToken } : {}),
+      };
+    }
+
+    const [emailRes, jotformRes] = await Promise.allSettled([
       resendApiKey ? fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${resendApiKey}`, "Content-Type": "application/json" },
@@ -1276,7 +1335,6 @@ async function handleQuoteSubmit(env, formData) {
           html: notificationHtml,
         }),
       }) : Promise.resolve(null),
-      backupToManusBackend(env, formData),
       backupToJotform(env, formData),
     ]);
 
@@ -1286,7 +1344,6 @@ async function handleQuoteSubmit(env, formData) {
       results.email = "failed";
       console.error("Resend error:", emailRes.reason || "non-ok response");
     }
-    results.sheets = manusRes.status === "fulfilled" && manusRes.value?.recordId ? "logged" : "failed";
     results.jotform = jotformRes.status === "fulfilled" && jotformRes.value ? "logged" : "failed";
 
     // Auto-reply to customer (non-blocking)
@@ -1303,15 +1360,13 @@ async function handleQuoteSubmit(env, formData) {
       }).catch(() => {});
     }
 
-    const delivered = results.email === "sent" || results.sheets === "logged" || results.jotform === "logged";
-    if (!delivered) {
-      return { success: false, error: "We couldn't confirm delivery. Please call 0424 463 268.", status: 503, channels: results };
-    }
-
     const bookingDeliveryToken = await createBookingDeliveryToken(env, formData);
     return {
       success: true,
       message: "Quote submitted successfully",
+      quoteId: persisted.recordId,
+      transactionId,
+      duplicate: false,
       channels: results,
       serviceAreaStatus: validation.serviceAreaStatus,
       ...(bookingDeliveryToken ? { bookingDeliveryToken } : {}),

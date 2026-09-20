@@ -28,6 +28,7 @@ export type InsertUser = typeof users.$inferInsert;
 // Quote requests table
 export const quoteRequests = mysqlTable("quote_requests", {
   id: int("id").autoincrement().primaryKey(),
+  submissionId: varchar("submissionId", { length: 64 }).unique(),
   name: varchar("name", { length: 255 }).notNull(),
   phone: varchar("phone", { length: 50 }).notNull(),
   email: varchar("email", { length: 320 }).notNull(),
