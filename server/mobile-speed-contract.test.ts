@@ -32,9 +32,11 @@ describe("mobile hero delivery contract", () => {
     expect(hero).not.toMatch(/IMG_4816\.MOV|IMG_4817\.MOV/i);
   });
 
-  it("keeps the proven original logo URL at every breakpoint", () => {
-    expect(hero).toContain("const LOGO_URL =");
-    expect(hero).not.toContain("performanceAssets.logo.standard.url");
+  it("uses budgeted responsive logo assets without changing the mark", () => {
+    expect(hero).toContain("performanceAssets.logos.hero.standard.url");
+    expect(hero).toContain("performanceAssets.logos.hero.highDensity.url");
+    expect(hero).toContain("srcSet");
+    expect(hero).not.toContain("const LOGO_URL =");
   });
 });
 

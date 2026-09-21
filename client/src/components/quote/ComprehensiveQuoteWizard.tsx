@@ -148,6 +148,11 @@ const PREFERRED_CONTACT_LABELS: Record<NonNullable<QuoteDraftData["preferredCont
   email: "email",
 };
 
+function stepAccessibleLabel(number: number, title: string, active: boolean, complete: boolean) {
+  const state = active ? "current step" : complete ? "completed" : "not completed";
+  return `Step ${number} of ${STEPS.length}: ${title}, ${state}`;
+}
+
 function optionalNumber(value?: string) {
   if (!value?.trim()) return undefined;
   const number = Number(value);
@@ -629,6 +634,9 @@ export default function ComprehensiveQuoteWizard() {
                 key={title}
                 type="button"
                 onClick={() => complete && setStep(number)}
+                aria-label={stepAccessibleLabel(number, title, active, complete)}
+                aria-current={active ? "step" : undefined}
+                disabled={!active && !complete}
                 className={`rounded-xl px-1 py-2 text-center transition md:px-3 ${active ? "bg-brand-charcoal text-white" : complete ? "bg-brand-yellow/20 text-slate-900" : "text-slate-400"}`}
               >
                 <span className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full border border-current md:h-8 md:w-8">
@@ -656,7 +664,7 @@ export default function ComprehensiveQuoteWizard() {
                   <label><span className={labelClass}>Full name *</span><input className={inputClass} autoComplete="name" value={data.name} onChange={(event) => update("name", event.target.value)} /></label>
                   <label><span className={labelClass}>Australian mobile *</span><input className={inputClass} type="tel" autoComplete="tel" placeholder="04xx xxx xxx" value={data.mobile} onChange={(event) => update("mobile", event.target.value)} /></label>
                   <label><span className={labelClass}>Email *</span><input className={inputClass} type="email" autoComplete="email" value={data.email} onChange={(event) => update("email", event.target.value)} /></label>
-                  <label><span className={labelClass}>Company <span className="font-normal text-slate-400">(optional)</span></span><input className={inputClass} autoComplete="organization" value={data.company} onChange={(event) => update("company", event.target.value)} /></label>
+                  <label><span className={labelClass}>Company <span className="font-normal text-slate-600">(optional)</span></span><input className={inputClass} autoComplete="organization" value={data.company} onChange={(event) => update("company", event.target.value)} /></label>
                 </div>
                 <div className="mt-5">
                   <span className={labelClass}>Preferred contact method *</span>
@@ -675,7 +683,7 @@ export default function ComprehensiveQuoteWizard() {
                 <h2 className="mt-2 text-3xl font-bold text-slate-950">Where is the project?</h2>
                 <p className="mt-2 text-slate-600">The street address is optional. Suburb and postcode help us confirm travel and availability.</p>
                 <div className="mt-7 grid gap-5 md:grid-cols-2">
-                  <label className="md:col-span-2"><span className={labelClass}>Street address <span className="font-normal text-slate-400">(optional)</span></span><input className={inputClass} autoComplete="street-address" value={data.streetAddress} onChange={(event) => update("streetAddress", event.target.value)} /></label>
+                  <label className="md:col-span-2"><span className={labelClass}>Street address <span className="font-normal text-slate-600">(optional)</span></span><input className={inputClass} autoComplete="street-address" value={data.streetAddress} onChange={(event) => update("streetAddress", event.target.value)} /></label>
                   <label><span className={labelClass}>Suburb *</span><input className={inputClass} autoComplete="address-level2" placeholder="Camp Hill" value={data.suburb} onChange={(event) => update("suburb", event.target.value)} /></label>
                   <label><span className={labelClass}>Postcode *</span><input className={inputClass} inputMode="numeric" autoComplete="postal-code" maxLength={4} placeholder="4152" value={data.postcode} onChange={(event) => update("postcode", event.target.value.replace(/\D/g, "").slice(0, 4))} /></label>
                 </div>
@@ -722,7 +730,7 @@ export default function ComprehensiveQuoteWizard() {
                 </div>
                 {data.measurementMode === "dimensions" && <div className="mt-5 grid grid-cols-2 gap-3"><label><span className={labelClass}>Length (m) *</span><input className={inputClass} inputMode="decimal" value={data.lengthM} onChange={(event) => update("lengthM", event.target.value)} /></label><label><span className={labelClass}>Width (m) *</span><input className={inputClass} inputMode="decimal" value={data.widthM} onChange={(event) => update("widthM", event.target.value)} /></label></div>}
                 {data.measurementMode === "area" && <label className="mt-5 block"><span className={labelClass}>Approximate total area (m²) *</span><input className={inputClass} inputMode="decimal" value={data.totalAreaM2} onChange={(event) => update("totalAreaM2", event.target.value)} /></label>}
-                <label className="mt-5 block"><span className={labelClass}>Separate areas or measurement notes <span className="font-normal text-slate-400">(optional)</span></span><textarea className={`${inputClass} min-h-24 resize-y`} value={data.separateAreaNotes} onChange={(event) => update("separateAreaNotes", event.target.value)} /></label>
+                <label className="mt-5 block"><span className={labelClass}>Separate areas or measurement notes <span className="font-normal text-slate-600">(optional)</span></span><textarea className={`${inputClass} min-h-24 resize-y`} value={data.separateAreaNotes} onChange={(event) => update("separateAreaNotes", event.target.value)} /></label>
 
                 <div className="mt-7 rounded-2xl bg-slate-50 p-5">
                   <h3 className="font-bold text-slate-950">Site access and conditions</h3>
@@ -739,7 +747,7 @@ export default function ComprehensiveQuoteWizard() {
                 </div>
 
                 <div className="mt-7 rounded-2xl border-2 border-dashed border-slate-300 p-5">
-                  <div className="flex items-start gap-3"><ImagePlus className="mt-0.5 h-6 w-6 text-brand-yellow" /><div><h3 className="font-bold text-slate-950">Site photos <span className="font-normal text-slate-400">(optional)</span></h3><p className="mt-1 text-sm text-slate-600">Useful photos show the whole area, street access, slope/drainage, existing concrete and obstacles.</p></div></div>
+                  <div className="flex items-start gap-3"><ImagePlus className="mt-0.5 h-6 w-6 text-brand-yellow" /><div><h3 className="font-bold text-slate-950">Site photos <span className="font-normal text-slate-600">(optional)</span></h3><p className="mt-1 text-sm text-slate-600">Useful photos show the whole area, street access, slope/drainage, existing concrete and obstacles.</p></div></div>
                   <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                     {photos.map((photo) => <div key={photo.id} className="relative overflow-hidden rounded-xl border border-slate-200 bg-white"><img src={photo.preview} alt={photo.file.name} className="h-28 w-full object-cover" /><div className="p-2 text-xs"><p className="truncate font-medium">{photo.file.name}</p><p className={photo.status === "error" ? "text-red-600" : photo.status === "uploaded" ? "text-emerald-600" : "text-slate-500"}>{photo.status === "uploading" ? "Uploading…" : photo.status === "uploaded" ? "Uploaded" : "Upload failed"}</p>{photo.status === "error" && <button type="button" onClick={() => void uploadPhoto(photo)} className="mt-1 font-bold text-brand-yellow">Retry</button>}</div><button type="button" aria-label={`Remove ${photo.file.name}`} onClick={() => removePhoto(photo.id)} className="absolute right-1 top-1 rounded-full bg-black/70 p-1 text-white"><Trash2 className="h-3.5 w-3.5" /></button></div>)}
                   </div>

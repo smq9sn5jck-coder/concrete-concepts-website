@@ -16,6 +16,7 @@ type Asset = {
 
 type Manifest = {
   mobileHero: { standard: Asset; highDensity: Asset };
+  logos: Record<string, { standard: Asset; highDensity: Asset }>;
   services: Record<string, { standard: Asset; highDensity: Asset }>;
 };
 
@@ -31,6 +32,11 @@ describe("mobile performance asset budgets", () => {
     expect(manifest.mobileHero.standard.bytes).toBeLessThan(60_000);
     expect(manifest.mobileHero.highDensity.bytes).toBeLessThan(125_000);
 
+    for (const variants of Object.values(manifest.logos)) {
+      expect(variants.standard.bytes).toBeLessThan(45_000);
+      expect(variants.highDensity.bytes).toBeLessThan(90_000);
+    }
+
     for (const variants of Object.values(manifest.services)) {
       expect(variants.standard.bytes).toBeLessThan(100_000);
       expect(variants.highDensity.bytes).toBeLessThan(220_000);
@@ -43,6 +49,10 @@ describe("mobile performance asset budgets", () => {
     const assets = [
       manifest.mobileHero.standard,
       manifest.mobileHero.highDensity,
+      ...Object.values(manifest.logos).flatMap((variants) => [
+        variants.standard,
+        variants.highDensity,
+      ]),
       ...Object.values(manifest.services).flatMap((variants) => [
         variants.standard,
         variants.highDensity,
@@ -51,7 +61,7 @@ describe("mobile performance asset budgets", () => {
 
     for (const asset of assets) {
       expect(asset.url).toMatch(
-        /^https:\/\/res\.cloudinary\.com\/d92cmzyo\/image\/upload\/v\d+\/ccg-mobile-speed-2026-08-28\/[A-Za-z0-9._/-]+\.webp$/
+        /^https:\/\/res\.cloudinary\.com\/d92cmzyo\/image\/upload\/v\d+\/(?:ccg-mobile-speed-2026-08-28|ccg-conversion-readiness-2026-09-21)\/[A-Za-z0-9._/-]+\.webp$/
       );
       expect(asset.url).not.toContain("/manus-storage/");
       expect(asset.url).not.toMatch(/\.mov(?:\?|$)/i);
@@ -60,6 +70,6 @@ describe("mobile performance asset budgets", () => {
       expect(asset.bytes).toBeGreaterThan(0);
     }
 
-    expect(manifest).not.toHaveProperty("logo");
+    expect(Object.keys(manifest.logos)).toEqual(["hero", "navbar"]);
   });
 });

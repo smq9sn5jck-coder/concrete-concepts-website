@@ -13,6 +13,36 @@
       "bytes": 118052
     }
   },
+  "logos": {
+    "hero": {
+      "standard": {
+        "url": "https://res.cloudinary.com/d92cmzyo/image/upload/v1789968506/ccg-conversion-readiness-2026-09-21/ccg-logo-hero-400.webp",
+        "width": 400,
+        "height": 266,
+        "bytes": 23386
+      },
+      "highDensity": {
+        "url": "https://res.cloudinary.com/d92cmzyo/image/upload/v1789968510/ccg-conversion-readiness-2026-09-21/ccg-logo-hero-768.webp",
+        "width": 768,
+        "height": 512,
+        "bytes": 64442
+      }
+    },
+    "navbar": {
+      "standard": {
+        "url": "https://res.cloudinary.com/d92cmzyo/image/upload/v1789968514/ccg-conversion-readiness-2026-09-21/ccg-logo-navbar-120.webp",
+        "width": 120,
+        "height": 80,
+        "bytes": 4070
+      },
+      "highDensity": {
+        "url": "https://res.cloudinary.com/d92cmzyo/image/upload/v1789968517/ccg-conversion-readiness-2026-09-21/ccg-logo-navbar-240.webp",
+        "width": 240,
+        "height": 160,
+        "bytes": 10850
+      }
+    }
+  },
   "services": {
     "troweling": {
       "standard": {

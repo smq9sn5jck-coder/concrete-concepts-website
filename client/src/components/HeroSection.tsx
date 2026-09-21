@@ -10,12 +10,12 @@ import { classifyServiceArea } from "@shared/leadValidation";
 import performanceAssets from "@/config/performance-assets.json";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-hero_a3bbd489.png";
 const HERO_VIDEO_WEBM = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-hero-video.webm";
 const HERO_VIDEO_MP4 = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-hero-video.mp4";
 const HERO_POSTER_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/static/hero-poster.jpg";
 const MOBILE_HERO_POSTER = performanceAssets.mobileHero.standard.url;
 const MOBILE_HERO_POSTER_SRCSET = `${performanceAssets.mobileHero.standard.url} ${performanceAssets.mobileHero.standard.width}w, ${performanceAssets.mobileHero.highDensity.url} ${performanceAssets.mobileHero.highDensity.width}w`;
+const HERO_LOGO_SRCSET = `${performanceAssets.logos.hero.standard.url} ${performanceAssets.logos.hero.standard.width}w, ${performanceAssets.logos.hero.highDensity.url} ${performanceAssets.logos.hero.highDensity.width}w`;
 const heroCopyVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.7 } },
@@ -121,7 +121,18 @@ export default function HeroSection() {
         <div className="grid w-full items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
             <div className="mb-6 animate-fade-in-scale lg:mb-8">
-              <img src={LOGO_URL} alt="Concrete Concepts Group Brisbane concreting services" width={768} height={512} loading="eager" decoding="sync" fetchPriority="high" className="h-auto w-[220px] object-contain sm:w-[280px] md:w-[340px] lg:w-[400px]" />
+              <img
+                src={performanceAssets.logos.hero.standard.url}
+                srcSet={HERO_LOGO_SRCSET}
+                sizes="(min-width: 1024px) 400px, (min-width: 768px) 340px, (min-width: 640px) 280px, 220px"
+                alt="Concrete Concepts Group Brisbane concreting services"
+                width={performanceAssets.logos.hero.standard.width}
+                height={performanceAssets.logos.hero.standard.height}
+                loading="eager"
+                decoding="async"
+                fetchPriority="high"
+                className="h-auto w-[220px] object-contain sm:w-[280px] md:w-[340px] lg:w-[400px]"
+              />
             </div>
             <h1 className="mb-4 animate-fade-in-up text-3xl font-bold leading-[1.15] text-white sm:text-4xl lg:text-5xl xl:text-6xl" style={{ animationDelay: "0.3s" }}>
               Your Concrete, <span className="italic text-brand-gold">Our Expertise</span>

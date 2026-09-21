@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X, BookOpen } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "wouter";
+import performanceAssets from "@/config/performance-assets.json";
 
 const navLinks = [
   { label: "Services", href: "#services" },
@@ -28,6 +29,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [location] = useLocation();
+  const logo = scrolled ? performanceAssets.logos.navbar : performanceAssets.logos.hero;
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -59,15 +61,14 @@ export default function Navbar() {
           {/* Brand Logo — swap between light (transparent bg) and dark versions */}
           <Link href="/">
             <img
-              src={scrolled
-                ? "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-navbar_2520906a.png"
-                : "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-hero_a3bbd489.png"
-              }
+              src={logo.standard.url}
+              srcSet={`${logo.standard.url} ${logo.standard.width}w, ${logo.highDensity.url} ${logo.highDensity.width}w`}
+              sizes="(min-width: 1024px) 84px, 72px"
               alt="Concrete Concepts Group"
-              width={104}
-              height={80}
+              width={logo.standard.width}
+              height={logo.standard.height}
               loading="eager"
-              decoding="sync"
+              decoding="async"
               className="h-12 lg:h-14 w-auto object-contain cursor-pointer transition-opacity duration-300"
             />
           </Link>

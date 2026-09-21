@@ -24,6 +24,36 @@ const CUSTOMER_WEBSITE_HOSTS = new Set([
   "www.concreteconceptsgroup.com",
 ]);
 
+const HTML_SECURITY_HEADERS = Object.freeze({
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(self), microphone=(), geolocation=()",
+  "Strict-Transport-Security": "max-age=31536000",
+  "Content-Security-Policy-Report-Only": [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "form-action 'self' https://submit.jotform.com https://form.jotform.com",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https:",
+    "style-src 'self' 'unsafe-inline' https:",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data: https:",
+    "connect-src 'self' https: wss:",
+    "media-src 'self' blob: https:",
+    "frame-src 'self' https:",
+    "worker-src 'self' blob:",
+  ].join("; "),
+});
+
+export function applyHtmlSecurityHeaders(headers) {
+  for (const [name, value] of Object.entries(HTML_SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+  return headers;
+}
+
 function typedLocalitySlugFromPath(path, recordsBySlug) {
   let decodedPath;
   try {
@@ -63,6 +93,7 @@ function notFoundHtmlResponse(response, url, method = "GET") {
   headers.set("Content-Type", "text/html; charset=utf-8");
   headers.set("X-Robots-Tag", "noindex, nofollow");
   headers.set("Cache-Control", "no-store");
+  applyHtmlSecurityHeaders(headers);
   headers.delete("Content-Length");
   return new Response(method === "HEAD" ? null : html, { status: 404, headers });
 }
@@ -1732,16 +1763,26 @@ async function prepareStaticResponse(response, url, path, method) {
     });
   }
 
-  if ((method === "GET" || method === "HEAD") && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
+  if ((method === "GET" || method === "HEAD") && response.headers.get("Content-Type")?.includes("text/html")) {
     const isCustomerWebsiteHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const headers = new Headers(response.headers);
+    headers.set("Content-Type", "text/html; charset=utf-8");
+    applyHtmlSecurityHeaders(headers);
+    headers.delete("Content-Length");
+    if (!response.ok) {
+      headers.set("X-Robots-Tag", "noindex, nofollow");
+      return new Response(method === "HEAD" ? null : response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+
     const localityContext = {
       customerHost: isCustomerWebsiteHost,
       southsidePreviewEnabled: GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
     };
     const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
-    const headers = new Headers(response.headers);
-    headers.set("Content-Type", "text/html; charset=utf-8");
-    headers.delete("Content-Length");
     if (!isCustomerWebsiteHost) {
       headers.set("X-Robots-Tag", "noindex, nofollow");
     } else if (path === "/need-another-trade") {
