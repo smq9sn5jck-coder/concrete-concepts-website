@@ -7,6 +7,10 @@ import { useEffect, useState } from "react";
  */
 
 const STORAGE_KEY = "cc_lead_source";
+const CUSTOMER_WEBSITE_HOSTS = new Set([
+  "concreteconceptsgroup.com",
+  "www.concreteconceptsgroup.com",
+]);
 
 export interface LeadSourceData {
   leadSource: string;
@@ -21,7 +25,21 @@ export interface LeadSourceData {
   landingPage: string | null;
 }
 
-function detectLeadSource(params: URLSearchParams, referrer: string): string {
+function isInternalCustomerReferrer(referrer: string, currentHostname: string): boolean {
+  if (!referrer) return false;
+  try {
+    const referrerHostname = new URL(referrer).hostname.toLowerCase();
+    const normalizedCurrent = currentHostname.toLowerCase();
+    return referrerHostname === normalizedCurrent || (
+      CUSTOMER_WEBSITE_HOSTS.has(referrerHostname) &&
+      CUSTOMER_WEBSITE_HOSTS.has(normalizedCurrent)
+    );
+  } catch {
+    return false;
+  }
+}
+
+function detectLeadSource(params: URLSearchParams, referrer: string, currentHostname: string): string {
   const utmSource = params.get("utm_source");
   const utmMedium = params.get("utm_medium");
   const gclid = params.get("gclid");
@@ -68,6 +86,9 @@ function detectLeadSource(params: URLSearchParams, referrer: string): string {
 
   // Referrer-based detection (no UTM params)
   if (referrer) {
+    if (isInternalCustomerReferrer(referrer, currentHostname)) {
+      return "Direct";
+    }
     const ref = referrer.toLowerCase();
     if (ref.includes("google.com") || ref.includes("google.com.au")) {
       return "Google Organic";
@@ -99,7 +120,7 @@ function captureLeadSource(): LeadSourceData {
   const params = new URLSearchParams(window.location.search);
   const referrer = document.referrer || "";
 
-  const leadSource = detectLeadSource(params, referrer);
+  const leadSource = detectLeadSource(params, referrer, window.location.hostname || "");
 
   return {
     leadSource,

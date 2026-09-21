@@ -5,19 +5,14 @@ import { describe, expect, it } from "vitest";
 const CCG_LOGO_URL =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-full-navbar_2520906a.png";
 
-function trustedPartnersSource() {
-  return readFileSync(
-    resolve(process.cwd(), "client/src/components/TrustedPartners.tsx"),
-    "utf8",
-  );
-}
+const source = (path: string) => readFileSync(resolve(process.cwd(), path), "utf8");
 
-describe("public partner-card branding", () => {
-  it("uses the approved CCG mark instead of initial-based placeholder branding", () => {
-    const source = trustedPartnersSource();
+describe("public CCG customer branding", () => {
+  it("keeps official CCG identity in the global customer chrome", () => {
+    const chrome = `${source("client/src/components/Navbar.tsx")}\n${source("client/src/components/Footer.tsx")}`;
 
-    expect(source).toContain(CCG_LOGO_URL);
-    expect(source).toContain("CCG Trusted Partner");
-    expect(source).not.toMatch(/>\s*GA\s*</);
+    expect(chrome).toContain(CCG_LOGO_URL);
+    expect(chrome).toContain("Concrete Concepts Group");
+    expect(chrome).not.toMatch(/Trade Partners|partners\.concreteconceptsgroup\.com|Geminus/i);
   });
 });

@@ -32,7 +32,6 @@ const beforeAfter = source("client/src/components/BeforeAfterSection.tsx");
 const footer = source("client/src/components/Footer.tsx");
 const getQuote = source("client/src/pages/GetQuote.tsx");
 const seoHead = source("client/src/components/SEOHead.tsx");
-const trustedPartners = source("client/src/components/TrustedPartners.tsx");
 
 const homepageSources = [
   home,
@@ -50,7 +49,6 @@ const homepageSources = [
   gallery,
   beforeAfter,
   footer,
-  trustedPartners,
 ].join("\n");
 
 describe("Release 1 homepage funnel consolidation", () => {

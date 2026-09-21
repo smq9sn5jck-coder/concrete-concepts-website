@@ -6,6 +6,7 @@
 import { getDb } from "./db";
 import { quoteRequests, callbackRequests, adSpend, digestSettings } from "../drizzle/schema";
 import { and, gte, lte, desc, eq } from "drizzle-orm";
+import { normalizeLeadSourceForReporting } from "./leadSourceReporting";
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY ?? "";
 const RESEND_API_URL = "https://api.resend.com/emails";
@@ -130,7 +131,9 @@ async function gatherDigestData(): Promise<DigestData | null> {
   // Top sources
   const sourceMap: Record<string, { leads: number; won: number }> = {};
   for (const q of thisWeekQuotes) {
-    const src = q.utmSource ? `${q.utmSource} / ${q.utmMedium || "(none)"}` : (q.leadSource || "Direct");
+    const src = q.utmSource
+      ? `${q.utmSource} / ${q.utmMedium || "(none)"}`
+      : normalizeLeadSourceForReporting(q.leadSource);
     if (!sourceMap[src]) sourceMap[src] = { leads: 0, won: 0 };
     sourceMap[src].leads++;
     if (q.status === "won") sourceMap[src].won++;

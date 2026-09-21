@@ -6,6 +6,7 @@ import { notifyOwner } from "./_core/notification";
 import { sendQuoteNotificationEmail, sendCustomerConfirmationEmail } from "./email";
 import { makeRequest, PlaceDetailsResult, PlacesSearchResult } from "./_core/map";
 import { z } from "zod";
+import { normalizeLeadSourceForReporting } from "./leadSourceReporting";
 import {
   createOrGetQuoteRequest,
   getDb,
@@ -1617,13 +1618,13 @@ export const appRouter = router({
         // ── Source / Medium Breakdown ──
         const sourceMap: Record<string, { leads: number; won: number; revenue: number; callbacks: number }> = {};
         for (const q of allQuotes) {
-          const src = q.utmSource ? `${q.utmSource} / ${q.utmMedium || "(none)"}` : (q.leadSource || "Direct");
+          const src = q.utmSource ? `${q.utmSource} / ${q.utmMedium || "(none)"}` : normalizeLeadSourceForReporting(q.leadSource);
           if (!sourceMap[src]) sourceMap[src] = { leads: 0, won: 0, revenue: 0, callbacks: 0 };
           sourceMap[src].leads++;
           if (q.status === "won") { sourceMap[src].won++; sourceMap[src].revenue += parseFloat(q.quotedAmount || "0"); }
         }
         for (const cb of allCallbacks) {
-          const src = cb.utmSource ? `${cb.utmSource} / ${cb.utmMedium || "(none)"}` : (cb.leadSource || "Direct");
+          const src = cb.utmSource ? `${cb.utmSource} / ${cb.utmMedium || "(none)"}` : normalizeLeadSourceForReporting(cb.leadSource);
           if (!sourceMap[src]) sourceMap[src] = { leads: 0, won: 0, revenue: 0, callbacks: 0 };
           sourceMap[src].callbacks++;
           sourceMap[src].leads++;
@@ -1722,7 +1723,10 @@ export const appRouter = router({
           const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
           const monthQuotes = allQuotes.filter(q => { const qd = new Date(q.createdAt); return qd >= monthStart && qd <= monthEnd; });
           const monthCallbacks = allCallbacks.filter(cb => { const cd = new Date(cb.createdAt); return cd >= monthStart && cd <= monthEnd; });
-          const all = [...monthQuotes.map(q => q.utmSource || q.leadSource || ""), ...monthCallbacks.map(cb => cb.utmSource || cb.leadSource || "")];
+          const all = [
+            ...monthQuotes.map(q => q.utmSource || normalizeLeadSourceForReporting(q.leadSource)),
+            ...monthCallbacks.map(cb => cb.utmSource || normalizeLeadSourceForReporting(cb.leadSource)),
+          ];
           monthlyTrend.push({
             month: monthStr,
             google: all.filter(s => s.toLowerCase().includes("google")).length,

@@ -11,12 +11,10 @@ const footer = readFileSync(
   "utf8",
 );
 
-const portalUrl = "https://partners.concreteconceptsgroup.com/partners";
-
-describe("CCG partner portal links", () => {
-  it("sends both desktop and mobile Trade Partners navigation to the secure portal", () => {
-    expect(navbar.match(new RegExp(portalUrl, "g"))).toHaveLength(2);
-    expect(navbar).not.toContain("https://concreteconceptsgroup.com/trade-partners");
+describe("CCG customer navigation containment", () => {
+  it("does not send prospective customers to the partner portal", () => {
+    expect(navbar).not.toMatch(/Trade Partners|partners\.concreteconceptsgroup\.com/);
+    expect(footer).not.toMatch(/Trade Partners|partners\.concreteconceptsgroup\.com/);
   });
 
   it("keeps the fixed mobile menu vertically scrollable on phone screens", () => {
@@ -41,13 +39,9 @@ describe("CCG partner portal links", () => {
     );
   });
 
-  it("keeps a restrained partner-program link in the global footer", () => {
-    expect(footer).toContain(portalUrl);
-    expect(footer).not.toContain("https://concreteconceptsgroup.com/trade-partners");
-  });
-
-  it("does not attach Google Ads conversion callbacks to partner links", () => {
-    expect(navbar).not.toMatch(/Trade Partners[\s\S]{0,160}trackGoogleAds/i);
-    expect(footer).not.toMatch(/Trade Partners[\s\S]{0,160}trackPhoneCallClick/i);
+  it("keeps all customer-navigation CTAs focused on CCG", () => {
+    expect(navbar).toContain("Get a Free Quote");
+    expect(footer).toContain("Get a Quote");
+    expect(`${navbar}\n${footer}`).not.toContain("https://concreteconceptsgroup.com/trade-partners");
   });
 });

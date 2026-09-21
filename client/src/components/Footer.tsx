@@ -162,15 +162,6 @@ export default function Footer() {
                   </span>
                 </Link>
               </li>
-              <li>
-                <a
-                  href="https://partners.concreteconceptsgroup.com/partners"
-                  className="text-white/60 hover:text-brand-gold text-sm transition-colors"
-                  style={{ fontFamily: "var(--font-body)" }}
-                >
-                  Trade Partners
-                </a>
-              </li>
             </ul>
           </div>
 

@@ -8,7 +8,6 @@ import WhyChooseUs from "@/components/WhyChooseUs";
 import ProjectGallery from "@/components/ProjectGallery";
 import BeforeAfterSection from "@/components/BeforeAfterSection";
 import ContactDecisionPanel from "@/components/ContactDecisionPanel";
-import TrustedPartners from "@/components/TrustedPartners";
 import FAQSection from "@/components/FAQSection";
 import PaymentPlans from "@/components/PaymentPlans";
 import CTABanner from "@/components/CTABanner";
@@ -190,7 +189,6 @@ export default function Home() {
       <DeferredSection><ProjectGallery /></DeferredSection>
       <DeferredSection><BeforeAfterSection /></DeferredSection>
       <DeferredSection><ProjectPlanningBanner /></DeferredSection>
-      <DeferredSection><TrustedPartners /></DeferredSection>
       <DeferredSection><GuideCtaBanner variant="section" /></DeferredSection>
       <DeferredSection><FAQSection /></DeferredSection>
       <DeferredSection><PaymentPlans /></DeferredSection>
