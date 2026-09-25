@@ -14,7 +14,7 @@ describe("quote funnel analytics privacy contract", () => {
       step_name: "job_brief",
       traffic_class: "paid",
       name: "Private Person",
-      phone: "0412345678",
+      phone: "0424001122",
       email: "person@example.com",
       address: "1 Private Street",
       description: "Private project detail",
@@ -27,7 +27,7 @@ describe("quote funnel analytics privacy contract", () => {
       data: { step: 3, step_name: "job_brief", traffic_class: "paid" },
     });
     expect(JSON.stringify(event)).not.toMatch(
-      /Private Person|0412345678|person@example|Private Street|project detail|photo\.jpg|secret-click-id/
+      /Private Person|0424001122|person@example|Private Street|project detail|photo\.jpg|secret-click-id/
     );
   });
 

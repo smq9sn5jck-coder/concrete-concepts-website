@@ -202,7 +202,7 @@ describe("quote.submit", () => {
     await expect(
       caller.quote.submit({
         name: "Interstate Test",
-        phone: "0412 345 678",
+        phone: "0424 001 122",
         email: "interstate@example.com",
         suburb: "Sydney NSW 2000",
         service: "Driveway",
@@ -321,7 +321,7 @@ describe("quote.submit", () => {
       version: 1,
       contact: {
         name: "Jordan Client",
-        mobile: "0412 345 678",
+        mobile: "0424 001 122",
         email: "jordan@example.com",
         preferredContact: "sms",
         company: "",
@@ -356,7 +356,7 @@ describe("quote.submit", () => {
 
     const result = await caller.quote.submit({
       name: "Jordan Client",
-      phone: "0412 345 678",
+      phone: "0424 001 122",
       email: "jordan@example.com",
       suburb: "Camp Hill 4152",
       service: "Driveway",

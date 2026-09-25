@@ -42,6 +42,7 @@ async function loadWorker(options: { southsidePreviewEnabled: boolean }) {
     "locality-content.js",
     "other-trade-config.js",
     "gold-coast-content.js",
+    "regional-slab-content.js",
     "blog-content.js",
   ];
   for (const filename of sourceFiles) {

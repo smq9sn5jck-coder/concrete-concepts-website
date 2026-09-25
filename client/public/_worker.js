@@ -30,11 +30,20 @@ import {
   GENERATED_OTHER_TRADE_PREVIEW_ENABLED,
   GENERATED_OTHER_TRADE_TIMEFRAMES,
 } from "./other-trade-config.js";
+import {
+  GENERATED_REGIONAL_SLAB_PREVIEW_ENABLED,
+  GENERATED_REGIONAL_SLAB_PUBLISHED_ENABLED,
+  getRegionalSlabRouteAccess,
+} from "./regional-slab-content.js";
 
 const CUSTOMER_WEBSITE_HOSTS = new Set([
   "concreteconceptsgroup.com",
   "www.concreteconceptsgroup.com",
 ]);
+
+function isCustomerWebsiteHostname(hostname) {
+  return CUSTOMER_WEBSITE_HOSTS.has(String(hostname || "").trim().toLowerCase().replace(/\.+$/, ""));
+}
 
 const HTML_SECURITY_HEADERS = Object.freeze({
   "X-Content-Type-Options": "nosniff",
@@ -43,6 +52,13 @@ const HTML_SECURITY_HEADERS = Object.freeze({
   "Permissions-Policy": "camera=(self), microphone=(), geolocation=()",
   "Strict-Transport-Security": "max-age=31536000",
 });
+
+function applySecurityHeaders(headers) {
+  for (const [name, value] of Object.entries(HTML_SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+  return headers;
+}
 
 function buildHtmlContentSecurityPolicy(scriptHashes = []) {
   const scripts = [
@@ -73,11 +89,21 @@ function buildHtmlContentSecurityPolicy(scriptHashes = []) {
 }
 
 function applyHtmlSecurityHeaders(headers, scriptHashes = []) {
-  for (const [name, value] of Object.entries(HTML_SECURITY_HEADERS)) {
-    headers.set(name, value);
-  }
+  applySecurityHeaders(headers);
   headers.set("Content-Security-Policy", buildHtmlContentSecurityPolicy(scriptHashes));
   return headers;
+}
+
+function finalizeWorkerResponse(response, requestUrl) {
+  const headers = applySecurityHeaders(new Headers(response.headers));
+  if (!isCustomerWebsiteHostname(requestUrl.hostname)) {
+    headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 async function getInlineScriptHashes(html) {
@@ -159,6 +185,24 @@ const BLOG_REDIRECTS = {
   "concrete-vs-pavers-brisbane-driveways": "concrete-vs-pavers-brisbane-driveway",
   "prepare-property-concreting-job-brisbane-checklist": "prepare-property-concrete-pour-brisbane",
 };
+
+const KNOWN_SERVICE_PATHS = new Set([
+  "/services/concrete-driveways-brisbane",
+  "/services/exposed-aggregate-brisbane",
+  "/services/retaining-walls-brisbane",
+  "/services/concrete-slabs-brisbane",
+  "/services/concrete-patios-brisbane",
+  "/services/excavation-brisbane",
+  "/services/crossover-permits-brisbane",
+  "/services/pool-surrounds-brisbane",
+  "/services/shed-slabs-brisbane",
+  "/services/extension-slabs-brisbane",
+]);
+
+const KNOWN_GUIDE_PATHS = new Set([
+  "/guides/how-house-slab-quotes-work",
+  "/guides/extension-slab-readiness",
+]);
 
 function canonicalPathRedirect(url, canonicalPath, status = 308) {
   if (url.pathname === canonicalPath) return null;
@@ -288,6 +332,31 @@ function trpcErrorResponse(message, status = 400) {
   }, status);
 }
 
+const MAX_QUOTE_REQUEST_BYTES = 64 * 1024;
+
+class RequestPayloadError extends Error {
+  constructor(status, message) {
+    super(message);
+    this.status = status;
+  }
+}
+
+async function readLimitedJson(request, maxBytes = MAX_QUOTE_REQUEST_BYTES) {
+  const declaredLength = Number(request.headers.get("Content-Length") || 0);
+  if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
+    throw new RequestPayloadError(413, "The quote request is too large. Remove excess text or attachments and try again.");
+  }
+  const text = await request.text();
+  if (new TextEncoder().encode(text).byteLength > maxBytes) {
+    throw new RequestPayloadError(413, "The quote request is too large. Remove excess text or attachments and try again.");
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new RequestPayloadError(400, "The quote request could not be read. Please review the form and try again.");
+  }
+}
+
 const BOOKING_TOKEN_PATTERN = /^[a-f0-9]{64}$/;
 const BOOKING_GATEWAY_STATUSES = new Set([
   "sent",
@@ -364,6 +433,12 @@ function normalizeWorkerPhone(value) {
   return digits;
 }
 
+const WORKER_INVALID_MOBILE_NUMBERS = new Set(["0412345678", "0498765432"]);
+
+function hasInvalidWorkerMobilePattern(phone) {
+  return /^04(\d)\1{7}$/.test(phone) || WORKER_INVALID_MOBILE_NUMBERS.has(phone);
+}
+
 function workerServiceArea(value) {
   const normalized = String(value || "").trim().replace(/\s+/g, " ");
   if (!normalized || normalized.toLowerCase() === "not specified") {
@@ -416,6 +491,32 @@ function releaseLatestWorkerRateLimit(key, timestamp) {
   else leadRateLimits.delete(key);
 }
 
+const WORKER_QUOTE_SERVICES = [
+  "driveway", "slab", "patio", "pool-surround", "retaining-wall", "pathway",
+  "exposed-aggregate", "stairs", "excavation", "crossover", "commercial", "other",
+];
+const WORKER_QUOTE_WORK_TYPES = ["new", "replacement", "extension", "repair", "not_sure"];
+const WORKER_QUOTE_FINISHES = ["plain", "coloured", "exposed", "stencilled", "not_sure"];
+const WORKER_QUOTE_TIMEFRAMES = ["asap", "within_1_month", "one_to_three_months", "three_plus_months", "planning"];
+const WORKER_READINESS_VALUES = ["available", "in_progress", "not_available", "not_sure"];
+const WORKER_CERTIFIER_VALUES = ["approved", "in_progress", "not_started", "not_required", "not_sure"];
+
+function workerEnum(value, allowed) {
+  return typeof value === "string" && allowed.includes(value);
+}
+
+function workerOptionalEnum(value, allowed) {
+  return value === undefined || workerEnum(value, allowed);
+}
+
+function workerStringWithin(value, max) {
+  return value === undefined || (typeof value === "string" && value.trim().length <= max);
+}
+
+function workerOptionalMeasurement(value) {
+  return value === undefined || (Number.isFinite(value) && value > 0 && value <= 100_000);
+}
+
 function validateWorkerQuoteSubmission(formData) {
   const now = Date.now();
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(formData.submissionId || ""))) {
@@ -439,6 +540,9 @@ function validateWorkerQuoteSubmission(formData) {
   const phone = normalizeWorkerPhone(formData.phone);
   if (!/^04\d{8}$/.test(phone) && !/^0[2378]\d{8}$/.test(phone)) {
     return { valid: false, status: 400, error: "Enter an Australian phone number, for example 0424 463 268 or (07) 3123 4567." };
+  }
+  if (/^04\d{8}$/.test(phone) && hasInvalidWorkerMobilePattern(phone)) {
+    return { valid: false, status: 400, error: "Enter an Australian mobile number beginning with 04." };
   }
 
   if (formData.formType === "hero_quick_quote") {
@@ -514,6 +618,10 @@ const WORKER_VALUE_LABELS = {
   none_known: "No known drainage", existing_drain: "Existing drain", new_drainage_needed: "New drainage may be needed",
   direct_truck: "Direct truck access", pump_likely: "Concrete pump likely",
   approved: "Approved", not_required: "Not required", not_started: "Not started",
+  homeowner: "Homeowner / property owner", builder_developer: "Builder / developer",
+  new_house: "New house", extension_slab: "Extension slab", under_house_build_under: "Under-house / build-under",
+  complete_extension: "Complete extension with concrete scope", other_concrete: "Other concrete project",
+  available: "Available", in_progress: "In progress", not_available: "Not available",
 };
 
 function workerLabel(value) {
@@ -534,8 +642,9 @@ function formatWorkerJobBrief(brief) {
   const measurements = brief.measurements || {};
   const site = brief.siteConditions || {};
   const photos = Array.isArray(brief.photos) ? brief.photos : [];
+  const project = brief.projectContext;
   const yesNo = value => value === undefined ? "Not provided" : value ? "Yes" : "No";
-  return [
+  const sections = [
     "CONTACT",
     `Name: ${contact.name}`,
     `Mobile: ${normalizeWorkerPhone(contact.mobile)}`,
@@ -548,6 +657,27 @@ function formatWorkerJobBrief(brief) {
     `Suburb: ${location.suburb}`,
     `Postcode: ${location.postcode}`,
     "",
+  ];
+  if (project) sections.push(
+    "PROJECT CONTEXT",
+    `Audience: ${workerLabel(project.audienceType)}`,
+    `Structural project: ${workerLabel(project.structuralProjectType)}`,
+    `Region: ${project.region || "Not provided"}`,
+    `Landing route: ${project.landingRoute || "Not provided"}`,
+    `Plans: ${workerLabel(project.plansReadiness)}`,
+    `Engineering: ${workerLabel(project.engineeringReadiness)}`,
+    `Soil / foundation information: ${workerLabel(project.soilFoundationReadiness)}`,
+    `Approval / certifier status: ${workerLabel(project.certifierApprovalStatus)}`,
+    `Builder company: ${project.builderCompanyName || "Not provided"}`,
+    `Builder role: ${project.builderRole || "Not provided"}`,
+    `Sites / pours: ${project.numberOfSitesOrPours || "Not provided"}`,
+    `Required concrete scope: ${project.requiredConcreteScope || "Not provided"}`,
+    `Indicative programme: ${project.indicativeProgramme || "Not provided"}`,
+    `Preferred follow-up: ${project.preferredFollowUp || "Not provided"}`,
+    `Partner introduction interest: ${project.partnerIntroductionInterest ? "Yes — CCG review only; no automatic forwarding" : "No"}`,
+    "",
+  );
+  sections.push(
     "JOB SCOPE",
     `Services: ${(scope.services || []).map(service => WORKER_SERVICE_LABELS[service] || service).join(", ")}`,
     `Work type: ${workerLabel(scope.workType)}`,
@@ -572,7 +702,8 @@ function formatWorkerJobBrief(brief) {
     "",
     "PHOTOS",
     ...(photos.length ? photos.map((photo, index) => `Photo ${index + 1}: ${photo.url}`) : ["No photos attached"]),
-  ].join("\n");
+  );
+  return sections.join("\n");
 }
 
 function validateWorkerJobBrief(brief) {
@@ -583,18 +714,63 @@ function validateWorkerJobBrief(brief) {
   const location = brief.location || {};
   const scope = brief.scope || {};
   const measurements = brief.measurements || {};
+  const site = brief.siteConditions || {};
   const photos = Array.isArray(brief.photos) ? brief.photos : [];
   const mobile = normalizeWorkerPhone(contact.mobile);
-  if (String(contact.name || "").trim().length < 2) return { valid: false, status: 400, error: "Enter your full name." };
-  if (!/^04\d{8}$/.test(mobile)) return { valid: false, status: 400, error: "Enter an Australian mobile number beginning with 04." };
-  if (!/^\S+@\S+\.\S+$/.test(String(contact.email || ""))) return { valid: false, status: 400, error: "Enter a valid email address." };
-  if (String(location.suburb || "").trim().length < 2 || !/^\d{4}$/.test(String(location.postcode || ""))) return { valid: false, status: 400, error: "Enter the project suburb and four-digit postcode." };
-  if (!Array.isArray(scope.services) || scope.services.length < 1) return { valid: false, status: 400, error: "Select at least one concrete service." };
-  if (String(scope.description || "").trim().length < 20) return { valid: false, status: 400, error: "Add a useful project description of at least 20 characters." };
+  const rawMobile = String(contact.mobile || "");
+  const contactName = String(contact.name || "").trim();
+  const email = String(contact.email || "").trim();
+  const suburb = String(location.suburb || "").trim();
+  const description = String(scope.description || "").trim();
+  if (contactName.length < 2 || contactName.length > 100) return { valid: false, status: 400, error: "Enter your full name." };
+  if (!/^04\d{8}$/.test(mobile) || /[a-z]/i.test(rawMobile) || hasInvalidWorkerMobilePattern(mobile)) return { valid: false, status: 400, error: "Enter an Australian mobile number beginning with 04." };
+  if (!/^\S+@\S+\.\S+$/.test(email) || email.length > 254) return { valid: false, status: 400, error: "Enter a valid email address." };
+  if (!workerEnum(contact.preferredContact, ["phone", "sms", "email"]) || !workerStringWithin(contact.company, 150)) return { valid: false, status: 400, error: "Check the contact details and try again." };
+  if (suburb.length < 2 || suburb.length > 120 || !/^\d{4}$/.test(String(location.postcode || "")) || !workerStringWithin(location.streetAddress, 250)) return { valid: false, status: 400, error: "Enter the project suburb and four-digit postcode." };
+  if (!Array.isArray(scope.services) || scope.services.length < 1 || scope.services.length > 8 || scope.services.some(service => !WORKER_QUOTE_SERVICES.includes(service))) return { valid: false, status: 400, error: "Select at least one valid concrete service." };
+  if (!workerEnum(scope.workType, WORKER_QUOTE_WORK_TYPES) || !workerEnum(scope.finish, WORKER_QUOTE_FINISHES) || !workerEnum(scope.timeframe, WORKER_QUOTE_TIMEFRAMES)) return { valid: false, status: 400, error: "Check the concrete scope selections and try again." };
+  if (description.length < 20 || description.length > 5_000) return { valid: false, status: 400, error: "Add a useful project description of at least 20 characters." };
+  if (!workerEnum(measurements.mode, ["dimensions", "area", "not_sure"]) || !workerOptionalMeasurement(measurements.lengthM) || !workerOptionalMeasurement(measurements.widthM) || !workerOptionalMeasurement(measurements.totalAreaM2) || !workerStringWithin(measurements.separateAreaNotes, 1_500)) return { valid: false, status: 400, error: "Check the project measurements and try again." };
   if (measurements.mode === "dimensions" && (!(Number(measurements.lengthM) > 0) || !(Number(measurements.widthM) > 0))) return { valid: false, status: 400, error: "Enter both length and width, or choose Not sure." };
   if (measurements.mode === "area" && !(Number(measurements.totalAreaM2) > 0)) return { valid: false, status: 400, error: "Enter the approximate total area, or choose Not sure." };
+  if (site.existingConcreteRemoval !== undefined && typeof site.existingConcreteRemoval !== "boolean") return { valid: false, status: 400, error: "Check the site-condition details and try again." };
+  if (!workerOptionalMeasurement(site.accessWidthM)
+    || !workerOptionalEnum(site.vehicleAccess, ["easy", "restricted", "no_vehicle", "not_sure"])
+    || !workerOptionalEnum(site.slope, ["flat", "slight", "steep", "not_sure"])
+    || !workerOptionalEnum(site.drainage, ["none_known", "existing_drain", "new_drainage_needed", "not_sure"])
+    || !workerOptionalEnum(site.pumpAccess, ["direct_truck", "pump_likely", "not_sure"])
+    || !workerOptionalEnum(site.approvalStatus, ["approved", "not_required", "not_started", "not_sure"])
+    || !workerStringWithin(site.knownServices, 500)
+    || !workerStringWithin(site.specialRequirements, 1_500)) return { valid: false, status: 400, error: "Check the site-condition details and try again." };
   if (!brief.consents || brief.consents.contact !== true || brief.consents.privacy !== true) return { valid: false, status: 400, error: "Contact consent and privacy acknowledgement are required." };
-  if (photos.length > 8 || photos.some(photo => !photo || !/^https:\/\//.test(String(photo.url || "")) || !/^image\/(jpeg|png|webp|heic|heif)$/.test(String(photo.contentType || "")))) return { valid: false, status: 400, error: "One or more photo attachments are invalid." };
+  if (brief.consents.marketing !== undefined && typeof brief.consents.marketing !== "boolean") return { valid: false, status: 400, error: "Marketing consent must be confirmed explicitly." };
+  if ((brief.photos !== undefined && !Array.isArray(brief.photos)) || photos.length > 8 || photos.some(photo => !photo || !/^https:\/\//.test(String(photo.url || "")) || String(photo.fileName || "").trim().length < 1 || String(photo.fileName || "").trim().length > 255 || !/^image\/(jpeg|png|webp|heic|heif)$/.test(String(photo.contentType || "")))) return { valid: false, status: 400, error: "One or more photo attachments are invalid." };
+  if (brief.projectContext) {
+    const project = brief.projectContext;
+    if (!["homeowner", "builder_developer"].includes(project.audienceType)) return { valid: false, status: 400, error: "Choose a valid customer type." };
+    if (!["new_house", "extension_slab", "under_house_build_under", "complete_extension", "other_concrete"].includes(project.structuralProjectType)) return { valid: false, status: 400, error: "Choose a valid structural project type." };
+    if (!workerOptionalEnum(project.plansReadiness, WORKER_READINESS_VALUES)
+      || !workerOptionalEnum(project.engineeringReadiness, WORKER_READINESS_VALUES)
+      || !workerOptionalEnum(project.soilFoundationReadiness, WORKER_READINESS_VALUES)
+      || !workerOptionalEnum(project.certifierApprovalStatus, WORKER_CERTIFIER_VALUES)) return { valid: false, status: 400, error: "Check the structural-readiness details and try again." };
+    if (!workerStringWithin(project.builderCompanyName, 150)
+      || !workerStringWithin(project.builderRole, 150)
+      || !workerStringWithin(project.numberOfSitesOrPours, 500)
+      || !workerStringWithin(project.requiredConcreteScope, 1_500)
+      || !workerStringWithin(project.indicativeProgramme, 1_500)
+      || !workerStringWithin(project.preferredFollowUp, 500)
+      || !workerStringWithin(project.region, 150)
+      || !workerStringWithin(project.landingRoute, 250)) return { valid: false, status: 400, error: "Check the structural project details and try again." };
+    if (project.audienceType === "builder_developer" && (
+      String(project.builderCompanyName || "").trim().length < 2
+      || String(location.streetAddress || "").trim().length < 2
+      || String(project.requiredConcreteScope || "").trim().length < 10
+      || String(project.indicativeProgramme || "").trim().length < 2
+    )) return { valid: false, status: 400, error: "Builder enquiries require the company, project address, concrete scope and indicative programme." };
+    if (project.structuralProjectType === "complete_extension" && !scope.services.includes("slab")) return { valid: false, status: 400, error: "A complete-extension detailed quote must include a concrete slab scope." };
+    if (project.partnerIntroductionInterest !== undefined && typeof project.partnerIntroductionInterest !== "boolean") return { valid: false, status: 400, error: "Partner introduction interest must be confirmed explicitly." };
+    if (project.partnerIntroductionInterest === true && (project.structuralProjectType !== "complete_extension" || !scope.services.includes("slab"))) return { valid: false, status: 400, error: "Partner introduction interest is available only for complete extensions that include a concrete slab." };
+  }
 
   const details = formatWorkerJobBrief(brief);
   return {
@@ -1480,7 +1656,7 @@ async function handleQuoteSubmit(env, formData) {
           from: "Concrete Concepts <info@concreteconceptsgroup.com>",
           to: [email],
           subject: "We've received your quote request - Concrete Concepts Group",
-          html: `<h2>Thanks ${name || ""}!</h2><p>We've received your quote request and will be in touch within 24 hours.</p><p>If you need to reach us sooner, call <a href="tel:0424463268">0424 463 268</a>.</p><p>— The Concrete Concepts Team</p>`,
+          html: `<h2>Thanks ${escapeWorkerHtml(name || "")}!</h2><p>We've received your quote request and will be in touch within 24 hours.</p><p>If you need to reach us sooner, call <a href="tel:0424463268">0424 463 268</a>.</p><p>— The Concrete Concepts Team</p>`,
         }),
       }).catch(() => {});
     }
@@ -1518,6 +1694,9 @@ async function handleCallbackSubmit(env, formData) {
   const phone = normalizeWorkerPhone(formData.phone);
   if (!/^04\d{8}$/.test(phone) && !/^0[2378]\d{8}$/.test(phone)) {
     return { success: false, status: 400, error: "Enter an Australian phone number, for example 0424 463 268 or (07) 3123 4567." };
+  }
+  if (/^04\d{8}$/.test(phone) && hasInvalidWorkerMobilePattern(phone)) {
+    return { success: false, status: 400, error: "Enter an Australian mobile number beginning with 04." };
   }
 
   const serviceArea = workerServiceArea(formData.suburb || "Not specified");
@@ -1858,7 +2037,7 @@ async function prepareStaticResponse(response, url, path, method) {
   }
 
   if ((method === "GET" || method === "HEAD") && response.headers.get("Content-Type")?.includes("text/html")) {
-    const isCustomerWebsiteHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const isCustomerWebsiteHost = isCustomerWebsiteHostname(url.hostname);
     const headers = new Headers(response.headers);
     headers.set("Content-Type", "text/html; charset=utf-8");
     headers.delete("Content-Length");
@@ -1876,6 +2055,8 @@ async function prepareStaticResponse(response, url, path, method) {
       southsidePreviewEnabled: GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
       goldCoastPreviewEnabled: GENERATED_GOLD_COAST_PREVIEW_ENABLED,
       goldCoastPublishedEnabled: GENERATED_GOLD_COAST_PUBLISHED_ENABLED,
+      regionalSlabPreviewEnabled: GENERATED_REGIONAL_SLAB_PREVIEW_ENABLED,
+      regionalSlabPublishedEnabled: GENERATED_REGIONAL_SLAB_PUBLISHED_ENABLED,
     };
     const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
     if (!isCustomerWebsiteHost) {
@@ -1911,9 +2092,11 @@ async function prepareStaticResponse(response, url, path, method) {
 
 export default {
   async fetch(request, env, ctx) {
+    const finalizedUrl = new URL(request.url);
+    const response = await (async () => {
     const url = new URL(request.url);
     const path = url.pathname;
-    const customerHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const customerHost = isCustomerWebsiteHostname(url.hostname);
     const isStaticRead = request.method === "GET" || request.method === "HEAD";
     const normalizedStaticPath = isStaticRead ? normalizeStaticPath(path) : null;
 
@@ -1921,6 +2104,9 @@ export default {
       path.toLowerCase().startsWith("/blog/")
       || path.toLowerCase().startsWith("/areas/")
       || path.toLowerCase().startsWith("/gold-coast/")
+      || path.toLowerCase().startsWith("/guides/")
+      || path.toLowerCase().startsWith("/services/")
+      || path.toLowerCase().startsWith("/regional-slab-review")
     )) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
     }
@@ -1929,6 +2115,9 @@ export default {
       (normalizedStaticPath.startsWith("/blog/") && !/^\/blog\/[a-z0-9-]+$/.test(normalizedStaticPath))
       || (normalizedStaticPath.startsWith("/areas/") && !/^\/areas\/[a-z0-9-]+$/.test(normalizedStaticPath))
       || (normalizedStaticPath.startsWith("/gold-coast/") && !/^\/gold-coast\/[a-z0-9-]+$/.test(normalizedStaticPath))
+      || (normalizedStaticPath.startsWith("/guides/") && !/^\/guides\/[a-z0-9-]+$/.test(normalizedStaticPath))
+      || (normalizedStaticPath.startsWith("/services/") && !/^\/services\/[a-z0-9-]+$/.test(normalizedStaticPath))
+      || normalizedStaticPath.startsWith("/regional-slab-review/")
     )) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
     }
@@ -1936,11 +2125,30 @@ export default {
     const goldCoastRouteAccess = normalizedStaticPath
       ? getGoldCoastRouteAccess(normalizedStaticPath, customerHost)
       : "not-found";
+    const regionalSlabRouteAccess = normalizedStaticPath
+      ? getRegionalSlabRouteAccess(normalizedStaticPath, customerHost)
+      : "not-found";
+    if (isStaticRead && (
+      normalizedStaticPath === "/regional-slab-review"
+      || normalizedStaticPath === "/services/extension-slabs-brisbane"
+      || normalizedStaticPath === "/guides/how-house-slab-quotes-work"
+      || normalizedStaticPath === "/guides/extension-slab-readiness"
+      || normalizedStaticPath === "/areas/ipswich-ripley-house-slabs"
+      || normalizedStaticPath === "/areas/sunshine-coast"
+      || normalizedStaticPath === "/gold-coast/house-slabs"
+      || normalizedStaticPath === "/gold-coast/extension-slabs"
+    ) && regionalSlabRouteAccess === "not-found") {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+    if (isStaticRead && (regionalSlabRouteAccess === "preview" || regionalSlabRouteAccess === "public")) {
+      const redirect = canonicalPathRedirect(url, normalizedStaticPath);
+      if (redirect) return redirect;
+    }
     if (isStaticRead && (
       normalizedStaticPath === "/gold-coast-review"
       || normalizedStaticPath === "/areas/gold-coast"
       || normalizedStaticPath?.startsWith("/gold-coast/")
-    ) && goldCoastRouteAccess === "not-found") {
+    ) && goldCoastRouteAccess === "not-found" && regionalSlabRouteAccess === "not-found") {
       return notFoundHtmlResponse(new Response(null), url, request.method);
     }
     if (isStaticRead && goldCoastRouteAccess !== "not-found") {
@@ -1991,22 +2199,41 @@ export default {
       return trpcResponse(posts);
     }
 
-    if (path === "/referral") {
-      const redirect = handleReferralRedirect(request);
+    const otherTradePreviewAvailable = GENERATED_OTHER_TRADE_PREVIEW_ENABLED && !customerHost;
+    const retiredOtherTradeReferral = path.startsWith("/trade-request/referral/");
+
+    if ((path === "/referral" || retiredOtherTradeReferral) && otherTradePreviewAvailable) {
+      const redirect = handleReferralRedirect(request, true);
       if (redirect) return redirect;
     }
 
-    if (path === "/api/other-trade-submit" && !GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
-      return jsonResponse({ error: "Not found." }, 404);
+    if (path === "/api/other-trade-submit" && !otherTradePreviewAvailable) {
+      const response = jsonResponse({ error: "Not found." }, 404);
+      response.headers.set("X-Robots-Tag", "noindex, nofollow");
+      return response;
     }
 
-    if (path === "/need-another-trade" && !GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
+    if ((path === "/need-another-trade" || retiredOtherTradeReferral) && !otherTradePreviewAvailable) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+
+    if (isStaticRead && /^\/services\/[^/]+\/?$/i.test(path)) {
+      const normalizedServicePath = normalizeStaticPath(path);
+      if (!normalizedServicePath || !KNOWN_SERVICE_PATHS.has(normalizedServicePath)) {
+        return notFoundHtmlResponse(new Response(null), url, request.method);
+      }
+    }
+
+    if (isStaticRead && /^\/guides\/[^/]+\/?$/i.test(path)) {
+      const normalizedGuidePath = normalizeStaticPath(path);
+      if (!normalizedGuidePath || !KNOWN_GUIDE_PATHS.has(normalizedGuidePath)) {
+        return notFoundHtmlResponse(new Response(null), url, request.method);
+      }
     }
 
     if (path === "/southside-review" && (
       !GENERATED_SOUTHSIDE_PREVIEW_ENABLED
-      || CUSTOMER_WEBSITE_HOSTS.has(url.hostname)
+      || isCustomerWebsiteHostname(url.hostname)
     )) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
     }
@@ -2067,6 +2294,7 @@ export default {
     if (
       areaSlug
       && goldCoastRouteAccess === "not-found"
+      && regionalSlabRouteAccess === "not-found"
       && !typedLocalityAllowed
       && !GENERATED_PUBLIC_LOCALITY_SLUGS.includes(areaSlug)
     ) {
@@ -2119,7 +2347,7 @@ export default {
 
       // Route: Quote submission (direct)
       if (path === "/api/quote-submit") {
-        const body = await request.json();
+        const body = await readLimitedJson(request);
         const result = await handleQuoteSubmit(env, {
           ...body,
           _clientAddress: request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "unknown",
@@ -2129,7 +2357,7 @@ export default {
 
       // Route: Quote submission (tRPC format)
       if (path === "/api/trpc/quote.submit") {
-        const body = await request.json();
+        const body = await readLimitedJson(request);
         const formData = parseTrpcBody(body);
         const result = await handleQuoteSubmit(env, {
           ...formData,
@@ -2165,7 +2393,7 @@ export default {
         try {
           await enforcePhotoUploadRateLimit(request);
           const body = await request.json();
-          const result = await handlePhotoUpload(env, body, url.origin);
+          const result = await handlePhotoUpload(env, body, url.origin, otherTradePreviewAvailable);
           return jsonResponse(result, 200);
         } catch (error) {
           return photoErrorResponse(error);
@@ -2221,12 +2449,18 @@ export default {
       }
 
     } catch (err) {
-      console.error("Worker error:", err);
-      return jsonResponse({ error: err.message || "Internal server error" }, 500);
+      if (!(err instanceof RequestPayloadError)) console.error("Worker error:", err);
+      const status = err instanceof RequestPayloadError ? err.status : 500;
+      if (path === "/api/trpc/quote.submit") {
+        return trpcErrorResponse(err.message || "Internal server error", status);
+      }
+      return jsonResponse({ success: false, error: err.message || "Internal server error" }, status);
     }
 
     // Unknown POST API routes fall through without being cached.
     const response = await env.ASSETS.fetch(request);
     return prepareStaticResponse(response, url, path, request.method, env);
+    })();
+    return finalizeWorkerResponse(response, finalizedUrl);
   },
 };

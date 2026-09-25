@@ -22,6 +22,30 @@ export const quoteTimeframes = ["asap", "within_1_month", "one_to_three_months",
 const optionalShortText = z.string().trim().max(500).optional().default("");
 const optionalMeasurement = z.number().finite().positive().max(100_000).optional();
 
+const projectContextSchema = z.object({
+  audienceType: z.enum(["homeowner", "builder_developer"]),
+  structuralProjectType: z.enum([
+    "new_house",
+    "extension_slab",
+    "under_house_build_under",
+    "complete_extension",
+    "other_concrete",
+  ]),
+  plansReadiness: z.enum(["available", "in_progress", "not_available", "not_sure"]).optional(),
+  engineeringReadiness: z.enum(["available", "in_progress", "not_available", "not_sure"]).optional(),
+  soilFoundationReadiness: z.enum(["available", "in_progress", "not_available", "not_sure"]).optional(),
+  certifierApprovalStatus: z.enum(["approved", "in_progress", "not_started", "not_required", "not_sure"]).optional(),
+  builderCompanyName: z.string().trim().max(150).optional().default(""),
+  builderRole: z.string().trim().max(150).optional().default(""),
+  numberOfSitesOrPours: z.string().trim().max(500).optional().default(""),
+  requiredConcreteScope: z.string().trim().max(1_500).optional().default(""),
+  indicativeProgramme: z.string().trim().max(1_500).optional().default(""),
+  preferredFollowUp: z.string().trim().max(500).optional().default(""),
+  region: z.string().trim().max(150).optional().default(""),
+  landingRoute: z.string().trim().max(250).optional().default(""),
+  partnerIntroductionInterest: z.boolean().optional().default(false),
+});
+
 const photoSchema = z.object({
   url: z.string().url().refine((value) => value.startsWith("https://"), "Photo URL must use HTTPS"),
   fileName: z.string().trim().min(1).max(255),
@@ -88,6 +112,7 @@ export const comprehensiveQuoteSchema = z
       specialRequirements: z.string().trim().max(1_500).optional().default(""),
     }),
     photos: z.array(photoSchema).max(8, "Upload no more than eight photos").default([]),
+    projectContext: projectContextSchema.optional(),
     consents: z.object({
       contact: z.literal(true, { message: "Contact consent is required" }),
       privacy: z.literal(true, { message: "Privacy acknowledgement is required" }),
@@ -101,6 +126,51 @@ export const comprehensiveQuoteSchema = z
         code: z.ZodIssueCode.custom,
         path: ["contact", "mobile"],
         message: "Enter an Australian mobile number beginning with 04",
+      });
+    }
+    if (value.projectContext?.audienceType === "builder_developer" && !value.projectContext.builderCompanyName) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["projectContext", "builderCompanyName"],
+        message: "Builder or developer company name is required",
+      });
+    }
+    if (value.projectContext?.audienceType === "builder_developer" && !value.location.streetAddress) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["location", "streetAddress"],
+        message: "Project street address is required for builder or developer enquiries",
+      });
+    }
+    if (value.projectContext?.audienceType === "builder_developer" && value.projectContext.requiredConcreteScope.trim().length < 10) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["projectContext", "requiredConcreteScope"],
+        message: "Add the required concrete scope for this builder project",
+      });
+    }
+    if (value.projectContext?.audienceType === "builder_developer" && value.projectContext.indicativeProgramme.trim().length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["projectContext", "indicativeProgramme"],
+        message: "Add the indicative programme or site-ready timing",
+      });
+    }
+    if (value.projectContext?.structuralProjectType === "complete_extension" && !value.scope.services.includes("slab")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["scope", "services"],
+        message: "A complete-extension detailed quote must include a concrete slab scope",
+      });
+    }
+    if (value.projectContext?.partnerIntroductionInterest === true && (
+      value.projectContext.structuralProjectType !== "complete_extension"
+      || !value.scope.services.includes("slab")
+    )) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["projectContext", "partnerIntroductionInterest"],
+        message: "Partner introduction interest is available only for complete extensions with a concrete slab",
       });
     }
   });
@@ -154,6 +224,16 @@ const valueLabels: Record<string, string> = {
   approved: "Approved",
   not_required: "Not required",
   not_started: "Not started",
+  homeowner: "Homeowner / property owner",
+  builder_developer: "Builder / developer",
+  new_house: "New house",
+  extension_slab: "Extension slab",
+  under_house_build_under: "Under-house / build-under",
+  complete_extension: "Complete extension with concrete scope",
+  other_concrete: "Other concrete project",
+  available: "Available",
+  in_progress: "In progress",
+  not_available: "Not available",
 };
 
 const label = (value?: string) => (value ? valueLabels[value] ?? value : "Not provided");
@@ -179,7 +259,7 @@ export function getQuoteBriefSections(quote: ComprehensiveQuote) {
     ? quote.photos.map((photo, index) => `Photo ${index + 1}: ${photo.url}`).join("\n")
     : "No photos attached";
 
-  return [
+  const sections = [
     {
       title: "CONTACT",
       lines: [
@@ -232,6 +312,30 @@ export function getQuoteBriefSections(quote: ComprehensiveQuote) {
     },
     { title: "PHOTOS", lines: photos.split("\n") },
   ];
+  if (quote.projectContext) {
+    const projectContext = quote.projectContext;
+    sections.splice(2, 0, {
+      title: "PROJECT CONTEXT",
+      lines: [
+        `Audience: ${label(projectContext.audienceType)}`,
+        `Structural project: ${label(projectContext.structuralProjectType)}`,
+        `Region: ${projectContext.region || "Not provided"}`,
+        `Landing route: ${projectContext.landingRoute || "Not provided"}`,
+        `Plans: ${label(projectContext.plansReadiness)}`,
+        `Engineering: ${label(projectContext.engineeringReadiness)}`,
+        `Soil / foundation information: ${label(projectContext.soilFoundationReadiness)}`,
+        `Approval / certifier status: ${label(projectContext.certifierApprovalStatus)}`,
+        `Builder company: ${projectContext.builderCompanyName || "Not provided"}`,
+        `Builder role: ${projectContext.builderRole || "Not provided"}`,
+        `Sites / pours: ${projectContext.numberOfSitesOrPours || "Not provided"}`,
+        `Required concrete scope: ${projectContext.requiredConcreteScope || "Not provided"}`,
+        `Indicative programme: ${projectContext.indicativeProgramme || "Not provided"}`,
+        `Preferred follow-up: ${projectContext.preferredFollowUp || "Not provided"}`,
+        `Partner introduction interest: ${projectContext.partnerIntroductionInterest ? "Yes — CCG review only; no automatic forwarding" : "No"}`,
+      ],
+    });
+  }
+  return sections;
 }
 
 export function formatQuoteBriefText(quote: ComprehensiveQuote) {

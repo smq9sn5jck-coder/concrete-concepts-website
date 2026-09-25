@@ -6,7 +6,7 @@ describe("Quote PDF Generation", () => {
   it("generates a valid PDF buffer for a driveway quote", () => {
     const pdf = generateQuotePdf({
       name: "John Smith",
-      phone: "0412 345 678",
+      phone: "0424 001 122",
       email: "john@example.com",
       suburb: "Carindale",
       service: "Driveway",
@@ -87,7 +87,7 @@ describe("Callback Router Schema", () => {
     // Valid input
     const valid = callbackSchema.safeParse({
       name: "John",
-      phone: "0412345678",
+      phone: "0424001122",
       page: "/",
     });
     expect(valid.success).toBe(true);
@@ -95,7 +95,7 @@ describe("Callback Router Schema", () => {
     // Invalid: missing name
     const invalidName = callbackSchema.safeParse({
       name: "",
-      phone: "0412345678",
+      phone: "0424001122",
     });
     expect(invalidName.success).toBe(false);
 

@@ -21,6 +21,7 @@ import GuideCtaBanner from "@/components/GuideCtaBanner";
 import MiniQuoteForm from "@/components/MiniQuoteForm";
 import DeferredSection from "@/components/DeferredSection";
 import { useGodModeTracking } from "@/components/GodModeTracking";
+import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
 
 const localBusinessSchema = {
   "@context": "https://schema.org",
@@ -158,14 +159,9 @@ const websiteSchema = {
   },
 };
 
-const CUSTOMER_HOSTS = new Set([
-  "concreteconceptsgroup.com",
-  "www.concreteconceptsgroup.com",
-]);
-
 export default function Home() {
   useGodModeTracking();
-  const noindex = typeof window === "undefined" || !CUSTOMER_HOSTS.has(window.location.hostname);
+  const noindex = typeof window === "undefined" || !isCustomerWebsiteHost(window.location.hostname);
 
   return (
     <div className="min-h-screen">

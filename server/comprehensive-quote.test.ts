@@ -9,7 +9,7 @@ const completeQuote = {
   version: 1 as const,
   contact: {
     name: "Jordan Client",
-    mobile: "0412 345 678",
+    mobile: "0424 001 122",
     email: "jordan@example.com",
     preferredContact: "sms" as const,
     company: "",
@@ -131,7 +131,7 @@ describe("comprehensive quote delivery formatting", () => {
 
     expect(legacy).toMatchObject({
       name: "Jordan Client",
-      phone: "0412345678",
+      phone: "0424001122",
       email: "jordan@example.com",
       suburb: "Camp Hill 4152",
     });

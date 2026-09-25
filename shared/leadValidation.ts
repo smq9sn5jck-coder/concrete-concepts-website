@@ -95,6 +95,12 @@ const CLEARLY_OUTSIDE_QUEENSLAND = [
 
 const INVALID_PHONE_MESSAGE =
   "Enter an Australian phone number, for example 0424 463 268 or (07) 3123 4567.";
+const INVALID_SEQUENTIAL_PHONES = new Set([
+  "0123456789",
+  "1234567890",
+  "0412345678",
+  "0498765432",
+]);
 
 function normalizeWhitespace(value: string): string {
   return value.trim().replace(/\s+/g, " ");
@@ -114,7 +120,7 @@ export function validateAustralianPhone(value: string): PhoneValidationResult {
   const normalized = normalizePhoneDigits(value);
   const containsLetters = /[a-z]/i.test(value);
   const isRepeatedDigit = /^(\d)\1+$/.test(normalized);
-  const isSequential = normalized === "0123456789" || normalized === "1234567890";
+  const isSequential = INVALID_SEQUENTIAL_PHONES.has(normalized);
 
   if (containsLetters || isRepeatedDigit || isSequential) {
     return { valid: false, normalized, error: INVALID_PHONE_MESSAGE };

@@ -38,6 +38,8 @@ describe("validateAustralianPhone", () => {
     "123456",
     "phone number",
     "0000000000",
+    "0412345678",
+    "0498765432",
   ])("rejects an invalid or overseas number: %s", phone => {
     expect(validateAustralianPhone(phone).valid).toBe(false);
   });

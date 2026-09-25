@@ -32,6 +32,33 @@ export interface QuoteDraftData {
   contactConsent?: boolean;
   privacyConsent?: boolean;
   marketingConsent?: boolean;
+  audienceType?: "homeowner" | "builder_developer";
+  structuralProjectType?: "new_house" | "extension_slab" | "under_house_build_under" | "complete_extension" | "other_concrete";
+  plansReadiness?: "available" | "in_progress" | "not_available" | "not_sure";
+  engineeringReadiness?: "available" | "in_progress" | "not_available" | "not_sure";
+  soilFoundationReadiness?: "available" | "in_progress" | "not_available" | "not_sure";
+  certifierApprovalStatus?: "approved" | "in_progress" | "not_started" | "not_required" | "not_sure";
+  builderCompanyName?: string;
+  builderRole?: string;
+  numberOfSitesOrPours?: string;
+  requiredConcreteScope?: string;
+  indicativeProgramme?: string;
+  preferredFollowUp?: string;
+  region?: string;
+  landingRoute?: string;
+  partnerIntroductionInterest?: boolean;
+}
+
+export function applyQuoteDraftUpdate<K extends keyof QuoteDraftData>(
+  current: QuoteDraftData,
+  key: K,
+  value: QuoteDraftData[K],
+): QuoteDraftData {
+  const next = { ...current, [key]: value };
+  const partnerEligible = next.structuralProjectType === "complete_extension"
+    && Boolean(next.services?.includes("slab"));
+  if (!partnerEligible) next.partnerIntroductionInterest = false;
+  return next;
 }
 
 interface StoredQuoteDraft {

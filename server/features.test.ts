@@ -91,7 +91,7 @@ describe("abandonedQuote.save", () => {
     const result = await caller.abandonedQuote.save({
       email: "test@example.com",
       name: "John Doe",
-      phone: "0412345678",
+      phone: "0424001122",
       suburb: "Brisbane",
       service: "Driveway",
       page: "/get-quote",

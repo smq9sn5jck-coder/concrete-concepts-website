@@ -40,7 +40,7 @@ function validQuoteWithServices(services: string[]) {
     version: 1 as const,
     contact: {
       name: "Test Client",
-      mobile: "0412345678",
+      mobile: "0424001122",
       email: "test@example.com",
       preferredContact: "sms" as const,
       company: "",
@@ -119,7 +119,7 @@ describe("Batch 1 quote handoff safety", () => {
     const navigate = vi.fn();
     const existing = {
       name: "Existing Client",
-      mobile: "0412345678",
+      mobile: "0424001122",
       email: "existing@example.com",
       streetAddress: "1 Existing Street",
       suburb: "Old Suburb",

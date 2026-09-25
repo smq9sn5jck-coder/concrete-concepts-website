@@ -26,6 +26,7 @@ import {
   GOLD_COAST_PREVIEW_ENABLED,
   GOLD_COAST_PUBLISHED_ENABLED,
 } from "@/generated/goldCoastConfig";
+import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
 interface SuburbData {
   slug: string;
   name: string;
@@ -2333,10 +2334,7 @@ export default function SuburbPage() {
   const batchOneRecord = BATCH_ONE_LOCALITY_BY_SLUG[suburbSlug];
   const southsideRecord = SOUTHSIDE_LOCALITY_BY_SLUG[suburbSlug];
   const goldCoastUpgradeRecord = GOLD_COAST_UPGRADE_BY_SLUG[suburbSlug];
-  const customerHost = typeof window !== "undefined" && [
-    "concreteconceptsgroup.com",
-    "www.concreteconceptsgroup.com",
-  ].includes(window.location.hostname);
+  const customerHost = typeof window !== "undefined" && isCustomerWebsiteHost(window.location.hostname);
   const previewEnabled = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true";
   const batchOneAvailable = batchOneRecord && isBatchOneLocalityAvailable(suburbSlug, {
     customerHost,

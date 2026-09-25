@@ -25,6 +25,7 @@ import QuoteSuccessShare from "./QuoteSuccessShare";
 import { trpc } from "@/lib/trpc";
 import { submitFormFallback } from "@/lib/formFallback";
 import {
+  applyQuoteDraftUpdate,
   clearQuoteDraft,
   loadQuoteDraft,
   saveQuoteDraft,
@@ -90,6 +91,21 @@ const TIMEFRAMES = [
   ["planning", "Planning only"],
 ] as const;
 
+const STRUCTURAL_PROJECT_TYPES = [
+  ["new_house", "New house"],
+  ["extension_slab", "House extension slab"],
+  ["under_house_build_under", "Under-house / build-under"],
+  ["complete_extension", "Complete extension with a concrete component"],
+  ["other_concrete", "Other concrete project"],
+] as const;
+
+const DOCUMENT_READINESS = [
+  ["available", "Available"],
+  ["in_progress", "In progress"],
+  ["not_available", "Not available"],
+  ["not_sure", "Not sure"],
+] as const;
+
 const initialData: QuoteDraftData = {
   name: "",
   mobile: "",
@@ -120,6 +136,21 @@ const initialData: QuoteDraftData = {
   contactConsent: false,
   privacyConsent: false,
   marketingConsent: false,
+  audienceType: "homeowner",
+  structuralProjectType: "other_concrete",
+  plansReadiness: "not_sure",
+  engineeringReadiness: "not_sure",
+  soilFoundationReadiness: "not_sure",
+  certifierApprovalStatus: "not_sure",
+  builderCompanyName: "",
+  builderRole: "",
+  numberOfSitesOrPours: "",
+  requiredConcreteScope: "",
+  indicativeProgramme: "",
+  preferredFollowUp: "",
+  region: "",
+  landingRoute: "",
+  partnerIntroductionInterest: false,
 };
 
 type PhotoStatus = "uploading" | "uploaded" | "error";
@@ -165,8 +196,32 @@ function splitLocation(value?: string) {
 }
 
 function FieldError({ children }: { children?: string }) {
-  return children ? <p className="mt-1.5 text-sm font-medium text-red-600">{children}</p> : null;
+  return children ? <p id="quote-field-error" role="alert" aria-live="polite" tabIndex={-1} className="mt-1.5 text-sm font-medium text-red-600">{children}</p> : null;
 }
+
+const VALIDATION_FOCUS_IDS: Record<string, string> = {
+  name_missing: "quote-name",
+  mobile_invalid: "quote-mobile",
+  email_invalid: "quote-email",
+  suburb_missing: "quote-suburb",
+  postcode_invalid: "quote-postcode",
+  outside_service_area: "quote-suburb",
+  audience_missing: "quote-audience-homeowner",
+  structural_project_missing: "quote-structural-project",
+  builder_company_missing: "quote-builder-company",
+  builder_address_missing: "quote-street-address",
+  builder_scope_missing: "quote-builder-scope",
+  service_missing: "quote-service-driveway",
+  work_type_missing: "quote-work-type",
+  finish_missing: "quote-finish",
+  timeframe_missing: "quote-timeframe",
+  description_short: "quote-description",
+  complete_extension_without_slab: "quote-service-driveway",
+  builder_programme_missing: "quote-builder-programme",
+  dimensions_incomplete: "quote-length",
+  area_missing: "quote-area",
+  consent_missing: "quote-contact-consent",
+};
 
 export default function ComprehensiveQuoteWizard() {
   const leadSource = useLeadSource();
@@ -187,6 +242,9 @@ export default function ComprehensiveQuoteWizard() {
   const [fallbackSubmitting, setFallbackSubmitting] = useState(false);
   const [fieldError, setFieldError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const stepHeadingRef = useRef<HTMLHeadingElement>(null);
+  const previousStepRef = useRef(step);
+  const pendingStepFocusRef = useRef(false);
   const successHeadingRef = useRef<HTMLHeadingElement>(null);
   const prefersReducedMotion = useReducedMotion();
   const customerFirstName = data.name?.trim().split(/\s+/)[0] || "there";
@@ -201,6 +259,7 @@ export default function ComprehensiveQuoteWizard() {
       ...saved,
       suburb: saved.postcode ? saved.suburb : location.suburb,
       postcode: saved.postcode || location.postcode,
+      partnerIntroductionInterest: false,
     }));
   }, []);
 
@@ -221,6 +280,22 @@ export default function ComprehensiveQuoteWizard() {
     tracker.stepReached(step, STEP_EVENT_NAMES[step - 1], trafficClass);
   }, [step, tracker, trafficClass]);
 
+  useEffect(() => {
+    if (previousStepRef.current === step) return;
+    previousStepRef.current = step;
+    pendingStepFocusRef.current = true;
+  }, [step]);
+
+  const focusCurrentStepHeading = () => {
+    if (!pendingStepFocusRef.current) return;
+    pendingStepFocusRef.current = false;
+    const animationFrame = window.requestAnimationFrame(() => {
+      stepHeadingRef.current?.focus();
+      window.scrollTo({ top: 0, behavior: prefersReducedMotion ? "auto" : "smooth" });
+    });
+    return () => window.cancelAnimationFrame(animationFrame);
+  };
+
   useEffect(() => () => photos.forEach((photo) => URL.revokeObjectURL(photo.preview)), [photos]);
 
   useEffect(() => {
@@ -233,8 +308,15 @@ export default function ComprehensiveQuoteWizard() {
   }, [submitted, prefersReducedMotion]);
 
   const update = <K extends keyof QuoteDraftData>(key: K, value: QuoteDraftData[K]) => {
-    setData((current) => ({ ...current, [key]: value }));
+    setData((current) => applyQuoteDraftUpdate(current, key, value));
     setFieldError("");
+  };
+
+  const focusValidationIssue = (code: string) => {
+    window.requestAnimationFrame(() => {
+      const target = document.getElementById(VALIDATION_FOCUS_IDS[code] ?? "quote-field-error");
+      target?.focus();
+    });
   };
 
   const toggleService = (service: string) => {
@@ -272,6 +354,21 @@ export default function ComprehensiveQuoteWizard() {
       }
     }
     if (targetStep === 3) {
+      if (!data.audienceType) {
+        return { code: "audience_missing", message: "Choose whether this enquiry is for a homeowner or a builder/developer." };
+      }
+      if (!data.structuralProjectType) {
+        return { code: "structural_project_missing", message: "Select the project type." };
+      }
+      if (data.audienceType === "builder_developer" && (data.builderCompanyName?.trim().length ?? 0) < 2) {
+        return { code: "builder_company_missing", message: "Enter the builder or developer company name." };
+      }
+      if (data.audienceType === "builder_developer" && (data.streetAddress?.trim().length ?? 0) < 2) {
+        return { code: "builder_address_missing", message: "Enter the project street address for this builder or developer enquiry." };
+      }
+      if (data.audienceType === "builder_developer" && (data.requiredConcreteScope?.trim().length ?? 0) < 10) {
+        return { code: "builder_scope_missing", message: "Add the required concrete scope for this builder project." };
+      }
       if (!(data.services?.length)) {
         return { code: "service_missing", message: "Select at least one concrete service." };
       }
@@ -287,8 +384,14 @@ export default function ComprehensiveQuoteWizard() {
       if ((data.description?.trim().length ?? 0) < 20) {
         return { code: "description_short", message: "Add a useful job description of at least 20 characters." };
       }
+      if (data.structuralProjectType === "complete_extension" && !data.services?.includes("slab")) {
+        return { code: "complete_extension_without_slab", message: "A complete-extension quote must include a concrete slab scope. For non-concrete-only help, use the separate other-trade request." };
+      }
     }
     if (targetStep === 4) {
+      if (data.audienceType === "builder_developer" && (data.indicativeProgramme?.trim().length ?? 0) < 2) {
+        return { code: "builder_programme_missing", message: "Add the indicative programme or site-ready timing." };
+      }
       if (data.measurementMode === "dimensions" && (!optionalNumber(data.lengthM) || !optionalNumber(data.widthM))) {
         return { code: "dimensions_incomplete", message: "Enter both length and width, or choose Not sure." };
       }
@@ -310,11 +413,11 @@ export default function ComprehensiveQuoteWizard() {
       tracker.validationBlocked(step, issue.code, trafficClass);
       setFieldError(issue.message);
       toast.error(issue.message);
+      focusValidationIssue(issue.code);
       return;
     }
     setFieldError("");
     setStep((current) => Math.min(5, current + 1));
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const uploadPhoto = async (photo: QuotePhoto) => {
@@ -419,6 +522,25 @@ export default function ComprehensiveQuoteWizard() {
         approvalStatus: data.approvalStatus || undefined,
         specialRequirements: data.specialRequirements,
       },
+      projectContext: {
+        audienceType: data.audienceType,
+        structuralProjectType: data.structuralProjectType,
+        plansReadiness: data.plansReadiness,
+        engineeringReadiness: data.engineeringReadiness,
+        soilFoundationReadiness: data.soilFoundationReadiness,
+        certifierApprovalStatus: data.certifierApprovalStatus,
+        builderCompanyName: data.builderCompanyName,
+        builderRole: data.builderRole,
+        numberOfSitesOrPours: data.numberOfSitesOrPours,
+        requiredConcreteScope: data.requiredConcreteScope,
+        indicativeProgramme: data.indicativeProgramme,
+        preferredFollowUp: data.preferredFollowUp,
+        region: data.region,
+        landingRoute: data.landingRoute,
+        partnerIntroductionInterest: data.structuralProjectType === "complete_extension"
+          && Boolean(data.services?.includes("slab"))
+          && Boolean(data.partnerIntroductionInterest),
+      },
       photos: photos
         .filter((photo): photo is QuotePhoto & { url: string } => photo.status === "uploaded" && Boolean(photo.url))
         .map((photo) => ({ url: photo.url, fileName: photo.file.name, contentType: photo.file.type })),
@@ -434,6 +556,7 @@ export default function ComprehensiveQuoteWizard() {
       tracker.validationBlocked(step, "quote_schema_invalid", trafficClass);
       setFieldError(message);
       toast.error(message);
+      window.requestAnimationFrame(() => document.getElementById("quote-field-error")?.focus());
       return null;
     }
     return parsed.data;
@@ -494,6 +617,7 @@ export default function ComprehensiveQuoteWizard() {
       tracker.validationBlocked(5, issue.code, trafficClass);
       setFieldError(issue.message);
       toast.error(issue.message);
+      focusValidationIssue(issue.code);
       return;
     }
     if (photos.some((photo) => photo.status === "uploading")) {
@@ -629,6 +753,9 @@ export default function ComprehensiveQuoteWizard() {
                 key={title}
                 type="button"
                 onClick={() => complete && setStep(number)}
+                disabled={!complete}
+                aria-current={active ? "step" : undefined}
+                aria-label={`Step ${number} of ${STEPS.length}: ${title}${active ? ", current" : complete ? ", completed" : ""}`}
                 className={`rounded-xl px-1 py-2 text-center transition md:px-3 ${active ? "bg-brand-charcoal text-white" : complete ? "bg-brand-yellow/20 text-slate-900" : "text-slate-400"}`}
               >
                 <span className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full border border-current md:h-8 md:w-8">
@@ -645,39 +772,39 @@ export default function ComprehensiveQuoteWizard() {
       </div>
 
       <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-xl md:p-9">
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="wait" onExitComplete={focusCurrentStepHeading}>
           <motion.div key={step} initial={{ opacity: 0, x: 18 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -18 }}>
             {step === 1 && (
               <section>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-yellow">Step 1 of 5</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-950">How can we reach you?</h2>
+                <h2 ref={stepHeadingRef} tabIndex={-1} className="mt-2 text-3xl font-bold text-slate-950 outline-none">How can we reach you?</h2>
                 <p className="mt-2 text-slate-600">We use these details only to assess and respond to your quote request.</p>
                 <div className="mt-7 grid gap-5 md:grid-cols-2">
-                  <label><span className={labelClass}>Full name *</span><input className={inputClass} autoComplete="name" value={data.name} onChange={(event) => update("name", event.target.value)} /></label>
-                  <label><span className={labelClass}>Australian mobile *</span><input className={inputClass} type="tel" autoComplete="tel" placeholder="04xx xxx xxx" value={data.mobile} onChange={(event) => update("mobile", event.target.value)} /></label>
-                  <label><span className={labelClass}>Email *</span><input className={inputClass} type="email" autoComplete="email" value={data.email} onChange={(event) => update("email", event.target.value)} /></label>
-                  <label><span className={labelClass}>Company <span className="font-normal text-slate-400">(optional)</span></span><input className={inputClass} autoComplete="organization" value={data.company} onChange={(event) => update("company", event.target.value)} /></label>
+                  <label><span className={labelClass}>Full name *</span><input id="quote-name" className={inputClass} autoComplete="name" maxLength={100} value={data.name} onChange={(event) => update("name", event.target.value)} /></label>
+                  <label><span className={labelClass}>Australian mobile *</span><input id="quote-mobile" className={inputClass} type="tel" autoComplete="tel" maxLength={30} placeholder="04xx xxx xxx" value={data.mobile} onChange={(event) => update("mobile", event.target.value)} /></label>
+                  <label><span className={labelClass}>Email *</span><input id="quote-email" className={inputClass} type="email" autoComplete="email" maxLength={254} value={data.email} onChange={(event) => update("email", event.target.value)} /></label>
+                  <label><span className={labelClass}>Company <span className="font-normal text-slate-400">(optional)</span></span><input className={inputClass} autoComplete="organization" maxLength={150} value={data.company} onChange={(event) => update("company", event.target.value)} /></label>
                 </div>
-                <div className="mt-5">
-                  <span className={labelClass}>Preferred contact method *</span>
+                <fieldset className="mt-5">
+                  <legend className={labelClass}>Preferred contact method *</legend>
                   <div className="grid grid-cols-3 gap-2">
                     {([['sms', 'SMS'], ['phone', 'Phone call'], ['email', 'Email']] as const).map(([value, text]) => (
-                      <button key={value} type="button" onClick={() => update("preferredContact", value)} className={`rounded-xl border-2 px-3 py-3 text-sm font-bold ${data.preferredContact === value ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{text}</button>
+                      <button id={value === "sms" ? "quote-preferred-contact" : undefined} key={value} type="button" aria-pressed={data.preferredContact === value} onClick={() => update("preferredContact", value)} className={`rounded-xl border-2 px-3 py-3 text-sm font-bold ${data.preferredContact === value ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{text}</button>
                     ))}
                   </div>
-                </div>
+                </fieldset>
               </section>
             )}
 
             {step === 2 && (
               <section>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-yellow">Step 2 of 5</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-950">Where is the project?</h2>
+                <h2 ref={stepHeadingRef} tabIndex={-1} className="mt-2 text-3xl font-bold text-slate-950 outline-none">Where is the project?</h2>
                 <p className="mt-2 text-slate-600">The street address is optional. Suburb and postcode help us confirm travel and availability.</p>
                 <div className="mt-7 grid gap-5 md:grid-cols-2">
-                  <label className="md:col-span-2"><span className={labelClass}>Street address <span className="font-normal text-slate-400">(optional)</span></span><input className={inputClass} autoComplete="street-address" value={data.streetAddress} onChange={(event) => update("streetAddress", event.target.value)} /></label>
-                  <label><span className={labelClass}>Suburb *</span><input className={inputClass} autoComplete="address-level2" placeholder="Camp Hill" value={data.suburb} onChange={(event) => update("suburb", event.target.value)} /></label>
-                  <label><span className={labelClass}>Postcode *</span><input className={inputClass} inputMode="numeric" autoComplete="postal-code" maxLength={4} placeholder="4152" value={data.postcode} onChange={(event) => update("postcode", event.target.value.replace(/\D/g, "").slice(0, 4))} /></label>
+                  <label className="md:col-span-2"><span className={labelClass}>Street address <span className="font-normal text-slate-400">(optional for homeowners)</span></span><input id="quote-street-address" className={inputClass} autoComplete="street-address" maxLength={250} value={data.streetAddress} onChange={(event) => update("streetAddress", event.target.value)} /></label>
+                  <label><span className={labelClass}>Suburb *</span><input id="quote-suburb" className={inputClass} autoComplete="address-level2" maxLength={120} placeholder="Camp Hill" value={data.suburb} onChange={(event) => update("suburb", event.target.value)} /></label>
+                  <label><span className={labelClass}>Postcode *</span><input id="quote-postcode" className={inputClass} inputMode="numeric" autoComplete="postal-code" maxLength={4} placeholder="4152" value={data.postcode} onChange={(event) => update("postcode", event.target.value.replace(/\D/g, "").slice(0, 4))} /></label>
                 </div>
                 {data.suburb && data.postcode && serviceArea.status === "service_area_review" && (
                   <div className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">You can continue. We’ll review availability for this Queensland location rather than rejecting your enquiry.</div>
@@ -688,41 +815,75 @@ export default function ComprehensiveQuoteWizard() {
             {step === 3 && (
               <section>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-yellow">Step 3 of 5</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-950">Tell us about the job</h2>
+                <h2 ref={stepHeadingRef} tabIndex={-1} className="mt-2 text-3xl font-bold text-slate-950 outline-none">Tell us about the job</h2>
                 <p className="mt-2 text-slate-600">Select everything that applies. “Not sure” is always acceptable.</p>
-                <div className="mt-7">
-                  <span className={labelClass}>Concrete services *</span>
+                <fieldset className="mt-7">
+                  <legend className={labelClass}>Who is this enquiry for? *</legend>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {([['homeowner', 'Homeowner or property owner'], ['builder_developer', 'Builder, developer or construction company']] as const).map(([value, text]) => (
+                      <button id={value === "homeowner" ? "quote-audience-homeowner" : undefined} key={value} type="button" aria-pressed={data.audienceType === value} onClick={() => update("audienceType", value)} className={`min-h-12 rounded-xl border-2 px-4 py-3 text-left text-sm font-bold ${data.audienceType === value ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{text}</button>
+                    ))}
+                  </div>
+                </fieldset>
+                {data.audienceType === "homeowner" && (
+                  <label className="mt-5 block"><span className={labelClass}>Homeowner project type *</span><select id="quote-structural-project" className={inputClass} value={data.structuralProjectType} onChange={(event) => update("structuralProjectType", event.target.value as QuoteDraftData["structuralProjectType"])}>{STRUCTURAL_PROJECT_TYPES.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                )}
+                {data.audienceType === "builder_developer" && (
+                  <div className="mt-5 grid gap-5 md:grid-cols-2">
+                    <label><span className={labelClass}>Company name *</span><input id="quote-builder-company" className={inputClass} autoComplete="organization" maxLength={150} value={data.builderCompanyName} onChange={(event) => update("builderCompanyName", event.target.value)} /></label>
+                    <label><span className={labelClass}>Your role <span className="font-normal text-slate-400">(optional)</span></span><input className={inputClass} maxLength={150} value={data.builderRole} onChange={(event) => update("builderRole", event.target.value)} /></label>
+                    <label className="md:col-span-2"><span className={labelClass}>Builder project type *</span><select id="quote-structural-project" className={inputClass} value={data.structuralProjectType} onChange={(event) => update("structuralProjectType", event.target.value as QuoteDraftData["structuralProjectType"])}>{STRUCTURAL_PROJECT_TYPES.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                    <label><span className={labelClass}>Number of sites or pours</span><input className={inputClass} maxLength={500} placeholder="e.g. 3 staged pours" value={data.numberOfSitesOrPours} onChange={(event) => update("numberOfSitesOrPours", event.target.value)} /></label>
+                    <label><span className={labelClass}>Required concrete scope *</span><input id="quote-builder-scope" className={inputClass} maxLength={1500} placeholder="Slab, footings, preparation or placement" value={data.requiredConcreteScope} onChange={(event) => update("requiredConcreteScope", event.target.value)} /></label>
+                  </div>
+                )}
+                <fieldset className="mt-7">
+                  <legend className={labelClass}>Concrete services *</legend>
                   <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
                     {SERVICES.map(([value, text]) => {
                       const selected = data.services?.includes(value);
-                      return <button key={value} type="button" onClick={() => toggleService(value)} className={`rounded-xl border-2 p-3 text-left text-sm font-bold ${selected ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{selected && <Check className="mr-1 inline h-4 w-4 text-brand-yellow" />}{text}</button>;
+                      return <button id={value === "driveway" ? "quote-service-driveway" : undefined} key={value} type="button" aria-pressed={Boolean(selected)} onClick={() => toggleService(value)} className={`rounded-xl border-2 p-3 text-left text-sm font-bold ${selected ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{selected && <Check aria-hidden="true" className="mr-1 inline h-4 w-4 text-brand-yellow" />}{text}</button>;
                     })}
                   </div>
-                </div>
+                </fieldset>
                 <div className="mt-6 grid gap-5 md:grid-cols-2">
-                  <label><span className={labelClass}>Type of work *</span><select className={inputClass} value={data.workType} onChange={(event) => update("workType", event.target.value)}><option value="new">New work</option><option value="replacement">Remove and replace</option><option value="extension">Extension</option><option value="repair">Repair</option><option value="not_sure">Not sure</option></select></label>
-                  <label><span className={labelClass}>Preferred finish *</span><select className={inputClass} value={data.finish} onChange={(event) => update("finish", event.target.value)}>{FINISHES.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
-                  <label><span className={labelClass}>Timeframe *</span><select className={inputClass} value={data.timeframe} onChange={(event) => update("timeframe", event.target.value)}>{TIMEFRAMES.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                  <label><span className={labelClass}>Type of work *</span><select id="quote-work-type" className={inputClass} value={data.workType} onChange={(event) => update("workType", event.target.value)}><option value="new">New work</option><option value="replacement">Remove and replace</option><option value="extension">Extension</option><option value="repair">Repair</option><option value="not_sure">Not sure</option></select></label>
+                  <label><span className={labelClass}>Preferred finish *</span><select id="quote-finish" className={inputClass} value={data.finish} onChange={(event) => update("finish", event.target.value)}>{FINISHES.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                  <label><span className={labelClass}>Timeframe *</span><select id="quote-timeframe" className={inputClass} value={data.timeframe} onChange={(event) => update("timeframe", event.target.value)}>{TIMEFRAMES.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
                   <label><span className={labelClass}>Existing concrete removal</span><select className={inputClass} value={data.existingConcreteRemoval === undefined ? "unknown" : data.existingConcreteRemoval ? "yes" : "no"} onChange={(event) => update("existingConcreteRemoval", event.target.value === "unknown" ? undefined : event.target.value === "yes")}><option value="unknown">Not sure</option><option value="yes">Yes</option><option value="no">No</option></select></label>
                 </div>
-                <label className="mt-5 block"><span className={labelClass}>Describe the project *</span><textarea className={`${inputClass} min-h-32 resize-y`} placeholder="What needs to be built or replaced? Include approximate size, finish, obstacles and anything important." value={data.description} onChange={(event) => update("description", event.target.value)} /></label>
+                <label className="mt-5 block"><span className={labelClass}>Describe the project *</span><textarea id="quote-description" className={`${inputClass} min-h-32 resize-y`} maxLength={5000} placeholder="What needs to be built or replaced? Include approximate size, finish, obstacles and anything important." value={data.description} onChange={(event) => update("description", event.target.value)} /></label>
+                {data.structuralProjectType === "complete_extension" && !data.services?.includes("slab") && (
+                  <div className="mt-5 rounded-xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950"><p className="font-bold">A detailed CCG quote needs a concrete component.</p><p className="mt-1">If you need only non-concrete extension work, use the <a href="/need-another-trade" className="font-bold underline">separate other-trade request</a>. That request is secondary and does not create a detailed quote conversion.</p></div>
+                )}
               </section>
             )}
 
             {step === 4 && (
               <section>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-yellow">Step 4 of 5</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-950">Measurements, access and photos</h2>
+                <h2 ref={stepHeadingRef} tabIndex={-1} className="mt-2 text-3xl font-bold text-slate-950 outline-none">Measurements, access and photos</h2>
                 <p className="mt-2 text-slate-600">Estimates are helpful, but you can choose “Not sure” and we’ll measure on site.</p>
-                <div className="mt-7">
-                  <span className={labelClass}>Measurements *</span>
-                  <div className="grid gap-2 sm:grid-cols-3">
-                    {([['dimensions', 'Length × width'], ['area', 'Total m²'], ['not_sure', 'Not sure — measure on site']] as const).map(([value, text]) => <button key={value} type="button" onClick={() => update("measurementMode", value)} className={`rounded-xl border-2 px-3 py-3 text-sm font-bold ${data.measurementMode === value ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{text}</button>)}
+                <div className="mt-7 rounded-2xl border border-slate-200 bg-white p-5">
+                  <h3 className="font-bold text-slate-950">Structural documents and readiness</h3>
+                  <p className="mt-1 text-sm text-slate-600">Unknown documents do not block the enquiry. Choose Not sure where needed.</p>
+                  <div className="mt-4 grid gap-4 md:grid-cols-2">
+                    <label><span className={labelClass}>Plans or drawings</span><select className={inputClass} value={data.plansReadiness} onChange={(event) => update("plansReadiness", event.target.value as QuoteDraftData["plansReadiness"])}>{DOCUMENT_READINESS.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                    <label><span className={labelClass}>Engineering</span><select className={inputClass} value={data.engineeringReadiness} onChange={(event) => update("engineeringReadiness", event.target.value as QuoteDraftData["engineeringReadiness"])}>{DOCUMENT_READINESS.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                    <label><span className={labelClass}>Soil / foundation information</span><select className={inputClass} value={data.soilFoundationReadiness} onChange={(event) => update("soilFoundationReadiness", event.target.value as QuoteDraftData["soilFoundationReadiness"])}>{DOCUMENT_READINESS.map(([value, text]) => <option key={value} value={value}>{text}</option>)}</select></label>
+                    <label><span className={labelClass}>Approval / certifier status</span><select className={inputClass} value={data.certifierApprovalStatus} onChange={(event) => update("certifierApprovalStatus", event.target.value as QuoteDraftData["certifierApprovalStatus"])}><option value="approved">Approved</option><option value="in_progress">In progress</option><option value="not_started">Not started</option><option value="not_required">Not required</option><option value="not_sure">Not sure</option></select></label>
                   </div>
+                  {data.audienceType === "builder_developer" && <div className="mt-4 grid gap-4 md:grid-cols-2"><label><span className={labelClass}>Indicative programme or site-ready timing *</span><textarea id="quote-builder-programme" className={`${inputClass} min-h-24 resize-y`} maxLength={1500} value={data.indicativeProgramme} onChange={(event) => update("indicativeProgramme", event.target.value)} /></label><label><span className={labelClass}>Preferred follow-up</span><textarea className={`${inputClass} min-h-24 resize-y`} maxLength={500} value={data.preferredFollowUp} onChange={(event) => update("preferredFollowUp", event.target.value)} /></label></div>}
                 </div>
-                {data.measurementMode === "dimensions" && <div className="mt-5 grid grid-cols-2 gap-3"><label><span className={labelClass}>Length (m) *</span><input className={inputClass} inputMode="decimal" value={data.lengthM} onChange={(event) => update("lengthM", event.target.value)} /></label><label><span className={labelClass}>Width (m) *</span><input className={inputClass} inputMode="decimal" value={data.widthM} onChange={(event) => update("widthM", event.target.value)} /></label></div>}
-                {data.measurementMode === "area" && <label className="mt-5 block"><span className={labelClass}>Approximate total area (m²) *</span><input className={inputClass} inputMode="decimal" value={data.totalAreaM2} onChange={(event) => update("totalAreaM2", event.target.value)} /></label>}
-                <label className="mt-5 block"><span className={labelClass}>Separate areas or measurement notes <span className="font-normal text-slate-400">(optional)</span></span><textarea className={`${inputClass} min-h-24 resize-y`} value={data.separateAreaNotes} onChange={(event) => update("separateAreaNotes", event.target.value)} /></label>
+                <fieldset className="mt-7">
+                  <legend className={labelClass}>Measurements *</legend>
+                  <div className="grid gap-2 sm:grid-cols-3">
+                    {([['dimensions', 'Length × width'], ['area', 'Total m²'], ['not_sure', 'Not sure — measure on site']] as const).map(([value, text]) => <button key={value} type="button" aria-pressed={data.measurementMode === value} onClick={() => update("measurementMode", value)} className={`rounded-xl border-2 px-3 py-3 text-sm font-bold ${data.measurementMode === value ? "border-brand-yellow bg-brand-yellow/10" : "border-slate-200"}`}>{text}</button>)}
+                  </div>
+                </fieldset>
+                {data.measurementMode === "dimensions" && <div className="mt-5 grid grid-cols-2 gap-3"><label><span className={labelClass}>Length (m) *</span><input id="quote-length" className={inputClass} inputMode="decimal" value={data.lengthM} onChange={(event) => update("lengthM", event.target.value)} /></label><label><span className={labelClass}>Width (m) *</span><input className={inputClass} inputMode="decimal" value={data.widthM} onChange={(event) => update("widthM", event.target.value)} /></label></div>}
+                {data.measurementMode === "area" && <label className="mt-5 block"><span className={labelClass}>Approximate total area (m²) *</span><input id="quote-area" className={inputClass} inputMode="decimal" value={data.totalAreaM2} onChange={(event) => update("totalAreaM2", event.target.value)} /></label>}
+                <label className="mt-5 block"><span className={labelClass}>Separate areas or measurement notes <span className="font-normal text-slate-400">(optional)</span></span><textarea className={`${inputClass} min-h-24 resize-y`} maxLength={1500} value={data.separateAreaNotes} onChange={(event) => update("separateAreaNotes", event.target.value)} /></label>
 
                 <div className="mt-7 rounded-2xl bg-slate-50 p-5">
                   <h3 className="font-bold text-slate-950">Site access and conditions</h3>
@@ -734,8 +895,8 @@ export default function ComprehensiveQuoteWizard() {
                     <label><span className={labelClass}>Concrete placement access</span><select className={inputClass} value={data.pumpAccess} onChange={(event) => update("pumpAccess", event.target.value)}><option value="not_sure">Not sure</option><option value="direct_truck">Direct truck access</option><option value="pump_likely">Pump likely required</option></select></label>
                     <label><span className={labelClass}>Approvals</span><select className={inputClass} value={data.approvalStatus} onChange={(event) => update("approvalStatus", event.target.value)}><option value="not_sure">Not sure</option><option value="approved">Approved</option><option value="not_required">Not required</option><option value="not_started">Not started</option></select></label>
                   </div>
-                  <label className="mt-4 block"><span className={labelClass}>Known underground services</span><input className={inputClass} placeholder="Water, gas, electrical or NBN near the work area" value={data.knownServices} onChange={(event) => update("knownServices", event.target.value)} /></label>
-                  <label className="mt-4 block"><span className={labelClass}>Other access or site requirements</span><textarea className={`${inputClass} min-h-24 resize-y`} value={data.specialRequirements} onChange={(event) => update("specialRequirements", event.target.value)} /></label>
+                  <label className="mt-4 block"><span className={labelClass}>Known underground services</span><input className={inputClass} maxLength={500} placeholder="Water, gas, electrical or NBN near the work area" value={data.knownServices} onChange={(event) => update("knownServices", event.target.value)} /></label>
+                  <label className="mt-4 block"><span className={labelClass}>Other access or site requirements</span><textarea className={`${inputClass} min-h-24 resize-y`} maxLength={1500} value={data.specialRequirements} onChange={(event) => update("specialRequirements", event.target.value)} /></label>
                 </div>
 
                 <div className="mt-7 rounded-2xl border-2 border-dashed border-slate-300 p-5">
@@ -753,7 +914,7 @@ export default function ComprehensiveQuoteWizard() {
             {step === 5 && (
               <section>
                 <p className="text-sm font-bold uppercase tracking-[0.18em] text-brand-yellow">Step 5 of 5</p>
-                <h2 className="mt-2 text-3xl font-bold text-slate-950">Review your quote request</h2>
+                <h2 ref={stepHeadingRef} tabIndex={-1} className="mt-2 text-3xl font-bold text-slate-950 outline-none">Review your quote request</h2>
                 <p className="mt-2 text-slate-600">Check the details below before sending them to Concrete Concepts Group.</p>
                 <div className="mt-7 grid gap-4 md:grid-cols-2">
                   <ReviewCard title="Contact" onEdit={() => setStep(1)} lines={[data.name || "", data.mobile || "", data.email || "", `Preferred: ${data.preferredContact || "Not provided"}`]} />
@@ -762,9 +923,12 @@ export default function ComprehensiveQuoteWizard() {
                   <ReviewCard title="Measurements & site" onEdit={() => setStep(4)} lines={[data.measurementMode === "not_sure" ? "Measure on site" : data.measurementMode === "area" ? `${data.totalAreaM2} m² approximate` : `${data.lengthM} m × ${data.widthM} m`, `${photos.filter((photo) => photo.status === "uploaded").length} photos attached`]} />
                 </div>
                 <div className="mt-6 space-y-3 rounded-2xl bg-slate-50 p-5">
-                  <label className="flex items-start gap-3 text-sm text-slate-700"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-yellow" checked={Boolean(data.contactConsent)} onChange={(event) => update("contactConsent", event.target.checked)} /><span>I agree that Concrete Concepts Group may contact me about this quote request. *</span></label>
+                  <label className="flex items-start gap-3 text-sm text-slate-700"><input id="quote-contact-consent" type="checkbox" className="mt-1 h-4 w-4 accent-brand-yellow" checked={Boolean(data.contactConsent)} onChange={(event) => update("contactConsent", event.target.checked)} /><span>I agree that Concrete Concepts Group may contact me about this quote request. *</span></label>
                   <label className="flex items-start gap-3 text-sm text-slate-700"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-yellow" checked={Boolean(data.privacyConsent)} onChange={(event) => update("privacyConsent", event.target.checked)} /><span>I acknowledge that my details and uploaded photos will be used to assess this project. *</span></label>
                   <label className="flex items-start gap-3 text-sm text-slate-600"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-yellow" checked={Boolean(data.marketingConsent)} onChange={(event) => update("marketingConsent", event.target.checked)} /><span>Send me occasional project ideas and offers. Optional.</span></label>
+                  {data.structuralProjectType === "complete_extension" && data.services?.includes("slab") && (
+                    <label className="flex items-start gap-3 border-t border-slate-200 pt-3 text-sm text-slate-700"><input type="checkbox" className="mt-1 h-4 w-4 accent-brand-yellow" checked={Boolean(data.partnerIntroductionInterest)} onChange={(event) => update("partnerIntroductionInterest", event.target.checked)} /><span><strong>I would like CCG to introduce me to a reviewed partner for non-concrete extension work.</strong><span className="mt-1 block text-slate-600">Optional and unchecked by default. CCG reviews this request first. Nothing is forwarded automatically; a provider would be identified later, contract separately and receive information only after the applicable final consent.</span></span></label>
+                  )}
                 </div>
                 <input type="text" name="website" value={website} onChange={(event) => setWebsite(event.target.value)} tabIndex={-1} autoComplete="off" aria-hidden="true" className="absolute left-[-10000px] h-px w-px overflow-hidden" />
               </section>

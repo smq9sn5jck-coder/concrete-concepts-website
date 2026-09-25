@@ -10,7 +10,7 @@ describe("quote draft handoff", () => {
     const serialized = createQuoteDraft(
       {
         name: "Jordan Client",
-        mobile: "0412 345 678",
+        mobile: "0424 001 122",
         email: "jordan@example.com",
         suburb: "Camp Hill 4152",
         services: ["driveway"],
@@ -21,7 +21,7 @@ describe("quote draft handoff", () => {
 
     expect(parseQuoteDraft(serialized, 2_000)).toMatchObject({
       name: "Jordan Client",
-      mobile: "0412 345 678",
+      mobile: "0424 001 122",
       email: "jordan@example.com",
       suburb: "Camp Hill 4152",
       services: ["driveway"],

@@ -8,7 +8,7 @@ describe("Gold Coast quote handoff", () => {
     const navigate = vi.fn();
     const existing = {
       name: "Existing Client",
-      mobile: "0412345678",
+      mobile: "0424001122",
       email: "existing@example.com",
       suburb: "Coomera",
       postcode: "4209",
@@ -23,7 +23,7 @@ describe("Gold Coast quote handoff", () => {
   it("uses a service accepted by the unchanged comprehensive quote schema", () => {
     const parsed = comprehensiveQuoteSchema.safeParse({
       version: 1,
-      contact: { name: "Test Client", mobile: "0412345678", email: "test@example.com", preferredContact: "sms", company: "" },
+      contact: { name: "Test Client", mobile: "0424001122", email: "test@example.com", preferredContact: "sms", company: "" },
       location: { streetAddress: "", suburb: "Robina", postcode: "4226" },
       scope: { services: ["retaining-wall"], workType: "not_sure", finish: "not_sure", timeframe: "planning", description: "A residential retaining wall enquiry below one metre for initial screening." },
       measurements: { mode: "not_sure", separateAreaNotes: "" },

@@ -123,12 +123,13 @@ describe("Release 1 homepage funnel consolidation", () => {
 
   it("keeps preview and immutable hosts out of the search index", () => {
     expect(indexHtml).toContain('<meta name="robots" content="noindex, nofollow"');
-    expect(home).toContain("CUSTOMER_HOSTS");
+    expect(home).toContain("isCustomerWebsiteHost");
+    expect(home).not.toContain("CUSTOMER_HOSTS.has");
     expect(home).toContain("noindex={noindex}");
     expect(worker).toContain("CUSTOMER_WEBSITE_HOSTS");
     expect(worker).toContain('headers.set("X-Robots-Tag", "noindex, nofollow")');
     expect(seoManifest).toContain("robotsOverride");
-    expect(seoHead).toContain("CUSTOMER_WEBSITE_HOSTS");
+    expect(seoHead).toContain("isCustomerWebsiteHost");
     expect(seoHead).toContain("effectiveNoindex");
   });
 

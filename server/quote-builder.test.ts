@@ -14,7 +14,7 @@ describe("Quote Builder - Custom PDF Generation", () => {
 
     const pdfBuffer = generateCustomQuotePdf({
       name: "John Smith",
-      phone: "0412 345 678",
+      phone: "0424 001 122",
       email: "john@example.com",
       suburb: "Carindale",
       service: "Driveway",

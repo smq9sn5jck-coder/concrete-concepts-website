@@ -20,6 +20,7 @@ import {
   BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST,
 } from "@shared/batchOnePublication";
 import { scrollToServiceAreaHash } from "@/lib/serviceAreaHash";
+import { REGIONAL_SLAB_PREVIEW_ENABLED } from "@/generated/regionalSlabConfig";
 
 const BASE_REGIONS = [
   {
@@ -343,6 +344,17 @@ export default function ServiceAreasPage() {
       {/* Regions Grid */}
       <section className="py-16 lg:py-24">
         <div className="container">
+          {REGIONAL_SLAB_PREVIEW_ENABLED && (
+            <div className="mb-10 rounded-2xl border border-brand-gold/40 bg-brand-gold/10 p-6">
+              <p className="text-sm font-bold uppercase tracking-wider text-brand-gold-dark">Preview-only structural concrete hubs</p>
+              <h2 className="mt-2 text-2xl font-bold text-brand-charcoal">Regional slab and extension quote preparation</h2>
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                <Link href="/areas/ipswich-ripley-house-slabs" className="min-h-12 rounded-xl border border-border bg-white px-4 py-3 font-bold text-brand-charcoal">Ipswich and Ripley slabs</Link>
+                <Link href="/areas/gold-coast" className="min-h-12 rounded-xl border border-border bg-white px-4 py-3 font-bold text-brand-charcoal">North and Central Gold Coast</Link>
+                <Link href="/areas/sunshine-coast" className="min-h-12 rounded-xl border border-border bg-white px-4 py-3 font-bold text-brand-charcoal">Selected Sunshine Coast projects</Link>
+              </div>
+            </div>
+          )}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {REGIONS.map((region, ri) => (
               <motion.div

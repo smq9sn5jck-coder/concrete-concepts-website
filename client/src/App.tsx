@@ -14,6 +14,12 @@ import {
   GOLD_COAST_PREVIEW_ENABLED,
   GOLD_COAST_PUBLISHED_ENABLED,
 } from "@/generated/goldCoastConfig";
+import {
+  REGIONAL_SLAB_PREVIEW_ENABLED,
+  REGIONAL_SLAB_PUBLISHED_ENABLED,
+} from "@/generated/regionalSlabConfig";
+import { getClientRegionalSlabRouteAccess } from "@/lib/regionalSlabPreviewAccess";
+import { isOtherTradePreviewAvailable } from "@/lib/otherTradePreviewAccess";
 
 // Capture UTM parameters, gclid, fbclid, referrer on first page load
 captureUtmParams();
@@ -66,6 +72,19 @@ const GoldCoastHubPage = goldCoastRoutesEnabled
 const GoldCoastServicePage = goldCoastRoutesEnabled
   ? lazy(() => import("./pages/GoldCoastServicePage"))
   : null;
+const regionalSlabRoutesEnabled = REGIONAL_SLAB_PREVIEW_ENABLED || REGIONAL_SLAB_PUBLISHED_ENABLED;
+const RegionalSlabReviewPage = REGIONAL_SLAB_PREVIEW_ENABLED
+  ? lazy(() => import("./pages/RegionalSlabReviewPage"))
+  : null;
+const RegionalSlabHubPage = regionalSlabRoutesEnabled
+  ? lazy(() => import("./pages/RegionalSlabHubPage"))
+  : null;
+const RegionalSlabServicePage = regionalSlabRoutesEnabled
+  ? lazy(() => import("./pages/RegionalSlabServicePage"))
+  : null;
+const RegionalSlabGuidePage = regionalSlabRoutesEnabled
+  ? lazy(() => import("./pages/RegionalSlabGuidePage"))
+  : null;
 
 /** Minimal loading fallback for lazy routes */
 function PageLoader() {
@@ -86,6 +105,40 @@ function ReferralPreviewRedirect() {
   return <PageLoader />;
 }
 
+function RegionalReviewRoute() {
+  return RegionalSlabReviewPage && getClientRegionalSlabRouteAccess("/regional-slab-review").available
+    ? <RegionalSlabReviewPage />
+    : <NotFound />;
+}
+
+function RegionalHubRoute() {
+  return RegionalSlabHubPage && getClientRegionalSlabRouteAccess(window.location.pathname).available
+    ? <RegionalSlabHubPage />
+    : <NotFound />;
+}
+
+function RegionalServiceRoute() {
+  const routeAccess = getClientRegionalSlabRouteAccess(window.location.pathname);
+  if (routeAccess.access === "legacy") return <ServicePage />;
+  return RegionalSlabServicePage && routeAccess.available ? <RegionalSlabServicePage /> : <NotFound />;
+}
+
+function RegionalGuideRoute() {
+  return RegionalSlabGuidePage && getClientRegionalSlabRouteAccess(window.location.pathname).available
+    ? <RegionalSlabGuidePage />
+    : <NotFound />;
+}
+
+function NeedAnotherTradeRoute() {
+  return NeedAnotherTradePage && isOtherTradePreviewAvailable()
+    ? <NeedAnotherTradePage />
+    : <NotFound />;
+}
+
+function ReferralRoute() {
+  return isOtherTradePreviewAvailable() ? <ReferralPreviewRedirect /> : <ReferralPage />;
+}
+
 function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -94,6 +147,33 @@ function Router() {
         <Route path={"/admin"} component={AdminDashboard} />
         <Route path={"/blog"} component={Blog} />
         <Route path={"/blog/:slug"} component={BlogPost} />
+        {RegionalSlabReviewPage && (
+          <Route path={"/regional-slab-review"} component={RegionalReviewRoute} />
+        )}
+        {RegionalSlabServicePage && (
+          <Route path={"/services/concrete-slabs-brisbane"} component={RegionalServiceRoute} />
+        )}
+        {RegionalSlabServicePage && (
+          <Route path={"/services/extension-slabs-brisbane"} component={RegionalServiceRoute} />
+        )}
+        {RegionalSlabGuidePage && (
+          <Route path={"/guides/how-house-slab-quotes-work"} component={RegionalGuideRoute} />
+        )}
+        {RegionalSlabGuidePage && (
+          <Route path={"/guides/extension-slab-readiness"} component={RegionalGuideRoute} />
+        )}
+        {RegionalSlabHubPage && (
+          <Route path={"/areas/ipswich-ripley-house-slabs"} component={RegionalHubRoute} />
+        )}
+        {RegionalSlabHubPage && (
+          <Route path={"/areas/sunshine-coast"} component={RegionalHubRoute} />
+        )}
+        {RegionalSlabServicePage && (
+          <Route path={"/gold-coast/house-slabs"} component={RegionalServiceRoute} />
+        )}
+        {RegionalSlabServicePage && (
+          <Route path={"/gold-coast/extension-slabs"} component={RegionalServiceRoute} />
+        )}
         <Route path={"/services/:serviceSlug"} component={ServicePage} />
         <Route path={"/areas"} component={ServiceAreasPage} />
         {BatchOneReviewPage && (
@@ -118,11 +198,11 @@ function Router() {
           <Route path={"/projects"} component={ProjectsPage} />
         <Route path={"/get-quote"} component={GetQuote} />
         {NeedAnotherTradePage && (
-          <Route path={"/need-another-trade"} component={NeedAnotherTradePage} />
+          <Route path={"/need-another-trade"} component={NeedAnotherTradeRoute} />
         )}
         <Route
           path={"/referral"}
-          component={GENERATED_OTHER_TRADE_PREVIEW_ENABLED ? ReferralPreviewRedirect : ReferralPage}
+          component={ReferralRoute}
         />
         <Route path={"/guide"} component={GuidePage} />
         <Route path={"/lp/:slug"} component={LandingPage} />

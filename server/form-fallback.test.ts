@@ -64,7 +64,7 @@ describe("submitFormFallback", () => {
       submissionId: "123e4567-e89b-42d3-a456-426614174000",
       formType: "hero_quick_quote",
       name: "Complete Hero Lead",
-      phone: "0412 345 678",
+      phone: "0424 001 122",
       email: "complete@example.com",
       suburb: "Camp Hill 4152",
       service: "Driveway",
@@ -77,7 +77,7 @@ describe("submitFormFallback", () => {
     expect(payload).toMatchObject({
       submissionId: "123e4567-e89b-42d3-a456-426614174000",
       formType: "hero_quick_quote",
-      phone: "0412345678",
+      phone: "0424001122",
       email: "complete@example.com",
       suburb: "Camp Hill 4152",
       service: "Driveway",

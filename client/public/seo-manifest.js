@@ -24,6 +24,12 @@ import {
   GENERATED_BLOG_STRUCTURED_DATA_BY_SLUG,
   GENERATED_PUBLISHED_BLOG_BY_SLUG,
 } from "./blog-content.js";
+import {
+  GENERATED_REGIONAL_SLAB_OFFICIAL_RESOURCES,
+  GENERATED_REGIONAL_SLAB_PAGE_BY_PATH,
+  GENERATED_REGIONAL_SLAB_PAGES,
+  getRegionalSlabRouteAccess,
+} from "./regional-slab-content.js";
 
 const SITE_ORIGIN = "https://concreteconceptsgroup.com";
 
@@ -143,6 +149,56 @@ function renderStructuredData(values) {
   return values.map(value => `<script type="application/ld+json">${serializeStructuredData(value)}</script>`).join("");
 }
 
+function regionalSlabStructuredData(page) {
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: page.breadcrumbs.map((item, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        name: item.label,
+        item: `${SITE_ORIGIN}${item.path || page.path}`,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: page.name,
+      serviceType: "Site-specific concrete slab and footing quote review",
+      areaServed: { "@type": "AdministrativeArea", name: page.regionLabel },
+      provider: { "@type": "HomeAndConstructionBusiness", "@id": `${SITE_ORIGIN}/#business`, name: "Concrete Concepts Group Pty Ltd" },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: page.faqs.map(faq => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: { "@type": "Answer", text: faq.answer },
+      })),
+    },
+  ];
+}
+
+export function renderRegionalSlabContentShell(pathname, context = {}) {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  const access = getRegionalSlabRouteAccess(path, context.customerHost ?? true);
+  if (access !== "public" && access !== "preview") return "";
+  if (path === "/regional-slab-review") {
+    const links = GENERATED_REGIONAL_SLAB_PAGES.map(page => `<li><a href="${escapeHtml(page.path)}">${escapeHtml(page.name)}</a>: ${escapeHtml(page.description)}</li>`).join("");
+    return `<main data-edge-regional-slab-shell="true"><article><p>Noindex release candidate</p><h1>Regional slab and extension review index</h1><p>Review the approved regional pages, raw crawlable content, local-only quote handoffs and unchanged five-step detailed quote boundary.</p><ul>${links}</ul></article></main>`;
+  }
+  const page = GENERATED_REGIONAL_SLAB_PAGE_BY_PATH[path];
+  if (!page) return "";
+  const list = values => `<ul>${values.map(value => `<li>${escapeHtml(value)}</li>`).join("")}</ul>`;
+  const coverage = page.coverage.map(value => `<li>${escapeHtml(value)}</li>`).join("");
+  const related = page.relatedLinks.map(link => `<li><a href="${escapeHtml(link.path)}">${escapeHtml(link.label)}</a></li>`).join("");
+  const resources = page.resources.map(key => GENERATED_REGIONAL_SLAB_OFFICIAL_RESOURCES[key]).filter(Boolean).map(resource => `<li><a href="${escapeHtml(resource.url)}">${escapeHtml(resource.label)}</a>: ${escapeHtml(resource.summary)}</li>`).join("");
+  const faqs = page.faqs.map(faq => `<article><h3>${escapeHtml(faq.question)}</h3><p>${escapeHtml(faq.answer)}</p></article>`).join("");
+  return `${renderStructuredData(regionalSlabStructuredData(page))}<main data-edge-regional-slab-shell="true"><article><p>${escapeHtml(page.regionLabel)} · site-specific review</p><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.intro)}</p><p><a href="/get-quote">Request a site-specific concrete quote</a></p><h2>Suitable concrete scopes</h2>${list(page.scope)}<h2>What CCG needs to quote</h2>${list(page.quoteInputs)}<h2>Project boundaries</h2>${list(page.cautions)}<h2>Coverage considered</h2><ul>${coverage}</ul><h2>Official customer resources</h2><ul>${resources}</ul><h2>Related pages</h2><ul>${related}</ul><h2>Frequently asked questions</h2>${faqs}</article></main>`;
+}
+
 function goldCoastServiceStructuredData(page) {
   return [
     {
@@ -249,6 +305,12 @@ export function renderOtherTradeContentShell(pathname, previewEnabled = GENERATE
 
 export function getSeoMetadata(pathname, otherTradePreviewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED, localityContext = {}) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  const regionalAccess = getRegionalSlabRouteAccess(path, localityContext.customerHost ?? true);
+  if (regionalAccess === "public" || regionalAccess === "preview") {
+    if (path === "/regional-slab-review") return { title: "Regional Slab Release Candidate Review | CCG", description: "Preview-only review index for CCG regional house slab, extension slab, readiness guide and quote qualification candidates.", canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, nofollow" };
+    const page = GENERATED_REGIONAL_SLAB_PAGE_BY_PATH[path];
+    if (page) return { title: page.title, description: page.description, canonical: page.canonical, robots: regionalAccess === "preview" ? "noindex, nofollow" : "index, follow" };
+  }
   if (path === "/need-another-trade" && otherTradePreviewEnabled) return OTHER_TRADE_METADATA;
   if (CORE_METADATA[path]) return { title: CORE_METADATA[path][0], description: CORE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path === "/" ? "" : path}`, robots: "index, follow" };
   if (SERVICE_METADATA[path]) return { title: SERVICE_METADATA[path][0], description: SERVICE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
@@ -303,7 +365,8 @@ export function applySeoMetadata(html, pathname, robotsOverride, localityContext
   output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${safeTitle}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${safeDescription}">`);
   output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${safeCanonical}">`);
-  const contentShell = renderGoldCoastContentShell(pathname, localityContext)
+  const contentShell = renderRegionalSlabContentShell(pathname, localityContext)
+    || renderGoldCoastContentShell(pathname, localityContext)
     || renderLocalityContentShell(pathname, localityContext)
     || renderBlogContentShell(pathname, localityContext)
     || renderOtherTradeContentShell(pathname);

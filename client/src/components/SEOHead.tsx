@@ -3,6 +3,7 @@
   Updates document head on each page for maximum SEO coverage
 */
 import { useEffect } from "react";
+import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
 
 interface SEOHeadProps {
   title: string;
@@ -19,11 +20,6 @@ interface SEOHeadProps {
 const BASE_URL = "https://concreteconceptsgroup.com";
 const DEFAULT_IMAGE = "https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/og-social-share_5e916781.png";
 const SITE_NAME = "Concrete Concepts Group";
-const CUSTOMER_WEBSITE_HOSTS = new Set([
-  "concreteconceptsgroup.com",
-  "www.concreteconceptsgroup.com",
-]);
-
 export default function SEOHead({
   title,
   description,
@@ -38,7 +34,7 @@ export default function SEOHead({
   const effectiveNoindex =
     noindex ||
     typeof window === "undefined" ||
-    !CUSTOMER_WEBSITE_HOSTS.has(window.location.hostname);
+    !isCustomerWebsiteHost(window.location.hostname);
 
   useEffect(() => {
     // Title
