@@ -37,8 +37,7 @@ export function isBatchOneLocalityAvailable(
 ) {
   if ((BATCH_ONE_UPGRADE_SLUGS as readonly string[]).includes(slug)) return true;
   if (!(BATCH_ONE_CREATE_SLUGS as readonly string[]).includes(slug)) return false;
-  if (context.customerHost) {
-    return BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST.includes(slug);
-  }
+  if (BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST.includes(slug)) return true;
+  if (context.customerHost) return false;
   return context.previewEnabled;
 }

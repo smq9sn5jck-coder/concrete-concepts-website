@@ -215,10 +215,11 @@ describe("Batch 1 publication boundary", () => {
     expect(getLocalityRouteAccess(slug, true, false)).toBe("public");
   });
 
-  it.each(BATCH_ONE_CREATE_SLUGS)("allows new slug %s only behind the non-customer preview gate", slug => {
-    expect(isBatchOneLocalityAvailable(slug, { customerHost: false, previewEnabled: false })).toBe(false);
+  it.each(BATCH_ONE_CREATE_SLUGS)("keeps published new slug %s available on every host", slug => {
+    expect(isBatchOneLocalityAvailable(slug, { customerHost: false, previewEnabled: false })).toBe(true);
     expect(isBatchOneLocalityAvailable(slug, { customerHost: false, previewEnabled: true })).toBe(true);
-    expect(getLocalityRouteAccess(slug, false, true)).toBe("preview");
+    expect(getLocalityRouteAccess(slug, false, false)).toBe("public");
+    expect(getLocalityRouteAccess(slug, false, true)).toBe("public");
   });
 
   it("returns noindex metadata and no raw locality shell for an unknown slug", () => {

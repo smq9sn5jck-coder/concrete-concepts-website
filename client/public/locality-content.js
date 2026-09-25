@@ -3860,9 +3860,8 @@ export const GENERATED_SOUTHSIDE_STRUCTURED_DATA_BY_SLUG = {
 export function getLocalityRouteAccess(slug, customerHost, previewEnabled) {
   if (GENERATED_BATCH_ONE_UPGRADE_SLUGS.includes(slug)) return "public";
   if (!GENERATED_BATCH_ONE_CREATE_SLUGS.includes(slug)) return "not-found";
-  if (customerHost) {
-    return GENERATED_BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST.includes(slug) ? "public" : "not-found";
-  }
+  if (GENERATED_BATCH_ONE_PRODUCTION_CREATE_ALLOWLIST.includes(slug)) return "public";
+  if (customerHost) return "not-found";
   return previewEnabled ? "preview" : "not-found";
 }
 

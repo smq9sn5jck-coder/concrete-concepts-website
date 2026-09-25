@@ -224,6 +224,15 @@ describe("Gold Coast preview content and crawlable edge output", () => {
     }
   });
 
+  it("serves every locality linked from the Gold Coast review on its non-customer preview host", async () => {
+    const worker = await loadWorker({ previewEnabled: true });
+    for (const slug of GOLD_COAST_EXISTING_LOCALITY_SLUGS) {
+      const response = await fetchWorker(worker, `https://candidate.pages.dev/areas/${slug}`);
+      expect(response.status, slug).toBe(200);
+      expect(response.headers.get("X-Robots-Tag"), slug).toBe("noindex, nofollow");
+    }
+  });
+
   it("renders raw H1, body, canonical, CTA, and structured data for the hub and five services", async () => {
     const worker = await loadWorker({ previewEnabled: true });
     for (const [path, h1] of [
