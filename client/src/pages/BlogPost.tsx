@@ -22,6 +22,11 @@ import GuideCtaBanner from "@/components/GuideCtaBanner";
 import BlogQuoteCTA from "@/components/BlogQuoteCTA";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { useEffect, useMemo } from "react";
+import {
+  getStaticPublishedBlogPost,
+  listStaticPublishedBlogPosts,
+} from "@/lib/staticBlog";
+import { isGoldCoastBlogSnapshotEnabled } from "@/lib/goldCoastPreviewAccess";
 
 // Topic cluster mapping: blog post slug → related service page slugs
 const BLOG_TO_SERVICE_MAP: Record<string, { slug: string; title: string }[]> = {
@@ -231,14 +236,23 @@ function formatDate(date: Date | string) {
 export default function BlogPost() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug || "";
-
-  const { data: post, isLoading, error } = trpc.blog.getBySlug.useQuery(
+  const staticBlogEnabled = isGoldCoastBlogSnapshotEnabled();
+  const staticPost = staticBlogEnabled
+    ? getStaticPublishedBlogPost(slug)
+    : undefined;
+  const { data: queriedPost, isLoading: queryLoading, error } = trpc.blog.getBySlug.useQuery(
     { slug },
-    { enabled: !!slug }
+    { enabled: !!slug && !staticBlogEnabled },
   );
+  const post = staticBlogEnabled ? staticPost : queriedPost;
 
   // Fetch other posts for "Related Posts" section — prioritise same category
-  const { data: allPosts } = trpc.blog.list.useQuery(undefined);
+  const staticPosts = staticBlogEnabled ? listStaticPublishedBlogPosts() : undefined;
+  const { data: queriedPosts } = trpc.blog.list.useQuery(
+    undefined,
+    { enabled: !staticBlogEnabled },
+  );
+  const allPosts = staticBlogEnabled ? staticPosts : queriedPosts;
   const relatedPosts = useMemo(() => {
     if (!allPosts || !post) return [];
     const others = allPosts.filter((p) => p.slug !== slug);
@@ -282,7 +296,7 @@ export default function BlogPost() {
     return faqs;
   }, [post?.content]);
 
-  if (isLoading) {
+  if (!staticBlogEnabled && queryLoading) {
     return (
       <div className="min-h-screen bg-brand-offwhite flex items-center justify-center">
         <div className="text-center">
@@ -573,8 +587,7 @@ export default function BlogPost() {
                 Concrete Concepts Group
               </h4>
               <p className="text-gray-500 text-sm" style={{ fontFamily: "var(--font-body)" }}>
-                QBCC Licensed (#15299707) concreting professionals serving Brisbane and all surrounding areas. 
-                Over 100 projects completed with a 5-star reputation.
+                Practical residential concreting information and detailed quote preparation for Brisbane and surrounding South East Queensland areas.
               </p>
             </div>
             <Link href="/get-quote">

@@ -8,6 +8,22 @@ import {
   getSouthsideLocalityRouteAccess,
 } from "./locality-content.js";
 import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "./other-trade-config.js";
+import {
+  GENERATED_GOLD_COAST_COVERAGE_GROUPS,
+  GENERATED_GOLD_COAST_EXISTING_LOCALITIES,
+  GENERATED_GOLD_COAST_OFFICIAL_RESOURCES,
+  GENERATED_GOLD_COAST_PREVIEW_ENABLED,
+  GENERATED_GOLD_COAST_PUBLISHED_ENABLED,
+  GENERATED_GOLD_COAST_SERVICE_BY_SLUG,
+  GENERATED_GOLD_COAST_STRUCTURED_DATA_BY_SLUG,
+  GENERATED_GOLD_COAST_UPGRADE_BY_SLUG,
+  getGoldCoastLocalityUpgradeAccess,
+  getGoldCoastRouteAccess,
+} from "./gold-coast-content.js";
+import {
+  GENERATED_BLOG_STRUCTURED_DATA_BY_SLUG,
+  GENERATED_PUBLISHED_BLOG_BY_SLUG,
+} from "./blog-content.js";
 
 const SITE_ORIGIN = "https://concreteconceptsgroup.com";
 
@@ -57,7 +73,13 @@ const OTHER_TRADE_METADATA = {
 };
 
 function titleCaseSlug(slug) {
-  return decodeURIComponent(slug || "").split("-").filter(Boolean)
+  let decoded;
+  try {
+    decoded = decodeURIComponent(slug || "");
+  } catch {
+    return "";
+  }
+  return decoded.replace(/[^a-z0-9-]+/gi, "-").split("-").filter(Boolean)
     .map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
 }
 
@@ -84,11 +106,24 @@ function getSouthsideRecord(path, context = {}) {
   return access === "public" || access === "preview" ? record : undefined;
 }
 
+function getGoldCoastUpgradeRecord(path, context = {}) {
+  if (!path.startsWith("/areas/")) return undefined;
+  const slug = path.split("/").pop();
+  const record = GENERATED_GOLD_COAST_UPGRADE_BY_SLUG[slug];
+  if (!record) return undefined;
+  const access = getGoldCoastLocalityUpgradeAccess(slug, context.customerHost ?? true);
+  return access === "public" || access === "preview" ? record : undefined;
+}
+
 function getLocalityRecord(path, context = {}) {
-  return getSouthsideRecord(path, context) || getBatchOneRecord(path);
+  return getGoldCoastUpgradeRecord(path, context) || getSouthsideRecord(path, context) || getBatchOneRecord(path);
 }
 
 function getLocalityStructuredData(path, context = {}) {
+  const goldCoastRecord = getGoldCoastUpgradeRecord(path, context);
+  if (goldCoastRecord) {
+    return GENERATED_GOLD_COAST_STRUCTURED_DATA_BY_SLUG[goldCoastRecord.slug] || [];
+  }
   const southsideRecord = getSouthsideRecord(path, context);
   if (southsideRecord) {
     return GENERATED_SOUTHSIDE_STRUCTURED_DATA_BY_SLUG[southsideRecord.slug] || [];
@@ -102,6 +137,94 @@ function getLocalityStructuredData(path, context = {}) {
 
 function serializeStructuredData(value) {
   return JSON.stringify(value).replaceAll("<", "\\u003c");
+}
+
+function renderStructuredData(values) {
+  return values.map(value => `<script type="application/ld+json">${serializeStructuredData(value)}</script>`).join("");
+}
+
+function goldCoastServiceStructuredData(page) {
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Gold Coast", item: `${SITE_ORIGIN}/areas/gold-coast` },
+        { "@type": "ListItem", position: 2, name: page.serviceName, item: `${SITE_ORIGIN}/gold-coast/${page.slug}` },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: `${page.serviceName} — North and Central Gold Coast review`,
+      serviceType: page.serviceName,
+      areaServed: { "@type": "AdministrativeArea", name: "North and Central Gold Coast" },
+      provider: { "@type": "HomeAndConstructionBusiness", "@id": `${SITE_ORIGIN}/#business`, name: "Concrete Concepts Group Pty Ltd" },
+    },
+  ];
+}
+
+export function renderGoldCoastContentShell(pathname, context = {}) {
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  if (getGoldCoastRouteAccess(path, context.customerHost ?? true) === "not-found") return "";
+  if (path === "/gold-coast-review") {
+    const serviceLinks = Object.values(GENERATED_GOLD_COAST_SERVICE_BY_SLUG).map(page => `<li><a href="/gold-coast/${escapeHtml(page.slug)}">${escapeHtml(page.serviceName)}</a></li>`).join("");
+    const localityLinks = GENERATED_GOLD_COAST_EXISTING_LOCALITIES.map(locality => `<li><a href="/areas/${escapeHtml(locality.slug)}">${escapeHtml(locality.name)}</a></li>`).join("");
+    return `<main data-edge-gold-coast-shell="true"><article><p>Noindex release candidate</p><h1>North + Central Gold Coast review index</h1><p>Review the proposed coverage hub, focused service pages, typed locality upgrades and unchanged detailed quote handoff.</p><p><a href="/areas/gold-coast">Open coverage hub</a></p><h2>Focused service pages</h2><ul>${serviceLinks}</ul><h2>Existing locality cluster</h2><ul>${localityLinks}</ul></article></main>`;
+  }
+  if (path === "/areas/gold-coast") {
+    const services = Object.values(GENERATED_GOLD_COAST_SERVICE_BY_SLUG).map(page => `<li><a href="/gold-coast/${escapeHtml(page.slug)}">${escapeHtml(page.serviceName)}</a>: ${escapeHtml(page.description)}</li>`).join("");
+    const coverage = GENERATED_GOLD_COAST_COVERAGE_GROUPS.map(group => `<section><h2>${escapeHtml(group.label)}</h2><p>${group.areas.map(escapeHtml).join(", ")}. Addresses are reviewed against the actual scope and site; inclusion here is not automatic acceptance.</p></section>`).join("");
+    const localities = GENERATED_GOLD_COAST_EXISTING_LOCALITIES.map(locality => `<li><a href="/areas/${escapeHtml(locality.slug)}">${escapeHtml(locality.name)}</a></li>`).join("");
+    const resources = Object.values(GENERATED_GOLD_COAST_OFFICIAL_RESOURCES).map(resource => `<li><a href="${escapeHtml(resource.url)}">${escapeHtml(resource.label)}</a>: ${escapeHtml(resource.summary)}</li>`).join("");
+    const schema = goldCoastServiceStructuredData({ slug: "", serviceName: "North and Central Gold Coast residential concreting review" });
+    return `${renderStructuredData(schema)}<main data-edge-gold-coast-shell="true"><article><p>Proposed service-area review</p><h1>North + Central Gold Coast concrete project review</h1><p>CCG is reviewing suitable residential concrete enquiries across the northern and central Gold Coast. Acceptance depends on the address, scope, access, site conditions and current scheduling.</p><p><a href="/get-quote">Start a detailed quote</a></p><h2>Focused residential scopes</h2><ul>${services}</ul>${coverage}<h2>Existing Gold Coast locality guides</h2><ul>${localities}</ul><h2>Official customer resources</h2><p>These are customer resources, not CCG approval, engineering or certification advice.</p><ul>${resources}</ul></article></main>`;
+  }
+  const serviceSlug = path.match(/^\/gold-coast\/([a-z0-9-]+)$/)?.[1];
+  const page = serviceSlug ? GENERATED_GOLD_COAST_SERVICE_BY_SLUG[serviceSlug] : undefined;
+  if (!page) return "";
+  const list = values => `<ul>${values.map(value => `<li>${escapeHtml(value)}</li>`).join("")}</ul>`;
+  const localities = page.relatedLocalitySlugs.map(slug => { const locality = GENERATED_GOLD_COAST_EXISTING_LOCALITIES.find(item => item.slug === slug); return `<li><a href="/areas/${escapeHtml(slug)}">${escapeHtml(locality?.name || titleCaseSlug(slug))}</a></li>`; }).join("");
+  const services = page.relatedServiceSlugs.map(slug => { const service = GENERATED_GOLD_COAST_SERVICE_BY_SLUG[slug]; return `<li><a href="/gold-coast/${escapeHtml(slug)}">${escapeHtml(service?.serviceName || titleCaseSlug(slug))}</a></li>`; }).join("");
+  const resources = page.resources.map(key => GENERATED_GOLD_COAST_OFFICIAL_RESOURCES[key]).map(resource => `<li><a href="${escapeHtml(resource.url)}">${escapeHtml(resource.label)}</a>: ${escapeHtml(resource.summary)}</li>`).join("");
+  return `${renderStructuredData(goldCoastServiceStructuredData(page))}<main data-edge-gold-coast-shell="true"><article><p>North + Central Gold Coast · service-area review</p><h1>${escapeHtml(page.h1)}</h1><p>${escapeHtml(page.intro)}</p><p><a href="/get-quote">Start a detailed quote</a></p><h2>Scope considered</h2>${list(page.scope)}<h2>Information that helps the quote</h2>${list(page.quoteInputs)}<h2>Property-specific checks</h2>${list(page.cautions)}<h2>Related Gold Coast areas</h2><ul>${localities}</ul><h2>Related services</h2><ul>${services}</ul><h2>Official customer resources</h2><p>These links are customer resources, not CCG approval, engineering or certification advice.</p><ul>${resources}</ul></article></main>`;
+}
+
+function renderMarkdownForEdge(markdown) {
+  const lines = String(markdown || "").split("\n");
+  const parts = [];
+  let listItems = [];
+  const flushList = () => {
+    if (listItems.length) parts.push(`<ul>${listItems.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`);
+    listItems = [];
+  };
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    if (!line) { flushList(); continue; }
+    const heading = line.match(/^(#{1,3})\s+(.+)$/);
+    if (heading) {
+      flushList();
+      const level = heading[1].length === 1 ? 2 : Math.min(heading[1].length + 1, 4);
+      parts.push(`<h${level}>${escapeHtml(heading[2].replaceAll("*", ""))}</h${level}>`);
+    } else if (/^[-*]\s+/.test(line)) {
+      listItems.push(line.replace(/^[-*]\s+/, "").replaceAll("*", ""));
+    } else {
+      flushList();
+      parts.push(`<p>${escapeHtml(line.replaceAll("*", ""))}</p>`);
+    }
+  }
+  flushList();
+  return parts.join("");
+}
+
+export function renderBlogContentShell(pathname, context = {}) {
+  if (!GENERATED_GOLD_COAST_PREVIEW_ENABLED || context.customerHost !== false) return "";
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
+  const slug = path.match(/^\/blog\/([a-z0-9-]+)$/)?.[1];
+  const post = slug ? GENERATED_PUBLISHED_BLOG_BY_SLUG[slug] : undefined;
+  if (!post) return "";
+  const schema = GENERATED_BLOG_STRUCTURED_DATA_BY_SLUG[slug];
+  return `${renderStructuredData(schema ? [schema] : [])}<main data-edge-blog-shell="true"><article><p>${escapeHtml(post.category)} · ${escapeHtml(post.readTimeMinutes)} min read</p><h1>${escapeHtml(post.title)}</h1><p>${escapeHtml(post.excerpt)}</p>${renderMarkdownForEdge(post.content)}<p><a href="/get-quote">Request a detailed quote</a></p><p><a href="/blog">Back to all articles</a></p></article></main>`;
 }
 
 export function renderLocalityContentShell(pathname, context = {}) {
@@ -129,6 +252,18 @@ export function getSeoMetadata(pathname, otherTradePreviewEnabled = GENERATED_OT
   if (path === "/need-another-trade" && otherTradePreviewEnabled) return OTHER_TRADE_METADATA;
   if (CORE_METADATA[path]) return { title: CORE_METADATA[path][0], description: CORE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path === "/" ? "" : path}`, robots: "index, follow" };
   if (SERVICE_METADATA[path]) return { title: SERVICE_METADATA[path][0], description: SERVICE_METADATA[path][1], canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
+  const goldCoastAccess = getGoldCoastRouteAccess(path, localityContext.customerHost ?? true);
+  if (goldCoastAccess === "public" || goldCoastAccess === "preview") {
+    if (path === "/gold-coast-review") return { title: "Gold Coast Release Candidate Review | CCG", description: "Preview-only review index for the North and Central Gold Coast service hub, focused service pages and locality upgrades.", canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, nofollow" };
+    if (path === "/areas/gold-coast") return { title: "North + Central Gold Coast Concreting | CCG Review", description: "Explore CCG's proposed North and Central Gold Coast residential concreting coverage, services, locality guides and property-specific quote requirements.", canonical: `${SITE_ORIGIN}${path}`, robots: goldCoastAccess === "preview" ? "noindex, nofollow" : "index, follow" };
+    const page = GENERATED_GOLD_COAST_SERVICE_BY_SLUG[path.split("/").pop()];
+    if (page) return { title: page.title, description: page.description, canonical: `${SITE_ORIGIN}${path}`, robots: goldCoastAccess === "preview" ? "noindex, nofollow" : "index, follow" };
+  }
+  const blogSlug = path.match(/^\/blog\/([a-z0-9-]+)$/)?.[1];
+  const blogPost = blogSlug
+    ? GENERATED_PUBLISHED_BLOG_BY_SLUG[blogSlug]
+    : undefined;
+  if (blogPost) return { title: `${blogPost.metaTitle || blogPost.title} | Concrete Concepts Group`, description: blogPost.metaDescription || blogPost.excerpt, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
   const localityRecord = getLocalityRecord(path, localityContext);
   if (localityRecord) return { title: localityRecord.title, description: localityRecord.description, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
   if (path.startsWith("/areas/")) {
@@ -140,8 +275,7 @@ export function getSeoMetadata(pathname, otherTradePreviewEnabled = GENERATED_OT
     return { title: "Area Not Found | Concrete Concepts Group", description: "The requested Concrete Concepts Group service-area page could not be found.", canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, follow" };
   }
   if (path.startsWith("/blog/")) {
-    const topic = titleCaseSlug(path.split("/").pop());
-    return { title: `${topic} | CCG Brisbane Concreting Guide`, description: `Read CCG's Brisbane and SEQ guide to ${topic.toLowerCase()}, with practical project planning information and quote options.`, canonical: `${SITE_ORIGIN}${path}`, robots: "index, follow" };
+    return { title: "Article Not Found | Concrete Concepts Group", description: "The requested Concrete Concepts Group article could not be found.", canonical: `${SITE_ORIGIN}${path}`, robots: "noindex, nofollow" };
   }
   if (path.startsWith("/lp/")) {
     const topic = titleCaseSlug(path.split("/").pop());
@@ -158,14 +292,21 @@ function replaceOrInsert(html, pattern, replacement) {
 export function applySeoMetadata(html, pathname, robotsOverride, localityContext = {}) {
   const meta = getSeoMetadata(pathname, undefined, localityContext);
   const robots = robotsOverride || meta.robots;
-  let output = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${meta.title}</title>`);
-  output = replaceOrInsert(output, /<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${meta.description}">`);
-  output = replaceOrInsert(output, /<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${meta.canonical}">`);
-  output = replaceOrInsert(output, /<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="${robots}">`);
-  output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${meta.title}">`);
-  output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${meta.description}">`);
-  output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${meta.canonical}">`);
-  const contentShell = renderLocalityContentShell(pathname, localityContext) || renderOtherTradeContentShell(pathname);
+  const safeTitle = escapeHtml(meta.title);
+  const safeDescription = escapeHtml(meta.description);
+  const safeCanonical = escapeHtml(meta.canonical);
+  const safeRobots = escapeHtml(robots);
+  let output = html.replace(/<title>[\s\S]*?<\/title>/i, `<title>${safeTitle}</title>`);
+  output = replaceOrInsert(output, /<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${safeDescription}">`);
+  output = replaceOrInsert(output, /<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${safeCanonical}">`);
+  output = replaceOrInsert(output, /<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="${safeRobots}">`);
+  output = replaceOrInsert(output, /<meta\s+property=["']og:title["'][^>]*>/i, `<meta property="og:title" content="${safeTitle}">`);
+  output = replaceOrInsert(output, /<meta\s+property=["']og:description["'][^>]*>/i, `<meta property="og:description" content="${safeDescription}">`);
+  output = replaceOrInsert(output, /<meta\s+property=["']og:url["'][^>]*>/i, `<meta property="og:url" content="${safeCanonical}">`);
+  const contentShell = renderGoldCoastContentShell(pathname, localityContext)
+    || renderLocalityContentShell(pathname, localityContext)
+    || renderBlogContentShell(pathname, localityContext)
+    || renderOtherTradeContentShell(pathname);
   if (contentShell) {
     output = output.replace(
       /(<div\s+id=["']root["'][^>]*>)[\s\S]*?<\/div>(\s*(?=<script\b))/i,

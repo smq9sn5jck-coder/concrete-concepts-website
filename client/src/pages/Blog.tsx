@@ -8,6 +8,8 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import GuideCtaBanner from "@/components/GuideCtaBanner";
 import StickyMobileCTA from "@/components/StickyMobileCTA";
 import { trackPhoneCallClick } from "@/components/ConversionTracking";
+import { listStaticPublishedBlogPosts } from "@/lib/staticBlog";
+import { isGoldCoastBlogSnapshotEnabled } from "@/lib/goldCoastPreviewAccess";
 
 const CATEGORIES = [
   "All",
@@ -27,9 +29,15 @@ function formatDate(date: Date | string) {
 
 export default function Blog() {
   const [activeCategory, setActiveCategory] = useState("All");
-  const { data: posts, isLoading } = trpc.blog.list.useQuery(
-    activeCategory === "All" ? undefined : { category: activeCategory }
+  const category = activeCategory === "All" ? undefined : activeCategory;
+  const staticBlogEnabled = isGoldCoastBlogSnapshotEnabled();
+  const staticPosts = listStaticPublishedBlogPosts(category);
+  const { data: queriedPosts, isLoading: queryLoading } = trpc.blog.list.useQuery(
+    category ? { category } : undefined,
+    { enabled: !staticBlogEnabled },
   );
+  const posts = staticBlogEnabled ? staticPosts : queriedPosts;
+  const isLoading = !staticBlogEnabled && queryLoading;
 
   const featuredPost = useMemo(() => {
     if (!posts || posts.length === 0) return null;

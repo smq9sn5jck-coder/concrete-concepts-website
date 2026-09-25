@@ -3,11 +3,23 @@ import { applySeoMetadata, filterPublicSitemap } from "./seo-manifest.js";
 import {
   GENERATED_BATCH_ONE_BY_SLUG,
   GENERATED_BATCH_ONE_PREVIEW_ENABLED,
+  GENERATED_PUBLIC_LOCALITY_SLUGS,
   GENERATED_SOUTHSIDE_BY_SLUG,
   GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
   getLocalityRouteAccess,
   getSouthsideLocalityRouteAccess,
 } from "./locality-content.js";
+import {
+  GENERATED_GOLD_COAST_PREVIEW_ENABLED,
+  GENERATED_GOLD_COAST_PUBLISHED_ENABLED,
+  GENERATED_GOLD_COAST_UPGRADE_BY_SLUG,
+  getGoldCoastLocalityUpgradeAccess,
+  getGoldCoastRouteAccess,
+} from "./gold-coast-content.js";
+import {
+  GENERATED_PUBLISHED_BLOG_BY_SLUG,
+  GENERATED_PUBLISHED_BLOG_POST_SUMMARIES,
+} from "./blog-content.js";
 import {
   GENERATED_OTHER_TRADE_CATEGORIES,
   GENERATED_OTHER_TRADE_CONSENT_TEXT,
@@ -23,6 +35,75 @@ const CUSTOMER_WEBSITE_HOSTS = new Set([
   "concreteconceptsgroup.com",
   "www.concreteconceptsgroup.com",
 ]);
+
+const HTML_SECURITY_HEADERS = Object.freeze({
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(self), microphone=(), geolocation=()",
+  "Strict-Transport-Security": "max-age=31536000",
+});
+
+function buildHtmlContentSecurityPolicy(scriptHashes = []) {
+  const scripts = [
+    "'self'",
+    ...scriptHashes,
+    "https://www.googletagmanager.com",
+    "https://connect.facebook.net",
+    "https://maps.googleapis.com",
+    "https://maps.gstatic.com",
+    "https://forge.butterfly-effect.dev",
+    "https://manus-analytics.com",
+  ];
+  return [
+    "default-src 'self'",
+    "base-uri 'self'",
+    "object-src 'none'",
+    "frame-ancestors 'none'",
+    "form-action 'self' https://submit.jotform.com https://form.jotform.com",
+    `script-src ${scripts.join(" ")}`,
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+    "img-src 'self' data: blob: https:",
+    "font-src 'self' data: https://fonts.gstatic.com",
+    "connect-src 'self' https: wss:",
+    "media-src 'self' blob: https:",
+    "frame-src 'self' https:",
+    "worker-src 'self' blob:",
+  ].join("; ");
+}
+
+function applyHtmlSecurityHeaders(headers, scriptHashes = []) {
+  for (const [name, value] of Object.entries(HTML_SECURITY_HEADERS)) {
+    headers.set(name, value);
+  }
+  headers.set("Content-Security-Policy", buildHtmlContentSecurityPolicy(scriptHashes));
+  return headers;
+}
+
+async function getInlineScriptHashes(html) {
+  const hashes = [];
+  const pattern = /<script\b([^>]*)>([\s\S]*?)<\/script>/gi;
+  for (const match of html.matchAll(pattern)) {
+    if (/\bsrc\s*=/i.test(match[1])) continue;
+    const digest = new Uint8Array(
+      await crypto.subtle.digest("SHA-256", new TextEncoder().encode(match[2])),
+    );
+    let binary = "";
+    for (const byte of digest) binary += String.fromCharCode(byte);
+    hashes.push(`'sha256-${btoa(binary)}'`);
+  }
+  return [...new Set(hashes)];
+}
+
+function normalizeStaticPath(path) {
+  try {
+    const decoded = decodeURIComponent(path);
+    const withoutTrailingSlash = decoded.length > 1 ? decoded.replace(/\/+$/, "") : decoded;
+    return withoutTrailingSlash.toLowerCase();
+  } catch {
+    return null;
+  }
+}
 
 function typedLocalitySlugFromPath(path, recordsBySlug) {
   let decodedPath;
@@ -44,6 +125,49 @@ function southsideSlugFromPath(path) {
   return typedLocalitySlugFromPath(path, GENERATED_SOUTHSIDE_BY_SLUG);
 }
 
+function goldCoastUpgradeSlugFromPath(path) {
+  return typedLocalitySlugFromPath(path, GENERATED_GOLD_COAST_UPGRADE_BY_SLUG);
+}
+
+function areaSlugFromPath(path) {
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(path);
+  } catch {
+    return null;
+  }
+  return decodedPath.match(/^\/areas\/([a-z0-9-]+)\/?$/i)?.[1]?.toLowerCase() || null;
+}
+
+function blogSlugFromPath(path) {
+  let decodedPath;
+  try {
+    decodedPath = decodeURIComponent(path);
+  } catch {
+    return null;
+  }
+  return decodedPath.match(/^\/blog\/([a-z0-9-]+)\/?$/i)?.[1]?.toLowerCase() || null;
+}
+
+const BLOG_REDIRECTS = {
+  "concrete-driveway-cost-brisbane-2026": "concrete-driveway-cost-brisbane-price-guide",
+  "concrete-driveway-cost-brisbane-2026-price-guide": "concrete-driveway-cost-brisbane-price-guide",
+  "retaining-wall-cost-brisbane-2026": "concrete-retaining-wall-cost-brisbane-price-guide",
+  "retaining-wall-guide-brisbane-types-costs-council": "concrete-retaining-walls-brisbane-types-costs-council",
+  "concrete-shed-slabs-brisbane-guide": "concrete-shed-slab-cost-brisbane-price-guide",
+  "how-long-concrete-cure-brisbane-weather": "how-long-concrete-cure-brisbane-climate",
+  "concrete-vs-pavers-brisbane-driveways": "concrete-vs-pavers-brisbane-driveway",
+  "prepare-property-concreting-job-brisbane-checklist": "prepare-property-concrete-pour-brisbane",
+};
+
+function canonicalPathRedirect(url, canonicalPath, status = 308) {
+  if (url.pathname === canonicalPath) return null;
+  const headers = new Headers({ Location: `${canonicalPath}${url.search}` });
+  headers.set("X-Robots-Tag", "noindex, nofollow");
+  headers.set("Cache-Control", "no-store");
+  return new Response(null, { status, headers });
+}
+
 function canonicalLocalityRedirect(url, slug) {
   const canonicalPath = `/areas/${slug}`;
   if (url.pathname === canonicalPath) return null;
@@ -53,7 +177,7 @@ function canonicalLocalityRedirect(url, slug) {
   return new Response(null, { status: 308, headers });
 }
 
-function notFoundHtmlResponse(response, url, method = "GET") {
+async function notFoundHtmlResponse(response, url, method = "GET") {
   const html = applySeoMetadata(
     '<!doctype html><html lang="en-AU"><head><title>Area Not Found</title><meta name="description" content=""><meta name="robots" content="noindex, nofollow"><link rel="canonical" href=""></head><body><main><h1>Area Not Found</h1><p>The area page you requested is not available.</p><p><a href="/areas">View service areas</a></p></main></body></html>',
     url.pathname,
@@ -63,6 +187,7 @@ function notFoundHtmlResponse(response, url, method = "GET") {
   headers.set("Content-Type", "text/html; charset=utf-8");
   headers.set("X-Robots-Tag", "noindex, nofollow");
   headers.set("Cache-Control", "no-store");
+  applyHtmlSecurityHeaders(headers, method === "HEAD" ? [] : await getInlineScriptHashes(html));
   headers.delete("Content-Length");
   return new Response(method === "HEAD" ? null : html, { status: 404, headers });
 }
@@ -1732,16 +1857,27 @@ async function prepareStaticResponse(response, url, path, method) {
     });
   }
 
-  if ((method === "GET" || method === "HEAD") && response.ok && response.headers.get("Content-Type")?.includes("text/html")) {
+  if ((method === "GET" || method === "HEAD") && response.headers.get("Content-Type")?.includes("text/html")) {
     const isCustomerWebsiteHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
-    const localityContext = {
-      customerHost: isCustomerWebsiteHost,
-      southsidePreviewEnabled: GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
-    };
-    const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
     const headers = new Headers(response.headers);
     headers.set("Content-Type", "text/html; charset=utf-8");
     headers.delete("Content-Length");
+    if (!response.ok) {
+      headers.set("X-Robots-Tag", "noindex, nofollow");
+      applyHtmlSecurityHeaders(headers);
+      return new Response(method === "HEAD" ? null : response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers,
+      });
+    }
+    const localityContext = {
+      customerHost: isCustomerWebsiteHost,
+      southsidePreviewEnabled: GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
+      goldCoastPreviewEnabled: GENERATED_GOLD_COAST_PREVIEW_ENABLED,
+      goldCoastPublishedEnabled: GENERATED_GOLD_COAST_PUBLISHED_ENABLED,
+    };
+    const robotsOverride = isCustomerWebsiteHost ? undefined : "noindex, nofollow";
     if (!isCustomerWebsiteHost) {
       headers.set("X-Robots-Tag", "noindex, nofollow");
     } else if (path === "/need-another-trade") {
@@ -1750,6 +1886,7 @@ async function prepareStaticResponse(response, url, path, method) {
       headers.set("X-Robots-Tag", "noindex, follow");
     }
     if (method === "HEAD") {
+      applyHtmlSecurityHeaders(headers);
       return new Response(null, {
         status: response.status,
         statusText: response.statusText,
@@ -1757,6 +1894,7 @@ async function prepareStaticResponse(response, url, path, method) {
       });
     }
     const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride, localityContext);
+    applyHtmlSecurityHeaders(headers, await getInlineScriptHashes(html));
     return new Response(html, {
       status: response.status,
       statusText: response.statusText,
@@ -1775,6 +1913,83 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
+    const customerHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const isStaticRead = request.method === "GET" || request.method === "HEAD";
+    const normalizedStaticPath = isStaticRead ? normalizeStaticPath(path) : null;
+
+    if (isStaticRead && normalizedStaticPath === null && (
+      path.toLowerCase().startsWith("/blog/")
+      || path.toLowerCase().startsWith("/areas/")
+      || path.toLowerCase().startsWith("/gold-coast/")
+    )) {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+
+    if (isStaticRead && normalizedStaticPath && (
+      (normalizedStaticPath.startsWith("/blog/") && !/^\/blog\/[a-z0-9-]+$/.test(normalizedStaticPath))
+      || (normalizedStaticPath.startsWith("/areas/") && !/^\/areas\/[a-z0-9-]+$/.test(normalizedStaticPath))
+      || (normalizedStaticPath.startsWith("/gold-coast/") && !/^\/gold-coast\/[a-z0-9-]+$/.test(normalizedStaticPath))
+    )) {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+
+    const goldCoastRouteAccess = normalizedStaticPath
+      ? getGoldCoastRouteAccess(normalizedStaticPath, customerHost)
+      : "not-found";
+    if (isStaticRead && (
+      normalizedStaticPath === "/gold-coast-review"
+      || normalizedStaticPath === "/areas/gold-coast"
+      || normalizedStaticPath?.startsWith("/gold-coast/")
+    ) && goldCoastRouteAccess === "not-found") {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+    if (isStaticRead && goldCoastRouteAccess !== "not-found") {
+      const canonicalPath = normalizedStaticPath;
+      const redirect = canonicalPathRedirect(url, canonicalPath);
+      if (redirect) return redirect;
+    }
+
+    const blogSnapshotEnabled = GENERATED_GOLD_COAST_PREVIEW_ENABLED && !customerHost;
+    const blogSlug = isStaticRead
+      ? blogSlugFromPath(normalizedStaticPath || path)
+      : null;
+    if (blogSlug) {
+      const redirectTarget = BLOG_REDIRECTS[blogSlug];
+      if (redirectTarget) {
+        return canonicalPathRedirect(url, `/blog/${redirectTarget}`, 301);
+      }
+      if (!GENERATED_PUBLISHED_BLOG_BY_SLUG[blogSlug]) {
+        return notFoundHtmlResponse(new Response(null), url, request.method);
+      }
+      const redirect = canonicalPathRedirect(url, `/blog/${blogSlug}`);
+      if (redirect) return redirect;
+    }
+
+    if (blogSnapshotEnabled && isStaticRead && path === "/api/trpc/blog.getBySlug") {
+      let input;
+      try {
+        input = JSON.parse(url.searchParams.get("input") || "{}");
+      } catch {
+        return trpcErrorResponse("Invalid blog request", 400);
+      }
+      const slug = input?.json?.slug || input?.["0"]?.json?.slug || input?.slug;
+      const post = GENERATED_PUBLISHED_BLOG_BY_SLUG[slug] || null;
+      return trpcResponse(post);
+    }
+
+    if (blogSnapshotEnabled && isStaticRead && path === "/api/trpc/blog.list") {
+      let category;
+      try {
+        const input = JSON.parse(url.searchParams.get("input") || "{}");
+        category = input?.json?.category || input?.["0"]?.json?.category || input?.category;
+      } catch {
+        return trpcErrorResponse("Invalid blog request", 400);
+      }
+      const posts = category
+        ? GENERATED_PUBLISHED_BLOG_POST_SUMMARIES.filter(post => post.category === category)
+        : GENERATED_PUBLISHED_BLOG_POST_SUMMARIES;
+      return trpcResponse(posts);
+    }
 
     if (path === "/referral") {
       const redirect = handleReferralRedirect(request);
@@ -1827,17 +2042,20 @@ export default {
       }
     }
 
-    const isStaticRead = request.method === "GET" || request.method === "HEAD";
-    const batchOneSlug = isStaticRead ? batchOneSlugFromPath(path) : null;
-    const southsideSlug = isStaticRead ? southsideSlugFromPath(path) : null;
-    const customerHost = CUSTOMER_WEBSITE_HOSTS.has(url.hostname);
+    const contentPath = normalizedStaticPath || path;
+    const batchOneSlug = isStaticRead ? batchOneSlugFromPath(contentPath) : null;
+    const southsideSlug = isStaticRead ? southsideSlugFromPath(contentPath) : null;
+    const goldCoastUpgradeSlug = isStaticRead ? goldCoastUpgradeSlugFromPath(contentPath) : null;
     const batchOneAccess = batchOneSlug
       ? getLocalityRouteAccess(batchOneSlug, customerHost, GENERATED_BATCH_ONE_PREVIEW_ENABLED)
       : "not-found";
     const southsideAccess = southsideSlug
       ? getSouthsideLocalityRouteAccess(southsideSlug, customerHost, GENERATED_SOUTHSIDE_PREVIEW_ENABLED)
       : "not-found";
-    const typedLocalityAllowed = [batchOneAccess, southsideAccess]
+    const goldCoastUpgradeAccess = goldCoastUpgradeSlug
+      ? getGoldCoastLocalityUpgradeAccess(goldCoastUpgradeSlug, customerHost)
+      : "not-found";
+    const typedLocalityAllowed = [batchOneAccess, southsideAccess, goldCoastUpgradeAccess]
       .some(access => access === "public" || access === "preview");
     if (
       (southsideSlug && southsideAccess === "not-found" && !typedLocalityAllowed)
@@ -1845,7 +2063,16 @@ export default {
     ) {
       return notFoundHtmlResponse(new Response(null), url, request.method);
     }
-    const recognizedLocalitySlug = southsideSlug || batchOneSlug;
+    const areaSlug = isStaticRead ? areaSlugFromPath(contentPath) : null;
+    if (
+      areaSlug
+      && goldCoastRouteAccess === "not-found"
+      && !typedLocalityAllowed
+      && !GENERATED_PUBLIC_LOCALITY_SLUGS.includes(areaSlug)
+    ) {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+    const recognizedLocalitySlug = goldCoastUpgradeSlug || southsideSlug || batchOneSlug;
     if (recognizedLocalitySlug) {
       const redirect = canonicalLocalityRedirect(url, recognizedLocalitySlug);
       if (redirect) return redirect;

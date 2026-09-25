@@ -21,7 +21,11 @@ import { BATCH_ONE_LOCALITY_BY_SLUG } from "@shared/localityContent";
 import { isBatchOneLocalityAvailable } from "@shared/batchOnePublication";
 import { SOUTHSIDE_LOCALITY_BY_SLUG } from "@shared/southsideLocalityContent";
 import { isSouthsideLocalityAvailable } from "@shared/southsidePublication";
-
+import { GOLD_COAST_UPGRADE_BY_SLUG } from "@shared/goldCoastContent";
+import {
+  GOLD_COAST_PREVIEW_ENABLED,
+  GOLD_COAST_PUBLISHED_ENABLED,
+} from "@/generated/goldCoastConfig";
 interface SuburbData {
   slug: string;
   name: string;
@@ -2328,6 +2332,7 @@ export default function SuburbPage() {
   const suburbSlug = params.suburbSlug || "";
   const batchOneRecord = BATCH_ONE_LOCALITY_BY_SLUG[suburbSlug];
   const southsideRecord = SOUTHSIDE_LOCALITY_BY_SLUG[suburbSlug];
+  const goldCoastUpgradeRecord = GOLD_COAST_UPGRADE_BY_SLUG[suburbSlug];
   const customerHost = typeof window !== "undefined" && [
     "concreteconceptsgroup.com",
     "www.concreteconceptsgroup.com",
@@ -2342,6 +2347,15 @@ export default function SuburbPage() {
     southsidePreviewEnabled: import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true",
   });
   const suburb = SUBURBS[suburbSlug];
+
+  const goldCoastUpgradeAvailable = goldCoastUpgradeRecord && (
+    (!customerHost && GOLD_COAST_PREVIEW_ENABLED)
+    || (customerHost && GOLD_COAST_PUBLISHED_ENABLED)
+  );
+
+  if (goldCoastUpgradeAvailable) {
+    return <BatchOneLocalityPage record={goldCoastUpgradeRecord} />;
+  }
 
   if (batchOneAvailable) {
     return <BatchOneLocalityPage record={batchOneRecord} />;

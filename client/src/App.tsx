@@ -10,6 +10,10 @@ import MetaPixelInit from "./components/MetaPixelInit";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { captureUtmParams } from "@/lib/utm";
 import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "@/generated/otherTradeConfig";
+import {
+  GOLD_COAST_PREVIEW_ENABLED,
+  GOLD_COAST_PUBLISHED_ENABLED,
+} from "@/generated/goldCoastConfig";
 
 // Capture UTM parameters, gclid, fbclid, referrer on first page load
 captureUtmParams();
@@ -52,6 +56,16 @@ const southsidePreviewEnabled = import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true
 const SouthsideReviewPage = southsidePreviewEnabled
   ? lazy(() => import("./pages/SouthsideReviewPage"))
   : null;
+const goldCoastRoutesEnabled = GOLD_COAST_PREVIEW_ENABLED || GOLD_COAST_PUBLISHED_ENABLED;
+const GoldCoastReviewPage = GOLD_COAST_PREVIEW_ENABLED
+  ? lazy(() => import("./pages/GoldCoastReviewPage"))
+  : null;
+const GoldCoastHubPage = goldCoastRoutesEnabled
+  ? lazy(() => import("./pages/GoldCoastHubPage"))
+  : null;
+const GoldCoastServicePage = goldCoastRoutesEnabled
+  ? lazy(() => import("./pages/GoldCoastServicePage"))
+  : null;
 
 /** Minimal loading fallback for lazy routes */
 function PageLoader() {
@@ -87,6 +101,15 @@ function Router() {
         )}
         {SouthsideReviewPage && (
           <Route path={"/southside-review"} component={SouthsideReviewPage} />
+        )}
+        {GoldCoastReviewPage && (
+          <Route path={"/gold-coast-review"} component={GoldCoastReviewPage} />
+        )}
+        {GoldCoastHubPage && (
+          <Route path={"/areas/gold-coast"} component={GoldCoastHubPage} />
+        )}
+        {GoldCoastServicePage && (
+          <Route path={"/gold-coast/:slug"} component={GoldCoastServicePage} />
         )}
         <Route path={"/calculator"} component={CostCalculator} />
         <Route path={"/areas/:suburbSlug"} component={SuburbPage} />
