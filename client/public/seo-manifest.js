@@ -1,13 +1,12 @@
 import {
   GENERATED_BATCH_ONE_BY_SLUG,
-  GENERATED_BATCH_ONE_STRUCTURED_DATA_BY_SLUG,
   GENERATED_PUBLIC_LOCALITY_SLUGS,
   GENERATED_SOUTHSIDE_BY_SLUG,
   GENERATED_SOUTHSIDE_PREVIEW_ENABLED,
-  GENERATED_SOUTHSIDE_STRUCTURED_DATA_BY_SLUG,
   getSouthsideLocalityRouteAccess,
 } from "./locality-content.js";
 import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "./other-trade-config.js";
+import { buildRouteStructuredData, serializeStructuredData } from "./route-schema.js";
 
 const SITE_ORIGIN = "https://concreteconceptsgroup.com";
 
@@ -88,22 +87,6 @@ function getLocalityRecord(path, context = {}) {
   return getSouthsideRecord(path, context) || getBatchOneRecord(path);
 }
 
-function getLocalityStructuredData(path, context = {}) {
-  const southsideRecord = getSouthsideRecord(path, context);
-  if (southsideRecord) {
-    return GENERATED_SOUTHSIDE_STRUCTURED_DATA_BY_SLUG[southsideRecord.slug] || [];
-  }
-  const batchOneRecord = getBatchOneRecord(path);
-  if (batchOneRecord) {
-    return GENERATED_BATCH_ONE_STRUCTURED_DATA_BY_SLUG[batchOneRecord.slug] || [];
-  }
-  return [];
-}
-
-function serializeStructuredData(value) {
-  return JSON.stringify(value).replaceAll("<", "\\u003c");
-}
-
 export function renderLocalityContentShell(pathname, context = {}) {
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : "/";
   const record = getLocalityRecord(path, context);
@@ -112,10 +95,7 @@ export function renderLocalityContentShell(pathname, context = {}) {
   const faqs = record.faqs.map(faq => `<article><h3>${escapeHtml(faq.question)}</h3><p>${escapeHtml(faq.answer)}</p></article>`).join("");
   const nearby = record.nearbyLocalitySlugs.map(slug => `<li><a href="/areas/${escapeHtml(slug)}">${escapeHtml(titleCaseSlug(slug))}</a></li>`).join("");
   const sources = record.localityContext.sourceUrls.map((sourceUrl, index) => `<li><a href="${escapeHtml(sourceUrl)}">${escapeHtml(record.localityContext.sourceLabel)}${record.localityContext.sourceUrls.length > 1 ? ` — source ${index + 1}` : ""}</a></li>`).join("");
-  const structuredData = getLocalityStructuredData(path, context)
-    .map(value => `<script type="application/ld+json">${serializeStructuredData(value)}</script>`)
-    .join("");
-  return `${structuredData}<main data-edge-locality-shell="true"><article><p>${escapeHtml(record.region)} · ${escapeHtml(record.lga)} · ${escapeHtml(record.postcode)}</p><h1>${escapeHtml(record.h1)}</h1><p>${escapeHtml(record.intro)}</p><h2>Practical site considerations</h2><p>${escapeHtml(record.practicalConsiderations)}</p><h2>Locality context</h2><p>${escapeHtml(record.localityContext.attribution)}</p><p>Sources reviewed: ${escapeHtml(record.localityContext.claimDate)}</p><ul>${sources}</ul><h2>Relevant concrete services</h2><ul>${services}</ul><h2>Frequently asked questions</h2>${faqs}<h2>Nearby live locality guides</h2><ul>${nearby}</ul><p><a href="${escapeHtml(record.regionalHub.path)}">${escapeHtml(record.regionalHub.label)}</a></p><p><a href="/get-quote">Start a detailed quote</a></p></article></main>`;
+  return `<main data-edge-locality-shell="true"><article><p>${escapeHtml(record.region)} · ${escapeHtml(record.lga)} · ${escapeHtml(record.postcode)}</p><h1>${escapeHtml(record.h1)}</h1><p>${escapeHtml(record.intro)}</p><h2>Practical site considerations</h2><p>${escapeHtml(record.practicalConsiderations)}</p><h2>Locality context</h2><p>${escapeHtml(record.localityContext.attribution)}</p><p>Sources reviewed: ${escapeHtml(record.localityContext.claimDate)}</p><ul>${sources}</ul><h2>Relevant concrete services</h2><ul>${services}</ul><h2>Frequently asked questions</h2>${faqs}<h2>Nearby live locality guides</h2><ul>${nearby}</ul><p><a href="${escapeHtml(record.regionalHub.path)}">${escapeHtml(record.regionalHub.label)}</a></p><p><a href="/get-quote">Start a detailed quote</a></p></article></main>`;
 }
 
 export function renderOtherTradeContentShell(pathname, previewEnabled = GENERATED_OTHER_TRADE_PREVIEW_ENABLED) {
@@ -171,6 +151,15 @@ export function applySeoMetadata(html, pathname, robotsOverride, localityContext
       /(<div\s+id=["']root["'][^>]*>)[\s\S]*?<\/div>(\s*(?=<script\b))/i,
       `$1${contentShell}</div>$2`,
     );
+  }
+  // All page schema is owned here and in SEOHead, never in the replaceable React root.
+  output = output.replace(/<script\b(?=[^>]*\btype\s*=\s*["']application\/ld\+json["'])[^>]*>[\s\S]*?<\/script>/gi, "");
+  const graph = buildRouteStructuredData(pathname, {
+    customerHost: localityContext.customerHost ?? true,
+    noindex: /\bnoindex\b/i.test(robots),
+  });
+  if (graph) {
+    output = output.replace(/<\/head>/i, () => `<script type="application/ld+json" data-ccg-schema="true">${serializeStructuredData(graph)}</script></head>`);
   }
   return output;
 }

@@ -1,7 +1,7 @@
 /*
   DESIGN: Refined Craft — Concrete Concepts Group brand
   FAQ: Accordion-style Q&A with gold accents, warm off-white background
-  SEO-optimized with structured data (JSON-LD FAQPage schema)
+  Route JSON-LD is centrally owned by SEOHead and the edge.
 */
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -227,24 +227,6 @@ export default function FAQSection() {
         </motion.div>
       </div>
 
-      {/* JSON-LD Structured Data for SEO */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            mainEntity: faqs.map((faq) => ({
-              "@type": "Question",
-              name: faq.question,
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: faq.answer,
-              },
-            })),
-          }),
-        }}
-      />
     </section>
   );
 }

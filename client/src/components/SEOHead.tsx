@@ -3,6 +3,8 @@
   Updates document head on each page for maximum SEO coverage
 */
 import { useEffect } from "react";
+import { buildRouteStructuredData } from "@shared/routeStructuredData";
+import { replaceRouteSchema } from "@/lib/schemaDocument";
 
 interface SEOHeadProps {
   title: string;
@@ -101,25 +103,15 @@ export default function SEOHead({
     setMeta("name", "twitter:description", description);
     setMeta("name", "twitter:image", ogImage || DEFAULT_IMAGE);
 
-    // Structured Data
-    if (structuredData) {
-      // Remove any existing dynamic structured data
-      document.querySelectorAll('script[data-seo-head="true"]').forEach(el => el.remove());
+    // Keep legacy structuredData props inert until their sources are reviewed.
+    // The shared graph is exactly the same data used in the first edge response.
+    const schemaScript = replaceRouteSchema(document, buildRouteStructuredData(window.location.pathname, {
+      customerHost: CUSTOMER_WEBSITE_HOSTS.has(window.location.hostname),
+      noindex: effectiveNoindex,
+    }));
 
-      const dataArray = Array.isArray(structuredData) ? structuredData : [structuredData];
-      dataArray.forEach(data => {
-        const script = document.createElement("script");
-        script.type = "application/ld+json";
-        script.setAttribute("data-seo-head", "true");
-        script.textContent = JSON.stringify(data);
-        document.head.appendChild(script);
-      });
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.querySelectorAll('script[data-seo-head="true"]').forEach(el => el.remove());
-    };
+    // An old effect's cleanup must never delete a newer route's graph.
+    return () => { schemaScript?.remove(); };
   }, [title, description, canonical, ogType, ogImage, keywords, structuredData, effectiveNoindex, geo]);
 
   return null;
