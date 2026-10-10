@@ -195,7 +195,8 @@ describe("Batch 1 generated edge parity and SEO shell", () => {
 
   it("escapes generated public copy before placing it in raw HTML", () => {
     const html = renderLocalityContentShell("/areas/moggill");
-    expect((html.match(/<script type="application\/ld\+json">/g) ?? [])).toHaveLength(3);
+    // Graph scripts now live in head, not inside the replaceable locality shell.
+    expect((html.match(/<script type="application\/ld\+json">/g) ?? [])).toHaveLength(0);
     const withoutStructuredData = html.replace(
       /<script type="application\/ld\+json">[\s\S]*?<\/script>/g,
       "",

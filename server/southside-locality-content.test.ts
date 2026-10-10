@@ -23,6 +23,7 @@ import {
 import {
   getSeoMetadata,
   renderLocalityContentShell,
+  applySeoMetadata,
 } from "../client/public/seo-manifest.js";
 import { handoffLocalityQuote } from "../client/src/lib/localityQuoteHandoff";
 import { BATCH_ONE_LOCALITY_BY_SLUG } from "../shared/localityContent";
@@ -200,20 +201,11 @@ describe("south-side preview publication boundary", () => {
     }
     const structuredData = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
       .map(match => JSON.parse(match[1]));
-    expect(structuredData.map(item => item["@type"])).toEqual([
-      "BreadcrumbList",
-      "Service",
-      "FAQPage",
-    ]);
-    expect(structuredData[0].itemListElement[1]).toMatchObject({
-      name: record.locality,
-      item: `${SITE_ORIGIN}${path}`,
-    });
-    expect(structuredData[1]).toMatchObject({
-      name: `Residential concreting in ${record.locality}`,
-      serviceType: record.services.map(service => service.name),
-    });
-    expect(structuredData[2].mainEntity).toHaveLength(record.faqs.length);
+    // Preview pages keep visible FAQs but must not publish a crawler-rich graph.
+    // JSON-LD ownership has moved out of the replaceable React root into head.
+    expect(structuredData).toEqual([]);
+    const document = applySeoMetadata(`<html><head><title>Preview</title></head><body>${html}</body></html>`, path, "noindex, nofollow", previewContext);
+    expect(document).not.toContain('type="application/ld+json"');
   });
 
   it("keeps Norman Park absent from the production sitemap during staging", () => {

@@ -36,7 +36,7 @@ function createCacheMock() {
 async function loadWorker(options: { southsidePreviewEnabled: boolean }) {
   const directory = mkdtempSync(resolve(tmpdir(), "ccg-southside-worker-"));
   tempDirectories.push(directory);
-  const sourceFiles = ["_worker.js", "seo-manifest.js", "locality-content.js", "other-trade-config.js"];
+  const sourceFiles = ["_worker.js", "seo-manifest.js", "locality-content.js", "other-trade-config.js", "route-schema.js"];
   for (const filename of sourceFiles) {
     copyFileSync(resolve(ROOT, "client/public", filename), resolve(directory, filename));
   }
