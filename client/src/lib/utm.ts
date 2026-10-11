@@ -6,6 +6,8 @@
  * Attached to every form submission for lead-to-revenue attribution.
  */
 
+import { contextTrackingAllowed } from "@/lib/contextTrackingGate";
+
 const UTM_STORAGE_KEY = "ccg_utm_data";
 
 export interface UtmData {
@@ -26,6 +28,8 @@ export interface UtmData {
  * Call this once in your app root (e.g., App.tsx or main.tsx).
  */
 export function captureUtmParams(): void {
+  if (!contextTrackingAllowed()) return;
+
   try {
     // Don't overwrite existing UTM data in this session
     const existing = sessionStorage.getItem(UTM_STORAGE_KEY);
@@ -88,6 +92,8 @@ export function getUtmData(): UtmData {
     referrer: null,
     landingPage: null,
   };
+
+  if (!contextTrackingAllowed()) return empty;
 
   try {
     const stored = sessionStorage.getItem(UTM_STORAGE_KEY);

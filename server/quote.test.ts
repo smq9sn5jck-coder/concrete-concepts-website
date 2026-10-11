@@ -4,6 +4,9 @@ import type { TrpcContext } from "./_core/context";
 import { sendQuoteNotificationEmail } from "./email";
 import { createOrGetQuoteRequest, getQuoteRequestBySubmissionId } from "./db";
 
+// The inherited router webhook is mocked; no external request is made by tests.
+vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response('{}', { status: 200 })));
+
 // Mock the notification module
 vi.mock("./_core/notification", () => ({
   notifyOwner: vi.fn().mockResolvedValue(true),

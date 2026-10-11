@@ -8,6 +8,7 @@
 */
 
 import { GOOGLE_ADS_ID, CONVERSION_LABELS } from "@/lib/googleAdsConfig";
+import { contextTrackingAllowed } from "@/lib/contextTrackingGate";
 
 declare global {
   interface Window {
@@ -51,19 +52,24 @@ function normaliseEnhancedConversionData(data?: EnhancedConversionData) {
 }
 
 function waitForGtag(callback: () => void) {
+  if (!contextTrackingAllowed()) return;
   if (typeof window === "undefined") return;
-  if (window.gtag) { callback(); return; }
+  if (window.gtag) {
+    if (contextTrackingAllowed()) callback();
+    return;
+  }
   // Retry for up to 10 seconds after page load
   let attempts = 0;
   const interval = setInterval(() => {
     attempts++;
+    if (!contextTrackingAllowed()) { clearInterval(interval); return; }
     if (window.gtag) { clearInterval(interval); callback(); }
     if (attempts > 20) clearInterval(interval);
   }, 500);
 }
 
 function pushEnhancedConversionData(data: EnhancedConversionData) {
-  if (typeof window === "undefined" || !window.gtag) return;
+  if (!contextTrackingAllowed() || typeof window === "undefined" || !window.gtag) return;
   const enhancedData = normaliseEnhancedConversionData(data);
   if (!enhancedData) return;
 
@@ -81,6 +87,7 @@ interface RemarketingParams {
 }
 
 export function trackRemarketingEvent(params: RemarketingParams) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "remarketing_view", {
       send_to: GOOGLE_ADS_ID,
@@ -107,6 +114,7 @@ export function trackQuoteConversion(
   userData?: EnhancedConversionData,
   value = 1,
 ) {
+  if (!contextTrackingAllowed()) return;
   if (trackedQuoteTransactions.has(confirmation.transactionId)) return;
   trackedQuoteTransactions.add(confirmation.transactionId);
 
@@ -154,6 +162,7 @@ export function trackQuoteConversion(
  * Average phone enquiry value: $3,000 (slightly lower than form — less qualified).
  */
 export function trackPhoneCallClick() {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "conversion", {
       send_to: CONVERSION_LABELS.PHONE_CALL,
@@ -174,6 +183,7 @@ export function trackPhoneCallClick() {
  * Track WhatsApp clicks as conversions
  */
 export function trackWhatsAppClick() {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "conversion", {
       send_to: CONVERSION_LABELS.WHATSAPP,
@@ -191,6 +201,7 @@ export function trackWhatsAppClick() {
 
 /** Track SMS composer opens as a secondary contact-intent event. */
 export function trackTextMessageClick() {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "conversion", {
       send_to: CONVERSION_LABELS.SMS,
@@ -208,6 +219,7 @@ export function trackTextMessageClick() {
 
 /** Track delivered visualiser leads separately from complete quote submissions. */
 export function trackVisualiserLeadConversion(userData?: EnhancedConversionData) {
+  if (!contextTrackingAllowed()) return;
   if (userData) pushEnhancedConversionData(userData);
 
   waitForGtag(() => {
@@ -230,6 +242,7 @@ export function trackVisualiserLeadConversion(userData?: EnhancedConversionData)
  * Track calculator usage — high-intent engagement signal
  */
 export function trackCalculatorUse(serviceType?: string, estimatedValue?: number) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "calculator_use", {
       event_category: "engagement",
@@ -253,6 +266,7 @@ export function trackCalculatorUse(serviceType?: string, estimatedValue?: number
  * Track callback request as conversion ("Call Me Back" widget)
  */
 export function trackCallbackConversion(userData?: EnhancedConversionData) {
+  if (!contextTrackingAllowed()) return;
   if (userData) {
     pushEnhancedConversionData(userData);
   }
@@ -277,6 +291,7 @@ export function trackCallbackConversion(userData?: EnhancedConversionData) {
  * Track page view for specific landing pages
  */
 export function trackLandingPageView(pageName: string) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "landing_page_view", {
       page_title: pageName,
@@ -298,6 +313,7 @@ export function trackLandingPageView(pageName: string) {
  * Track email link clicks
  */
 export function trackEmailClick() {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "email_click", {
       event_category: "engagement",
@@ -316,6 +332,7 @@ export function trackEmailClick() {
  * Track service page views for remarketing audiences
  */
 export function trackServicePageView(serviceName: string) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "view_item", {
       send_to: GOOGLE_ADS_ID,
@@ -340,6 +357,7 @@ export function trackServicePageView(serviceName: string) {
  * Track blog post views for content engagement remarketing
  */
 export function trackBlogPostView(postTitle: string, category: string) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "view_item", {
       send_to: GOOGLE_ADS_ID,
@@ -363,6 +381,7 @@ export function trackBlogPostView(postTitle: string, category: string) {
  * Track social sharing actions
  */
 export function trackSocialShare(platform: string, contentType: string, contentName: string) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "share", {
       method: platform,
@@ -376,6 +395,7 @@ export function trackSocialShare(platform: string, contentType: string, contentN
  * Track gallery/portfolio views — high intent signal
  */
 export function trackGalleryView(projectName?: string) {
+  if (!contextTrackingAllowed()) return;
   waitForGtag(() => {
     window.gtag!("event", "view_item_list", {
       send_to: GOOGLE_ADS_ID,
@@ -397,6 +417,7 @@ export function trackGalleryView(projectName?: string) {
  * Lower value than quote ($500) since it's top-of-funnel, but still a qualified lead.
  */
 export function trackGuideDownload(userData?: EnhancedConversionData) {
+  if (!contextTrackingAllowed()) return;
   if (userData) {
     pushEnhancedConversionData(userData);
   }
@@ -426,6 +447,7 @@ export function trackGuideDownload(userData?: EnhancedConversionData) {
  * Track guide page view for remarketing audiences
  */
 export function trackGuidePageView() {
+  if (!contextTrackingAllowed()) return;
   trackRemarketingEvent({
     pageCategory: "guide",
     serviceType: "homeowners_guide",
@@ -443,6 +465,7 @@ export function trackGuidePageView() {
  * Track suburb page views for geo-targeted remarketing
  */
 export function trackSuburbPageView(suburbName: string) {
+  if (!contextTrackingAllowed()) return;
   trackRemarketingEvent({
     pageCategory: "suburb",
     suburb: suburbName,
@@ -460,6 +483,7 @@ export function trackSuburbPageView(suburbName: string) {
  * Track referral form submission
  */
 export function trackReferralSubmission(userData?: EnhancedConversionData) {
+  if (!contextTrackingAllowed()) return;
   if (userData) {
     pushEnhancedConversionData(userData);
   }

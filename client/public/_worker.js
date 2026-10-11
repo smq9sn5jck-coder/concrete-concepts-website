@@ -1,5 +1,7 @@
 // Metadata source: seo-manifest.json is generated from the same verified route map.
 import { applySeoMetadata, filterPublicSitemap } from "./seo-manifest.js";
+import { baysideRequestBoundary, applyBaysideProductionHtml, finalizeBaysideArtifactResponse, bypassBaysideScopedCache } from "./bayside-production-policy.js";
+import { validateQuoteProjectContext, formatQuoteProjectContextLines } from "./quote-project-context.js";
 import {
   GENERATED_BATCH_ONE_BY_SLUG,
   GENERATED_BATCH_ONE_PREVIEW_ENABLED,
@@ -444,6 +446,7 @@ function formatWorkerJobBrief(brief) {
     `Known underground services: ${site.knownServices || "Not provided"}`,
     `Council / body corporate approval: ${workerLabel(site.approvalStatus)}`,
     `Special requirements: ${site.specialRequirements || "Not provided"}`,
+    ...(brief.projectContext ? ["", "PROJECT CONTEXT", ...formatQuoteProjectContextLines(brief.projectContext)] : []),
     "",
     "PHOTOS",
     ...(photos.length ? photos.map((photo, index) => `Photo ${index + 1}: ${photo.url}`) : ["No photos attached"]),
@@ -471,7 +474,9 @@ function validateWorkerJobBrief(brief) {
   if (!brief.consents || brief.consents.contact !== true || brief.consents.privacy !== true) return { valid: false, status: 400, error: "Contact consent and privacy acknowledgement are required." };
   if (photos.length > 8 || photos.some(photo => !photo || !/^https:\/\//.test(String(photo.url || "")) || !/^image\/(jpeg|png|webp|heic|heif)$/.test(String(photo.contentType || "")))) return { valid: false, status: 400, error: "One or more photo attachments are invalid." };
 
-  const details = formatWorkerJobBrief(brief);
+  const context = validateQuoteProjectContext(brief.projectContext, { streetAddress: location.streetAddress, services: scope.services });
+  if (!context.success) return { valid: false, status: 400, error: context.issues[0].message };
+  const details = formatWorkerJobBrief(context.data ? { ...brief, projectContext: context.data } : brief);
   return {
     valid: true,
     legacy: {
@@ -1756,7 +1761,7 @@ async function prepareStaticResponse(response, url, path, method) {
         headers,
       });
     }
-    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride, localityContext);
+    const html = applyBaysideProductionHtml(applySeoMetadata(await response.text(), url.pathname, robotsOverride, localityContext), url);
     return new Response(html, {
       status: response.status,
       statusText: response.statusText,
@@ -1773,8 +1778,12 @@ async function prepareStaticResponse(response, url, path, method) {
 
 export default {
   async fetch(request, env, ctx) {
+    const artifactUrl = new URL(request.url);
+    const result = await (async () => {
     const url = new URL(request.url);
     const path = url.pathname;
+    const baysideBoundary = baysideRequestBoundary(request, url);
+    if (baysideBoundary) return baysideBoundary;
 
     if (path === "/referral") {
       const redirect = handleReferralRedirect(request);
@@ -1854,6 +1863,10 @@ export default {
     // Static assets: use CF Cache API to avoid cold-start penalty on repeat visits
     if (request.method !== "POST" || !path.startsWith("/api/")) {
       if (request.method === "HEAD") {
+        const response = await env.ASSETS.fetch(request);
+        return prepareStaticResponse(response, url, path, request.method);
+      }
+      if (bypassBaysideScopedCache(url)) {
         const response = await env.ASSETS.fetch(request);
         return prepareStaticResponse(response, url, path, request.method);
       }
@@ -2001,5 +2014,7 @@ export default {
     // Unknown POST API routes fall through without being cached.
     const response = await env.ASSETS.fetch(request);
     return prepareStaticResponse(response, url, path, request.method, env);
+    })();
+    return finalizeBaysideArtifactResponse(result, artifactUrl);
   },
 };

@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { validateAustralianPhone } from "./leadValidation";
+import {
+  formatQuoteProjectContextLines,
+  validateQuoteProjectContext,
+} from "./quoteProjectContext";
 
 export const quoteServices = [
   "driveway",
@@ -21,6 +25,32 @@ export const quoteTimeframes = ["asap", "within_1_month", "one_to_three_months",
 
 const optionalShortText = z.string().trim().max(500).optional().default("");
 const optionalMeasurement = z.number().finite().positive().max(100_000).optional();
+
+// This preserves the established comprehensive quote body while making the
+// version-1 project context optional for baseline callers.
+const projectContextSchema = z.object({
+  audienceType: z.enum(["homeowner", "builder_developer"]),
+  structuralProjectType: z.enum([
+    "new_house",
+    "extension_slab",
+    "under_house_build_under",
+    "complete_extension",
+    "other_concrete",
+  ]),
+  plansReadiness: z.enum(["available", "in_progress", "not_available", "not_sure"]).optional(),
+  engineeringReadiness: z.enum(["available", "in_progress", "not_available", "not_sure"]).optional(),
+  soilFoundationReadiness: z.enum(["available", "in_progress", "not_available", "not_sure"]).optional(),
+  certifierApprovalStatus: z.enum(["approved", "in_progress", "not_started", "not_required", "not_sure"]).optional(),
+  builderCompanyName: z.string().trim().max(150).optional().default(""),
+  builderRole: z.string().trim().max(150).optional().default(""),
+  numberOfSitesOrPours: z.string().trim().max(500).optional().default(""),
+  requiredConcreteScope: z.string().trim().max(1_500).optional().default(""),
+  indicativeProgramme: z.string().trim().max(1_500).optional().default(""),
+  preferredFollowUp: z.string().trim().max(500).optional().default(""),
+  region: z.string().trim().max(150).optional().default(""),
+  landingRoute: z.string().trim().max(250).optional().default(""),
+  partnerIntroductionInterest: z.boolean().optional().default(false),
+}).strict();
 
 const photoSchema = z.object({
   url: z.string().url().refine((value) => value.startsWith("https://"), "Photo URL must use HTTPS"),
@@ -88,6 +118,7 @@ export const comprehensiveQuoteSchema = z
       specialRequirements: z.string().trim().max(1_500).optional().default(""),
     }),
     photos: z.array(photoSchema).max(8, "Upload no more than eight photos").default([]),
+    projectContext: projectContextSchema.optional(),
     consents: z.object({
       contact: z.literal(true, { message: "Contact consent is required" }),
       privacy: z.literal(true, { message: "Privacy acknowledgement is required" }),
@@ -102,6 +133,19 @@ export const comprehensiveQuoteSchema = z
         path: ["contact", "mobile"],
         message: "Enter an Australian mobile number beginning with 04",
       });
+    }
+    const projectContext = validateQuoteProjectContext(value.projectContext, {
+      streetAddress: value.location.streetAddress,
+      services: value.scope.services,
+    });
+    if (!projectContext.success) {
+      for (const issue of projectContext.issues) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: issue.path.split("."),
+          message: issue.message,
+        });
+      }
     }
   });
 
@@ -179,7 +223,7 @@ export function getQuoteBriefSections(quote: ComprehensiveQuote) {
     ? quote.photos.map((photo, index) => `Photo ${index + 1}: ${photo.url}`).join("\n")
     : "No photos attached";
 
-  return [
+  const sections = [
     {
       title: "CONTACT",
       lines: [
@@ -232,6 +276,13 @@ export function getQuoteBriefSections(quote: ComprehensiveQuote) {
     },
     { title: "PHOTOS", lines: photos.split("\n") },
   ];
+  if (quote.projectContext) {
+    sections.splice(2, 0, {
+      title: "PROJECT CONTEXT",
+      lines: formatQuoteProjectContextLines(quote.projectContext),
+    });
+  }
+  return sections;
 }
 
 export function formatQuoteBriefText(quote: ComprehensiveQuote) {

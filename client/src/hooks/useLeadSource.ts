@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { contextTrackingAllowed } from "@/lib/contextTrackingGate";
 
 /**
  * Lead source tracking hook.
@@ -24,6 +25,19 @@ export interface LeadSourceData {
   referrer: string | null;
   landingPage: string | null;
 }
+
+const NEUTRAL_LEAD_SOURCE: LeadSourceData = {
+  leadSource: "Direct",
+  utmSource: null,
+  utmMedium: null,
+  utmCampaign: null,
+  utmTerm: null,
+  utmContent: null,
+  gclid: null,
+  fbclid: null,
+  referrer: null,
+  landingPage: null,
+};
 
 function isInternalCustomerReferrer(referrer: string, currentHostname: string): boolean {
   if (!referrer) return false;
@@ -138,6 +152,7 @@ function captureLeadSource(): LeadSourceData {
 
 export function useLeadSource(): LeadSourceData {
   const [data, setData] = useState<LeadSourceData>(() => {
+    if (!contextTrackingAllowed()) return NEUTRAL_LEAD_SOURCE;
     // Check sessionStorage first (already captured this session)
     try {
       const stored = sessionStorage.getItem(STORAGE_KEY);
@@ -167,6 +182,7 @@ export function useLeadSource(): LeadSourceData {
  * Get lead source data without a hook (for use outside React components)
  */
 export function getLeadSourceData(): LeadSourceData {
+  if (!contextTrackingAllowed()) return NEUTRAL_LEAD_SOURCE;
   try {
     const stored = sessionStorage.getItem(STORAGE_KEY);
     if (stored) {

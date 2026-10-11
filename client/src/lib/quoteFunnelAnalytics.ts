@@ -1,3 +1,5 @@
+import { contextTrackingAllowed } from "@/lib/contextTrackingGate";
+
 export type QuoteFunnelEventName =
   | "quote_page_view"
   | "quote_step_reached"
@@ -170,6 +172,10 @@ export function createBufferedQuoteFunnelDispatch(
 
   const flush = () => {
     scheduled = false;
+    if (!contextTrackingAllowed()) {
+      queue.length = 0;
+      return;
+    }
     const collector = getCollector();
     if (collector?.track) {
       while (queue.length) {
@@ -195,6 +201,7 @@ export function createBufferedQuoteFunnelDispatch(
   };
 
   const dispatch: QuoteFunnelDispatch = (name, payload) => {
+    if (!contextTrackingAllowed()) return;
     const event = sanitizeQuoteFunnelEvent(name, payload);
     const collector = getCollector();
     if (collector?.track) {

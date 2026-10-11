@@ -10,6 +10,9 @@ import MetaPixelInit from "./components/MetaPixelInit";
 import WhatsAppButton from "./components/WhatsAppButton";
 import { captureUtmParams } from "@/lib/utm";
 import { GENERATED_OTHER_TRADE_PREVIEW_ENABLED } from "@/generated/otherTradeConfig";
+import { BAYSIDE_SOUTHEAST_PREVIEW_ENABLED, BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED } from "@/generated/baysideSoutheastConfig";
+import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
+import { getBaysideSoutheastRouteAccess } from "@shared/baysideSoutheastPublication";
 
 // Capture UTM parameters, gclid, fbclid, referrer on first page load
 captureUtmParams();
@@ -52,6 +55,9 @@ const southsidePreviewEnabled = import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true
 const SouthsideReviewPage = southsidePreviewEnabled
   ? lazy(() => import("./pages/SouthsideReviewPage"))
   : null;
+const BaysideSoutheastReviewPage = BAYSIDE_SOUTHEAST_PREVIEW_ENABLED
+  ? lazy(() => import("./pages/BaysideSoutheastReviewPage"))
+  : null;
 
 /** Minimal loading fallback for lazy routes */
 function PageLoader() {
@@ -72,6 +78,16 @@ function ReferralPreviewRedirect() {
   return <PageLoader />;
 }
 
+function BaysideSoutheastReviewRoute() {
+  const customerHost = typeof window !== "undefined" && isCustomerWebsiteHost(window.location.hostname);
+  const access = getBaysideSoutheastRouteAccess("/bayside-southeast-review", {
+    customerHost,
+    previewEnabled: BAYSIDE_SOUTHEAST_PREVIEW_ENABLED,
+    publishedEnabled: BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED,
+  });
+  return BaysideSoutheastReviewPage && access === "preview" ? <BaysideSoutheastReviewPage /> : <NotFound />;
+}
+
 function Router() {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -82,6 +98,9 @@ function Router() {
         <Route path={"/blog/:slug"} component={BlogPost} />
         <Route path={"/services/:serviceSlug"} component={ServicePage} />
         <Route path={"/areas"} component={ServiceAreasPage} />
+        {BaysideSoutheastReviewPage && (
+          <Route path={"/bayside-southeast-review"} component={BaysideSoutheastReviewRoute} />
+        )}
         {BatchOneReviewPage && (
           <Route path={"/batch-one-review"} component={BatchOneReviewPage} />
         )}

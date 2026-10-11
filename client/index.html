@@ -165,36 +165,87 @@
     <link rel="icon" type="image/png" sizes="192x192" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-monogram-favicon-192_a65feefd.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="https://d2xsxph8kpxj0f.cloudfront.net/310519663224384481/UhcRVNGrN3cwmYDv2dLhdW/ccg-favicon-180_53ac0b0d.png" />
 
+    <!-- Consume raw quote context and prove the URL is clean before tracking. -->
+    <script data-cfasync="false">
+      (function () {
+        var TRACKING_GATE = "__CCG_CONTEXT_TRACKING_ALLOWED";
+        var TOKEN_SLOT = "__CCG_QUOTE_CONTEXT_TOKEN";
+        var isolatedPreview = window.__CCG_ISOLATED_PREVIEW === true;
+        window[TRACKING_GATE] = false;
+
+        var current;
+        try {
+          current = new URL(window.location.href);
+          var normalizedHost = current.hostname.toLowerCase().replace(/\.+$/, "");
+          var customerHost = normalizedHost === "concreteconceptsgroup.com" || normalizedHost === "www.concreteconceptsgroup.com";
+          var candidateArtifact = "%VITE_BAYSIDE_SOUTHEAST_PREVIEW%" === "true" || "%VITE_BAYSIDE_SOUTHEAST_PUBLISHED%" === "true";
+          isolatedPreview = isolatedPreview || (candidateArtifact && !customerHost);
+          window[TRACKING_GATE] = !isolatedPreview;
+        } catch (_) {
+          return;
+        }
+
+        if (current.pathname.replace(/\/+$/, "") !== "/get-quote") return;
+        var contexts = current.searchParams.getAll("context");
+        if (contexts.length === 0) return;
+
+        // Close first: a no-op or throwing replacement must not leak the context.
+        window[TRACKING_GATE] = false;
+        var raw = contexts.length === 1 && /^[a-z0-9-]{1,96}$/.test(contexts[0])
+          ? contexts[0]
+          : null;
+        current.searchParams.delete("context");
+        current.pathname = "/get-quote";
+
+        try {
+          history.replaceState(history.state, "", current.pathname + current.search + current.hash);
+          var verified = new URL(window.location.href);
+          if (verified.pathname !== "/get-quote" || verified.searchParams.getAll("context").length !== 0) return;
+          if (raw) window[TOKEN_SLOT] = raw;
+          window[TRACKING_GATE] = !isolatedPreview;
+        } catch (_) {
+          // Leave the gate closed; the quote itself stays usable.
+        }
+      })();
+    </script>
+
     <!-- Google Ads Tag (gtag.js) - MUST initialize dataLayer+gtag BEFORE script loads -->
     <script>
       // Initialize dataLayer and gtag function IMMEDIATELY so events queue
       // even before the external script loads (Google's recommended pattern)
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){window.dataLayer.push(arguments);}
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', 'AW-18007005419', {
-        'allow_enhanced_conversions': true,
-        'conversion_linker': true,
-        'send_page_view': false
-      });
+      if (window.__CCG_CONTEXT_TRACKING_ALLOWED !== false) {
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        window.gtag = gtag;
+        gtag('js', new Date());
+        gtag('config', 'AW-18007005419', {
+          'allow_enhanced_conversions': true,
+          'conversion_linker': true,
+          'send_page_view': false
+        });
+        var ccgGtag = document.createElement('script');
+        ccgGtag.async = true;
+        ccgGtag.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18007005419';
+        document.head.appendChild(ccgGtag);
+      }
     </script>
-    <!-- Load gtag.js async (processes the queued dataLayer events when ready) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18007005419"></script>
 
     <!-- Meta Pixel (Facebook / Instagram) - deferred for performance -->
     <!-- Pixel ID is injected at runtime from VITE_META_PIXEL_ID env var -->
     <script>
-      window.addEventListener('load', function() {
-        !function(f,b,e,v,n,t,s)
-        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)}(window, document,'script',
-        'https://connect.facebook.net/en_US/fbevents.js');
-      });
+      if (window.__CCG_CONTEXT_TRACKING_ALLOWED !== false) {
+        window.addEventListener('load', function() {
+          if (window.__CCG_CONTEXT_TRACKING_ALLOWED === false) return;
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+        });
+      }
     </script>
 
 
@@ -298,10 +349,15 @@
       })();
     </script>
     <script data-cfasync="false" type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
+    <script>
+      if (window.__CCG_CONTEXT_TRACKING_ALLOWED !== false) {
+        var ccgUmami = document.createElement('script');
+        ccgUmami.defer = true;
+        ccgUmami.src = '%VITE_ANALYTICS_ENDPOINT%/umami';
+        ccgUmami.dataset.websiteId = '%VITE_ANALYTICS_WEBSITE_ID%';
+        document.head.appendChild(ccgUmami);
+      }
+    </script>
   </body>
 
 </html>

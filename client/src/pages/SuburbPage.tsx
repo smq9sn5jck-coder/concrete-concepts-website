@@ -21,6 +21,14 @@ import { BATCH_ONE_LOCALITY_BY_SLUG } from "@shared/localityContent";
 import { isBatchOneLocalityAvailable } from "@shared/batchOnePublication";
 import { SOUTHSIDE_LOCALITY_BY_SLUG } from "@shared/southsideLocalityContent";
 import { isSouthsideLocalityAvailable } from "@shared/southsidePublication";
+import {
+  BAYSIDE_SOUTHEAST_PREVIEW_ENABLED,
+  BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED,
+} from "@/generated/baysideSoutheastConfig";
+import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
+import BaysideSoutheastLocalJobsPage from "@/components/BaysideSoutheastLocalJobsPage";
+import { BAYSIDE_SOUTHEAST_BY_SLUG } from "@shared/baysideSoutheastLocalJobsContent";
+import { getBaysideSoutheastRouteAccess } from "@shared/baysideSoutheastPublication";
 
 interface SuburbData {
   slug: string;
@@ -2326,12 +2334,10 @@ const SUBURB_COORDS: Record<string, { lat: number; lng: number }> = {
 export default function SuburbPage() {
   const params = useParams<{ suburbSlug: string }>();
   const suburbSlug = params.suburbSlug || "";
+  const candidateRecord = BAYSIDE_SOUTHEAST_BY_SLUG[suburbSlug];
   const batchOneRecord = BATCH_ONE_LOCALITY_BY_SLUG[suburbSlug];
   const southsideRecord = SOUTHSIDE_LOCALITY_BY_SLUG[suburbSlug];
-  const customerHost = typeof window !== "undefined" && [
-    "concreteconceptsgroup.com",
-    "www.concreteconceptsgroup.com",
-  ].includes(window.location.hostname);
+  const customerHost = typeof window !== "undefined" && isCustomerWebsiteHost(window.location.hostname);
   const previewEnabled = import.meta.env.VITE_BATCH_ONE_PREVIEW === "true";
   const batchOneAvailable = batchOneRecord && isBatchOneLocalityAvailable(suburbSlug, {
     customerHost,
@@ -2341,7 +2347,16 @@ export default function SuburbPage() {
     customerHost,
     southsidePreviewEnabled: import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true",
   });
+  const candidateAccess = candidateRecord && getBaysideSoutheastRouteAccess(`/areas/${candidateRecord.slug}`, {
+    customerHost,
+    previewEnabled: BAYSIDE_SOUTHEAST_PREVIEW_ENABLED,
+    publishedEnabled: BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED,
+  });
   const suburb = SUBURBS[suburbSlug];
+
+  if (candidateRecord && (candidateAccess === "preview" || candidateAccess === "public")) {
+    return <BaysideSoutheastLocalJobsPage record={candidateRecord} />;
+  }
 
   if (batchOneAvailable) {
     return <BatchOneLocalityPage record={batchOneRecord} />;

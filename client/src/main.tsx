@@ -6,6 +6,8 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
+import { previewSubmissionsDisabled } from "./lib/previewSubmissionAccess";
+import { PreviewSubmissionDisabledError } from "@shared/previewSubmission";
 import "./index.css";
 
 const queryClient = new QueryClient({
@@ -67,6 +69,15 @@ const trpcClient = trpc.createClient({
       url: API_URL,
       transformer: superjson,
       fetch(input, init) {
+        // The Worker independently rejects candidate mutations. Stop the first
+        // POST here too: a noncustomer preview must not send a request merely
+        // to discover a terminal refusal and trigger a fallback path.
+        if (
+          previewSubmissionsDisabled()
+          && (init?.method ?? "GET").toUpperCase() === "POST"
+        ) {
+          return Promise.reject(new PreviewSubmissionDisabledError());
+        }
         return globalThis.fetch(input, {
           ...(init ?? {}),
           credentials: "include",

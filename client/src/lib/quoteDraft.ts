@@ -1,6 +1,8 @@
 export const QUOTE_DRAFT_STORAGE_KEY = "ccg-comprehensive-quote-draft-v1";
 export const QUOTE_DRAFT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1_000;
 
+let inMemoryDraft: string | null = null;
+
 export interface QuoteDraftData {
   name?: string;
   mobile?: string;
@@ -32,6 +34,33 @@ export interface QuoteDraftData {
   contactConsent?: boolean;
   privacyConsent?: boolean;
   marketingConsent?: boolean;
+  audienceType?: "homeowner" | "builder_developer";
+  structuralProjectType?: "new_house" | "extension_slab" | "under_house_build_under" | "complete_extension" | "other_concrete";
+  plansReadiness?: "available" | "in_progress" | "not_available" | "not_sure";
+  engineeringReadiness?: "available" | "in_progress" | "not_available" | "not_sure";
+  soilFoundationReadiness?: "available" | "in_progress" | "not_available" | "not_sure";
+  certifierApprovalStatus?: "approved" | "in_progress" | "not_started" | "not_required" | "not_sure";
+  builderCompanyName?: string;
+  builderRole?: string;
+  numberOfSitesOrPours?: string;
+  requiredConcreteScope?: string;
+  indicativeProgramme?: string;
+  preferredFollowUp?: string;
+  region?: string;
+  landingRoute?: string;
+  partnerIntroductionInterest?: boolean;
+}
+
+export function applyQuoteDraftUpdate<K extends keyof QuoteDraftData>(
+  current: QuoteDraftData,
+  key: K,
+  value: QuoteDraftData[K],
+): QuoteDraftData {
+  const next = { ...current, [key]: value };
+  const partnerEligible = next.structuralProjectType === "complete_extension"
+    && Boolean(next.services?.includes("slab"));
+  if (!partnerEligible) next.partnerIntroductionInterest = false;
+  return next;
 }
 
 interface StoredQuoteDraft {
@@ -63,16 +92,32 @@ export function parseQuoteDraft(raw: string | null, now = Date.now()): QuoteDraf
 }
 
 export function saveQuoteDraft(data: QuoteDraftData) {
+  const serialized = createQuoteDraft(data);
+  inMemoryDraft = serialized;
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(QUOTE_DRAFT_STORAGE_KEY, createQuoteDraft(data));
+  try {
+    window.localStorage.setItem(QUOTE_DRAFT_STORAGE_KEY, serialized);
+  } catch {
+    // Storage may be disabled; the current document keeps its local draft only.
+  }
 }
 
 export function loadQuoteDraft() {
-  if (typeof window === "undefined") return null;
-  return parseQuoteDraft(window.localStorage.getItem(QUOTE_DRAFT_STORAGE_KEY));
+  if (typeof window === "undefined") return parseQuoteDraft(inMemoryDraft);
+  try {
+    // An available storage state, including an explicit clear, is authoritative.
+    return parseQuoteDraft(window.localStorage.getItem(QUOTE_DRAFT_STORAGE_KEY));
+  } catch {
+    return parseQuoteDraft(inMemoryDraft);
+  }
 }
 
 export function clearQuoteDraft() {
+  inMemoryDraft = null;
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(QUOTE_DRAFT_STORAGE_KEY);
+  try {
+    window.localStorage.removeItem(QUOTE_DRAFT_STORAGE_KEY);
+  } catch {
+    // The in-memory draft has already been cleared.
+  }
 }
