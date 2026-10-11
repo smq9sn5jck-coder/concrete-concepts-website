@@ -15,5 +15,6 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["server/**/*.test.ts", "server/**/*.spec.ts"],
+    setupFiles: process.env.CCG_SAFE_TEST_MODE === "1" ? ["server/safe-test-network.setup.ts"] : [],
   },
 });

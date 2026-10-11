@@ -58,6 +58,7 @@ async function loadWorker(options: {
     "gold-coast-content.js",
     "regional-slab-content.js",
     "blog-content.js",
+    "bayside-southeast-content.js",
   ];
   for (const filename of sourceFiles) {
     copyFileSync(resolve(ROOT, "client/public", filename), resolve(directory, filename));

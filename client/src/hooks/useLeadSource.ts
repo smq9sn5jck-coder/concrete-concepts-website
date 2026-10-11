@@ -25,6 +25,81 @@ export interface LeadSourceData {
   landingPage: string | null;
 }
 
+declare global {
+  interface Window {
+    __CCG_CONTEXT_TRACKING_ALLOWED?: boolean;
+  }
+}
+
+const NEUTRAL_LEAD_SOURCE: LeadSourceData = {
+  leadSource: "Direct",
+  utmSource: null,
+  utmMedium: null,
+  utmCampaign: null,
+  utmTerm: null,
+  utmContent: null,
+  gclid: null,
+  fbclid: null,
+  referrer: null,
+  landingPage: null,
+};
+
+function contextTrackingAllowed(): boolean {
+  return typeof window === "undefined" || window.__CCG_CONTEXT_TRACKING_ALLOWED !== false;
+}
+
+function nullableString(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
+/** Remove preview-only context from persisted attribution without discarding campaigns. */
+function removeContextParameter(value: string | null): string | null {
+  if (!value) return null;
+  try {
+    const parsed = new URL(value, window.location.origin || "https://concreteconceptsgroup.com");
+    if (!parsed.searchParams.has("context")) return value;
+    parsed.searchParams.delete("context");
+    if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return parsed.href;
+    return `${parsed.pathname}${parsed.search}${parsed.hash}`;
+  } catch {
+    // An unparseable persisted location is not safe attribution data.
+    return null;
+  }
+}
+
+function sanitizeStoredLeadSource(value: unknown): LeadSourceData | null {
+  if (!value || typeof value !== "object") return null;
+  const record = value as Record<string, unknown>;
+  const landingPage = removeContextParameter(nullableString(record.landingPage));
+  const referrer = removeContextParameter(nullableString(record.referrer));
+  return {
+    leadSource: nullableString(record.leadSource) ?? "Direct",
+    utmSource: nullableString(record.utmSource),
+    utmMedium: nullableString(record.utmMedium),
+    utmCampaign: nullableString(record.utmCampaign),
+    utmTerm: nullableString(record.utmTerm),
+    utmContent: nullableString(record.utmContent),
+    gclid: nullableString(record.gclid),
+    fbclid: nullableString(record.fbclid),
+    referrer,
+    landingPage,
+  };
+}
+
+function loadStoredLeadSource(): LeadSourceData | null {
+  try {
+    const stored = sessionStorage.getItem(STORAGE_KEY);
+    if (!stored) return null;
+    const leadSource = sanitizeStoredLeadSource(JSON.parse(stored));
+    if (!leadSource) return null;
+    // Repair historical values containing context before they can be sent later.
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(leadSource));
+    return leadSource;
+  } catch {
+    return null;
+  }
+}
+
 function isInternalCustomerReferrer(referrer: string, currentHostname: string): boolean {
   if (!referrer) return false;
   try {
@@ -118,7 +193,7 @@ function detectLeadSource(params: URLSearchParams, referrer: string, currentHost
 
 function captureLeadSource(): LeadSourceData {
   const params = new URLSearchParams(window.location.search);
-  const referrer = document.referrer || "";
+  const referrer = removeContextParameter(document.referrer || "") || "";
 
   const leadSource = detectLeadSource(params, referrer, window.location.hostname || "");
 
@@ -132,21 +207,16 @@ function captureLeadSource(): LeadSourceData {
     gclid: params.get("gclid") || params.get("gbraid") || params.get("wbraid") || null,
     fbclid: params.get("fbclid"),
     referrer: referrer || null,
-    landingPage: window.location.pathname + window.location.search,
+    landingPage: removeContextParameter(window.location.pathname + window.location.search),
   };
 }
 
 export function useLeadSource(): LeadSourceData {
   const [data, setData] = useState<LeadSourceData>(() => {
+    if (!contextTrackingAllowed()) return NEUTRAL_LEAD_SOURCE;
     // Check sessionStorage first (already captured this session)
-    try {
-      const stored = sessionStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        return JSON.parse(stored);
-      }
-    } catch {
-      // sessionStorage not available
-    }
+    const stored = loadStoredLeadSource();
+    if (stored) return stored;
 
     // First visit in this session — capture now
     const captured = captureLeadSource();
@@ -167,14 +237,9 @@ export function useLeadSource(): LeadSourceData {
  * Get lead source data without a hook (for use outside React components)
  */
 export function getLeadSourceData(): LeadSourceData {
-  try {
-    const stored = sessionStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      return JSON.parse(stored);
-    }
-  } catch {
-    // sessionStorage not available
-  }
+  if (!contextTrackingAllowed()) return NEUTRAL_LEAD_SOURCE;
+  const stored = loadStoredLeadSource();
+  if (stored) return stored;
 
   // Capture fresh if not stored
   const captured = captureLeadSource();

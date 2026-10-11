@@ -19,6 +19,7 @@ declare global {
     umami?: {
       track: (name: string, data?: Record<string, QuoteFunnelValue>) => void;
     };
+    __CCG_CONTEXT_TRACKING_ALLOWED?: boolean;
   }
 }
 
@@ -67,6 +68,10 @@ const FAILURE_STAGES = new Set([
   "schema",
   "unknown",
 ]);
+
+function contextTrackingAllowed() {
+  return typeof window === "undefined" || window.__CCG_CONTEXT_TRACKING_ALLOWED !== false;
+}
 
 function safeEnum(value: unknown, allowed: Set<string>, fallback: string) {
   return typeof value === "string" && allowed.has(value) ? value : fallback;
@@ -170,6 +175,10 @@ export function createBufferedQuoteFunnelDispatch(
 
   const flush = () => {
     scheduled = false;
+    if (!contextTrackingAllowed()) {
+      queue.length = 0;
+      return;
+    }
     const collector = getCollector();
     if (collector?.track) {
       while (queue.length) {
@@ -195,6 +204,7 @@ export function createBufferedQuoteFunnelDispatch(
   };
 
   const dispatch: QuoteFunnelDispatch = (name, payload) => {
+    if (!contextTrackingAllowed()) return;
     const event = sanitizeQuoteFunnelEvent(name, payload);
     const collector = getCollector();
     if (collector?.track) {

@@ -1,6 +1,8 @@
 export const QUOTE_DRAFT_STORAGE_KEY = "ccg-comprehensive-quote-draft-v1";
 export const QUOTE_DRAFT_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1_000;
 
+let inMemoryDraft: string | null = null;
+
 export interface QuoteDraftData {
   name?: string;
   mobile?: string;
@@ -90,16 +92,34 @@ export function parseQuoteDraft(raw: string | null, now = Date.now()): QuoteDraf
 }
 
 export function saveQuoteDraft(data: QuoteDraftData) {
+  const serialized = createQuoteDraft(data);
+  inMemoryDraft = serialized;
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(QUOTE_DRAFT_STORAGE_KEY, createQuoteDraft(data));
+  try {
+    window.localStorage.setItem(QUOTE_DRAFT_STORAGE_KEY, serialized);
+  } catch {
+    // Privacy settings can deny storage. The current document still has a safe draft.
+  }
 }
 
 export function loadQuoteDraft() {
-  if (typeof window === "undefined") return null;
-  return parseQuoteDraft(window.localStorage.getItem(QUOTE_DRAFT_STORAGE_KEY));
+  if (typeof window === "undefined") return parseQuoteDraft(inMemoryDraft);
+  try {
+    const raw = window.localStorage.getItem(QUOTE_DRAFT_STORAGE_KEY);
+    // When storage is available, its current (including cleared/corrupt) state
+    // is authoritative. The memory fallback exists only for blocked storage.
+    return parseQuoteDraft(raw);
+  } catch {
+    return parseQuoteDraft(inMemoryDraft);
+  }
 }
 
 export function clearQuoteDraft() {
+  inMemoryDraft = null;
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(QUOTE_DRAFT_STORAGE_KEY);
+  try {
+    window.localStorage.removeItem(QUOTE_DRAFT_STORAGE_KEY);
+  } catch {
+    // The in-memory draft is already cleared; no recovery side effect is needed.
+  }
 }

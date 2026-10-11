@@ -20,7 +20,12 @@ import {
   type OtherTradeSubmission,
   type OtherTradeSubmissionResult,
 } from "@shared/otherTrade";
+import {
+  isPreviewSubmissionDisabled,
+  PreviewSubmissionDisabledError,
+} from "@shared/previewSubmission";
 import { GENERATED_OTHER_TRADE_CONSENT_TEXT_SHA256 } from "@/generated/otherTradeConfig";
+import { previewSubmissionsDisabled } from "@/lib/previewSubmissionAccess";
 
 const BUSINESS_EMAIL = "info@concreteconceptsgroup.com";
 const BUSINESS_PHONE = "0424 463 268";
@@ -80,11 +85,25 @@ type QuoteFallbackResult =
       error?: string;
     };
 
+function assertPreviewSubmissionAllowed() {
+  if (previewSubmissionsDisabled()) throw new PreviewSubmissionDisabledError();
+}
+
+function throwIfPreviewSubmissionDisabled(error: unknown): void {
+  // A preview may have become active between an initial check and a rejected
+  // transport. In that case an unknown error is still not authority to open a
+  // mail client, retry, or report a lead as delivered.
+  if (previewSubmissionsDisabled() || isPreviewSubmissionDisabled(error)) {
+    throw new PreviewSubmissionDisabledError();
+  }
+}
+
 /**
  * Submit form data by POSTing to the Pages Function.
  * Validation happens before delivery so invalid data cannot bypass tRPC.
  */
 export async function submitFormFallback(data: FormData): Promise<QuoteFallbackResult> {
+  assertPreviewSubmissionAllowed();
   const phoneValidation = validateAustralianPhone(data.phone);
   if (!phoneValidation.valid) throw new Error(phoneValidation.error);
 
@@ -161,12 +180,19 @@ export async function submitFormFallback(data: FormData): Promise<QuoteFallbackR
     }
 
     let apiError = `Delivery endpoint returned ${response.status}`;
+    let body: unknown;
     try {
-      const body = await response.json();
-      apiError = body.error || body.message || apiError;
+      body = await response.json();
+      if (body && typeof body === "object") {
+        const record = body as Record<string, unknown>;
+        apiError = typeof record.error === "string"
+          ? record.error
+          : typeof record.message === "string" ? record.message : apiError;
+      }
     } catch {
       // Preserve the status-based message for non-JSON responses.
     }
+    throwIfPreviewSubmissionDisabled(body);
 
     if (response.status === 400 || response.status === 422 || response.status === 429) {
       throw new Error(apiError);
@@ -176,6 +202,7 @@ export async function submitFormFallback(data: FormData): Promise<QuoteFallbackR
     openMailtoFallback(normalizedData);
     return { success: false, method: "mailto", error: apiError };
   } catch (err) {
+    throwIfPreviewSubmissionDisabled(err);
     if (
       err instanceof Error &&
       /Australian phone number|Australian mobile number|email address|concrete service|project description|South East Queensland|too many|already received|check the form/i.test(err.message)
@@ -195,6 +222,7 @@ export async function submitFormFallback(data: FormData): Promise<QuoteFallbackR
 
 /** Submit a callback lead without presenting it as a completed quote request. */
 export async function submitCallbackFallback(data: CallbackFallbackData): Promise<FallbackResult> {
+  assertPreviewSubmissionAllowed();
   const phoneValidation = validateAustralianPhone(data.phone);
   if (!phoneValidation.valid) throw new Error(phoneValidation.error);
 
@@ -234,12 +262,19 @@ export async function submitCallbackFallback(data: CallbackFallbackData): Promis
     if (response.ok) return { success: true, method: "api" };
 
     let apiError = `Delivery endpoint returned ${response.status}`;
+    let body: unknown;
     try {
-      const body = await response.json();
-      apiError = body.error || body.message || apiError;
+      body = await response.json();
+      if (body && typeof body === "object") {
+        const record = body as Record<string, unknown>;
+        apiError = typeof record.error === "string"
+          ? record.error
+          : typeof record.message === "string" ? record.message : apiError;
+      }
     } catch {
       // Preserve the status-based message for non-JSON responses.
     }
+    throwIfPreviewSubmissionDisabled(body);
 
     if (response.status === 400 || response.status === 422 || response.status === 429) {
       throw new Error(apiError);
@@ -248,6 +283,7 @@ export async function submitCallbackFallback(data: CallbackFallbackData): Promis
     openCallbackMailtoFallback(normalizedData);
     return { success: false, method: "mailto", error: apiError };
   } catch (err) {
+    throwIfPreviewSubmissionDisabled(err);
     if (
       err instanceof Error &&
       /Australian phone number|Australian mobile number|South East Queensland|too many|already received|check the form/i.test(err.message)
@@ -266,6 +302,7 @@ export async function submitCallbackFallback(data: CallbackFallbackData): Promis
 
 /** Submit a guide lead through the dedicated Cloudflare route. */
 export async function submitGuideFallback(data: GuideFallbackData): Promise<FallbackResult> {
+  assertPreviewSubmissionAllowed();
   if (data.name.trim().length < 2) throw new Error("Please enter your name.");
   if (!/^\S+@\S+\.\S+$/.test(data.email.trim())) throw new Error("Please enter a valid email address.");
 
@@ -302,17 +339,25 @@ export async function submitGuideFallback(data: GuideFallbackData): Promise<Fall
     if (response.ok) return { success: true, method: "api" };
 
     let apiError = `Delivery endpoint returned ${response.status}`;
+    let body: unknown;
     try {
-      const body = await response.json();
-      apiError = body.error || body.message || apiError;
+      body = await response.json();
+      if (body && typeof body === "object") {
+        const record = body as Record<string, unknown>;
+        apiError = typeof record.error === "string"
+          ? record.error
+          : typeof record.message === "string" ? record.message : apiError;
+      }
     } catch {
       // Preserve status-based message.
     }
+    throwIfPreviewSubmissionDisabled(body);
     if (response.status === 400 || response.status === 422 || response.status === 429) {
       throw new Error(apiError);
     }
     return { success: false, method: "mailto", error: apiError };
   } catch (err) {
+    throwIfPreviewSubmissionDisabled(err);
     if (err instanceof Error && /valid email|Australian phone|too many|already received|check the form/i.test(err.message)) {
       throw err;
     }
@@ -328,6 +373,7 @@ export async function submitGuideFallback(data: GuideFallbackData): Promise<Fall
 export async function submitOtherTradeFallback(
   data: OtherTradeSubmission,
 ): Promise<OtherTradeSubmissionResult> {
+  assertPreviewSubmissionAllowed();
   const name = data.name.trim().replace(/\s+/g, " ");
   if (name.length < OTHER_TRADE_LIMITS.nameMin || name.length > OTHER_TRADE_LIMITS.nameMax) {
     throw new Error("Please enter your name.");
@@ -365,29 +411,35 @@ export async function submitOtherTradeFallback(
   });
   if (!submissionSignals.allowed) throw new Error("Please check the form and try again.");
 
-  const response = await fetch("/api/other-trade-submit", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...data,
-      name,
-      mobile: phoneValidation.normalized,
-      email,
-      location: serviceArea.normalized,
-      description,
-      source: data.source || "need-another-trade",
-      landingPage: data.landingPage || window.location.pathname,
-    }),
-  });
-  const result = await response.json().catch(() => ({})) as OtherTradeSubmissionResult;
-  if (!response.ok || !result.success) {
-    return {
-      success: false,
-      retryable: response.status >= 500 || result.retryable === true,
-      error: result.error || "We couldn't confirm this request. Please retry or call 0424 463 268.",
-    };
+  try {
+    const response = await fetch("/api/other-trade-submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...data,
+        name,
+        mobile: phoneValidation.normalized,
+        email,
+        location: serviceArea.normalized,
+        description,
+        source: data.source || "need-another-trade",
+        landingPage: data.landingPage || window.location.pathname,
+      }),
+    });
+    const result = await response.json().catch(() => ({})) as OtherTradeSubmissionResult;
+    throwIfPreviewSubmissionDisabled(result);
+    if (!response.ok || !result.success) {
+      return {
+        success: false,
+        retryable: response.status >= 500 || result.retryable === true,
+        error: result.error || "We couldn't confirm this request. Please retry or call 0424 463 268.",
+      };
+    }
+    return result;
+  } catch (error) {
+    throwIfPreviewSubmissionDisabled(error);
+    throw error;
   }
-  return result;
 }
 
 /** Opens a pre-filled email draft. The customer must still press Send. */

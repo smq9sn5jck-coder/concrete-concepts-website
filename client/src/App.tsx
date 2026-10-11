@@ -18,7 +18,9 @@ import {
   REGIONAL_SLAB_PREVIEW_ENABLED,
   REGIONAL_SLAB_PUBLISHED_ENABLED,
 } from "@/generated/regionalSlabConfig";
+import { BAYSIDE_SOUTHEAST_PREVIEW_ENABLED } from "@/generated/baysideSoutheastConfig";
 import { getClientRegionalSlabRouteAccess } from "@/lib/regionalSlabPreviewAccess";
+import { getClientBaysideSoutheastRouteAccess } from "@/lib/baysideSoutheastPreviewAccess";
 import { isOtherTradePreviewAvailable } from "@/lib/otherTradePreviewAccess";
 
 // Capture UTM parameters, gclid, fbclid, referrer on first page load
@@ -85,6 +87,9 @@ const RegionalSlabServicePage = regionalSlabRoutesEnabled
 const RegionalSlabGuidePage = regionalSlabRoutesEnabled
   ? lazy(() => import("./pages/RegionalSlabGuidePage"))
   : null;
+const BaysideSoutheastReviewPage = BAYSIDE_SOUTHEAST_PREVIEW_ENABLED
+  ? lazy(() => import("./pages/BaysideSoutheastReviewPage"))
+  : null;
 
 /** Minimal loading fallback for lazy routes */
 function PageLoader() {
@@ -108,6 +113,12 @@ function ReferralPreviewRedirect() {
 function RegionalReviewRoute() {
   return RegionalSlabReviewPage && getClientRegionalSlabRouteAccess("/regional-slab-review").available
     ? <RegionalSlabReviewPage />
+    : <NotFound />;
+}
+
+function BaysideSoutheastReviewRoute() {
+  return BaysideSoutheastReviewPage && getClientBaysideSoutheastRouteAccess("/bayside-southeast-review").available
+    ? <BaysideSoutheastReviewPage />
     : <NotFound />;
 }
 
@@ -147,6 +158,9 @@ function Router() {
         <Route path={"/admin"} component={AdminDashboard} />
         <Route path={"/blog"} component={Blog} />
         <Route path={"/blog/:slug"} component={BlogPost} />
+        {BaysideSoutheastReviewPage && (
+          <Route path={"/bayside-southeast-review"} component={BaysideSoutheastReviewRoute} />
+        )}
         {RegionalSlabReviewPage && (
           <Route path={"/regional-slab-review"} component={RegionalReviewRoute} />
         )}

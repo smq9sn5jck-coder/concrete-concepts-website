@@ -46,6 +46,7 @@ async function loadWorker(options: { regionalPreview: boolean; regionalPublished
   for (const filename of [
     "_worker.js", "seo-manifest.js", "locality-content.js", "other-trade-config.js",
     "gold-coast-content.js", "regional-slab-content.js", "blog-content.js",
+    "bayside-southeast-content.js",
   ]) copyFileSync(resolve(ROOT, "client/public", filename), resolve(directory, filename));
 
   const regionalPath = resolve(directory, "regional-slab-content.js");

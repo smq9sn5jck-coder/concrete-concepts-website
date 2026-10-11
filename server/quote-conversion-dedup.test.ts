@@ -58,6 +58,24 @@ describe("confirmed quote conversion tracking", () => {
     expect(quoteFunction).toContain('event: "quote_submitted"');
     expect(quoteFunction).toContain("confirmation.transactionId");
   });
+
+  it("does not emit confirmed conversion signals while context cleanup has closed tracking", () => {
+    const dataLayer: unknown[] = [];
+    const fbq = vi.fn();
+    vi.stubGlobal("window", {
+      __CCG_CONTEXT_TRACKING_ALLOWED: false,
+      dataLayer,
+      fbq,
+    });
+
+    trackQuoteConversion(
+      { quoteId: 5160002, transactionId: "CCG-Q-context-gated" },
+      { email: "lead@example.com", phone: "0424 463 268", name: "Test Lead" },
+    );
+
+    expect(dataLayer).toEqual([]);
+    expect(fbq).not.toHaveBeenCalled();
+  });
 });
 
 describe("quote idempotency schema", () => {

@@ -35,6 +35,16 @@ import {
   GENERATED_REGIONAL_SLAB_PUBLISHED_ENABLED,
   getRegionalSlabRouteAccess,
 } from "./regional-slab-content.js";
+import {
+  GENERATED_BAYSIDE_SOUTHEAST_PREVIEW_ENABLED,
+  GENERATED_BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED,
+  GENERATED_BAYSIDE_SOUTHEAST_BY_PATH,
+  GENERATED_BAYSIDE_SOUTHEAST_REVIEW_PATH,
+  getBaysideSoutheastRouteAccess,
+  getBaysideSoutheastMetadata,
+  getBaysideSoutheastStructuredData,
+  renderBaysideSoutheastContentShell,
+} from "./bayside-southeast-content.js";
 
 const CUSTOMER_WEBSITE_HOSTS = new Set([
   "concreteconceptsgroup.com",
@@ -98,6 +108,7 @@ function finalizeWorkerResponse(response, requestUrl) {
   const headers = applySecurityHeaders(new Headers(response.headers));
   if (!isCustomerWebsiteHostname(requestUrl.hostname)) {
     headers.set("X-Robots-Tag", "noindex, nofollow");
+    if (!headers.has("Content-Security-Policy")) headers.set("Content-Security-Policy", buildHtmlContentSecurityPolicy());
   }
   return new Response(response.body, {
     status: response.status,
@@ -315,6 +326,17 @@ function jsonResponse(data, status = 200) {
 
 function trpcResponse(data, status = 200) {
   return jsonResponse({ result: { data: { json: data } } }, status);
+}
+
+function previewSubmissionRefusal(url, path) {
+  const previewCode = "PREVIEW_SUBMISSION_DISABLED";
+  const message = "Submissions are unavailable in this review preview. Nothing has been sent.";
+  if (path.startsWith("/api/trpc/")) {
+    const procedures = path.slice("/api/trpc/".length).split(",");
+    const error = procedure => ({ error: { json: { message, code: -32003, data: { code: "FORBIDDEN", httpStatus: 403, path: procedure, previewCode } } } });
+    return jsonResponse(url.searchParams.get("batch") === "1" || procedures.length > 1 ? procedures.map(error) : error(procedures[0]), 403);
+  }
+  return jsonResponse({ success: false, code: previewCode, error: message }, 403);
 }
 
 function trpcErrorResponse(message, status = 400) {
@@ -2023,6 +2045,35 @@ function parseTrpcBody(body) {
   return body;
 }
 
+function applyBaysideSoutheastHtml(html, path, customerHost) {
+  const access = getBaysideSoutheastRouteAccess(path, customerHost);
+  if (access !== "preview" && access !== "public") return html;
+  const review = path === GENERATED_BAYSIDE_SOUTHEAST_REVIEW_PATH;
+  const meta = review
+    ? { title: "Bayside and South-East Brisbane review | CCG", description: "Noindex review of five existing locality-page upgrades and local-only homeowner and builder quote paths.", canonical: path }
+    : getBaysideSoutheastMetadata(path);
+  if (!meta) return html;
+  const robots = access === "preview" || review ? "noindex, nofollow" : "index, follow";
+  const put = (pattern, tag) => pattern.test(html) ? html = html.replace(pattern, tag) : html = html.replace(/<\/head>/i, `${tag}</head>`);
+  put(/<title>[\s\S]*?<\/title>/i, `<title>${escapeWorkerHtml(meta.title)}</title>`);
+  put(/<meta\s+name=["']description["'][^>]*>/i, `<meta name="description" content="${escapeWorkerHtml(meta.description)}">`);
+  put(/<meta\s+name=["']robots["'][^>]*>/i, `<meta name="robots" content="${robots}">`);
+  const canonical = `https://concreteconceptsgroup.com${meta.canonical}`;
+  put(/<link\s+rel=["']canonical["'][^>]*>/i, `<link rel="canonical" href="${escapeWorkerHtml(canonical)}">`);
+  for (const [property, value] of [["og:title",meta.title],["og:description",meta.description],["og:url",canonical]]) {
+    put(new RegExp(`<meta\\s+property=["']${property}["'][^>]*>`, "i"), `<meta property="${property}" content="${escapeWorkerHtml(value)}">`);
+  }
+  // Candidate content owns its schema: do not carry legacy rating or hidden FAQ claims.
+  html = html.replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, "");
+  const schemas = review ? [] : getBaysideSoutheastStructuredData(path);
+  const schemaHtml = schemas.map(value => `<script type="application/ld+json" data-seo-head="true">${JSON.stringify(value).replaceAll("<", "\\u003c")}</script>`).join("");
+  html = html.replace(/<\/head>/i, `${schemaHtml}</head>`);
+  const content = review
+    ? `<main data-edge-bayside-southeast-shell="true"><h1>Bayside and South-East Brisbane review</h1><p>Noindex review only. Submissions are unavailable; nothing is forwarded.</p><ul>${Object.entries(GENERATED_BAYSIDE_SOUTHEAST_BY_PATH).map(([route,record]) => `<li><a href="${escapeWorkerHtml(route)}">${escapeWorkerHtml(record.locality)}</a><p>${escapeWorkerHtml(record.description)}</p></li>`).join("")}</ul></main>`
+    : renderBaysideSoutheastContentShell(path);
+  return html.replace(/(<div\s+id=["']root["'][^>]*>)[\s\S]*?<\/div>(\s*(?=<script\b))/i, `$1${content}</div>$2`);
+}
+
 async function prepareStaticResponse(response, url, path, method) {
   if (method === "GET" && path === "/sitemap.xml" && response.ok) {
     const xml = filterPublicSitemap(await response.text());
@@ -2074,7 +2125,17 @@ async function prepareStaticResponse(response, url, path, method) {
         headers,
       });
     }
-    const html = applySeoMetadata(await response.text(), url.pathname, robotsOverride, localityContext);
+    let html = applySeoMetadata(await response.text(), url.pathname, robotsOverride, localityContext);
+    html = applyBaysideSoutheastHtml(html, normalizeStaticPath(url.pathname) || url.pathname, isCustomerWebsiteHost);
+    if (GENERATED_BAYSIDE_SOUTHEAST_PREVIEW_ENABLED && !isCustomerWebsiteHost) {
+      // Independent edge gate, preceding every loader even if client flags drift.
+      html = html.replace(/<head\b[^>]*>/i, '$&<script data-cfasync="false">window.__CCG_ISOLATED_PREVIEW=true;window.__CCG_CONTEXT_TRACKING_ALLOWED=false;</script>');
+      html = html.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, "");
+      html = html.replace(/<link\b[^>]*(?:googletagmanager\.com|connect\.facebook\.net)[^>]*>/gi, "");
+    }
+    if (normalizeStaticPath(url.pathname) === "/get-quote" && url.searchParams.has("context")) {
+      html = html.replace(/<noscript\b[^>]*>[\s\S]*?<\/noscript>/gi, "");
+    }
     applyHtmlSecurityHeaders(headers, await getInlineScriptHashes(html));
     return new Response(html, {
       status: response.status,
@@ -2099,6 +2160,29 @@ export default {
     const customerHost = isCustomerWebsiteHostname(url.hostname);
     const isStaticRead = request.method === "GET" || request.method === "HEAD";
     const normalizedStaticPath = isStaticRead ? normalizeStaticPath(path) : null;
+    const previewArtifact = GENERATED_BAYSIDE_SOUTHEAST_PREVIEW_ENABLED && !customerHost;
+    const baysideAccess = normalizedStaticPath ? getBaysideSoutheastRouteAccess(normalizedStaticPath, customerHost) : "not-found";
+    if (customerHost && normalizedStaticPath === "/bayside-southeast-content.js") {
+      return notFoundHtmlResponse(new Response(null), url, request.method);
+    }
+    if (previewArtifact && request.method !== "OPTIONS") {
+      const boundaryPath = normalizeStaticPath(path);
+      const isApiPath = boundaryPath?.startsWith("/api/");
+      const knownMutationRead = isApiPath && /(?:\/(?:quote-submit|callback-submit|guide-submit|upload-photo|other-trade-submit)$|\.(?:submit|sendBookingLink|create|send|upload|qa|generate|timelapse|analyse)(?:,|$))/i.test(boundaryPath);
+      if (!isStaticRead || knownMutationRead || boundaryPath === null) {
+        return previewSubmissionRefusal(url, boundaryPath || path.toLowerCase());
+      }
+    }
+
+    if (isStaticRead && path.toLowerCase().startsWith(GENERATED_BAYSIDE_SOUTHEAST_REVIEW_PATH)) {
+      if (normalizedStaticPath !== GENERATED_BAYSIDE_SOUTHEAST_REVIEW_PATH || baysideAccess === "not-found") {
+        return notFoundHtmlResponse(new Response(null), url, request.method);
+      }
+    }
+    if (isStaticRead && (baysideAccess === "preview" || baysideAccess === "public")) {
+      const redirect = canonicalPathRedirect(url, normalizedStaticPath);
+      if (redirect) return redirect;
+    }
 
     if (isStaticRead && normalizedStaticPath === null && (
       path.toLowerCase().startsWith("/blog/")
@@ -2282,7 +2366,7 @@ export default {
     const goldCoastUpgradeAccess = goldCoastUpgradeSlug
       ? getGoldCoastLocalityUpgradeAccess(goldCoastUpgradeSlug, customerHost)
       : "not-found";
-    const typedLocalityAllowed = [batchOneAccess, southsideAccess, goldCoastUpgradeAccess]
+    const typedLocalityAllowed = [batchOneAccess, southsideAccess, goldCoastUpgradeAccess, baysideAccess]
       .some(access => access === "public" || access === "preview");
     if (
       (southsideSlug && southsideAccess === "not-found" && !typedLocalityAllowed)

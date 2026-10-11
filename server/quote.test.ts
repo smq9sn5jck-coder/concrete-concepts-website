@@ -4,6 +4,9 @@ import type { TrpcContext } from "./_core/context";
 import { sendQuoteNotificationEmail } from "./email";
 import { createOrGetQuoteRequest, getQuoteRequestBySubmissionId } from "./db";
 
+// The router also posts a fire-and-forget lead-engine webhook; keep it local.
+vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response('{}', { status: 200 })));
+
 // Mock the notification module
 vi.mock("./_core/notification", () => ({
   notifyOwner: vi.fn().mockResolvedValue(true),

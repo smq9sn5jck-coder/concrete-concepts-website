@@ -26,7 +26,14 @@ import {
   GOLD_COAST_PREVIEW_ENABLED,
   GOLD_COAST_PUBLISHED_ENABLED,
 } from "@/generated/goldCoastConfig";
+import {
+  BAYSIDE_SOUTHEAST_PREVIEW_ENABLED,
+  BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED,
+} from "@/generated/baysideSoutheastConfig";
 import { isCustomerWebsiteHost } from "@/lib/customerWebsiteHost";
+import BaysideSoutheastLocalJobsPage from "@/components/BaysideSoutheastLocalJobsPage";
+import { BAYSIDE_SOUTHEAST_BY_SLUG } from "@shared/baysideSoutheastLocalJobsContent";
+import { getBaysideSoutheastRouteAccess } from "@shared/baysideSoutheastPublication";
 interface SuburbData {
   slug: string;
   name: string;
@@ -2331,6 +2338,7 @@ const SUBURB_COORDS: Record<string, { lat: number; lng: number }> = {
 export default function SuburbPage() {
   const params = useParams<{ suburbSlug: string }>();
   const suburbSlug = params.suburbSlug || "";
+  const candidateRecord = BAYSIDE_SOUTHEAST_BY_SLUG[suburbSlug];
   const batchOneRecord = BATCH_ONE_LOCALITY_BY_SLUG[suburbSlug];
   const southsideRecord = SOUTHSIDE_LOCALITY_BY_SLUG[suburbSlug];
   const goldCoastUpgradeRecord = GOLD_COAST_UPGRADE_BY_SLUG[suburbSlug];
@@ -2345,11 +2353,20 @@ export default function SuburbPage() {
     southsidePreviewEnabled: import.meta.env.VITE_SOUTHSIDE_PREVIEW === "true",
   });
   const suburb = SUBURBS[suburbSlug];
+  const candidateAccess = getBaysideSoutheastRouteAccess(`/areas/${suburbSlug}`, {
+    customerHost,
+    previewEnabled: BAYSIDE_SOUTHEAST_PREVIEW_ENABLED,
+    publishedEnabled: BAYSIDE_SOUTHEAST_PUBLISHED_ENABLED,
+  });
 
   const goldCoastUpgradeAvailable = goldCoastUpgradeRecord && (
     (!customerHost && GOLD_COAST_PREVIEW_ENABLED)
     || (customerHost && GOLD_COAST_PUBLISHED_ENABLED)
   );
+
+  if (candidateRecord && (candidateAccess === "preview" || candidateAccess === "public")) {
+    return <BaysideSoutheastLocalJobsPage record={candidateRecord} />;
+  }
 
   if (goldCoastUpgradeAvailable) {
     return <BatchOneLocalityPage record={goldCoastUpgradeRecord} />;
