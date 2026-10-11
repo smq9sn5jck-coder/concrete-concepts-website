@@ -2063,6 +2063,9 @@ function applyBaysideSoutheastHtml(html, path, customerHost) {
   for (const [property, value] of [["og:title",meta.title],["og:description",meta.description],["og:url",canonical]]) {
     put(new RegExp(`<meta\\s+property=["']${property}["'][^>]*>`, "i"), `<meta property="${property}" content="${escapeWorkerHtml(value)}">`);
   }
+  for (const [name, value] of [["twitter:title",meta.title],["twitter:description",meta.description]]) {
+    put(new RegExp(`<meta\\s+name=["']${name}["'][^>]*>`, "i"), `<meta name="${name}" content="${escapeWorkerHtml(value)}">`);
+  }
   // Candidate content owns its schema: do not carry legacy rating or hidden FAQ claims.
   html = html.replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, "");
   const schemas = review ? [] : getBaysideSoutheastStructuredData(path);

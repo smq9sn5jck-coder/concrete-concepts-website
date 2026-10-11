@@ -52,6 +52,14 @@ describe('candidate preview refuses mutations before side effects',()=>{
 
 describe('candidate raw SEO and publication boundaries', () => {
  const paths=['/areas/wynnum','/areas/manly','/areas/cannon-hill','/areas/mount-gravatt','/areas/mansfield'];
+ it('replaces inherited Twitter metadata with the same candidate title and description as Open Graph',async()=>{
+  const w=await loadWorker();const m=mocks();
+  m.asset.mockImplementation(async()=>new Response('<html><head><meta name="twitter:title" content="Legacy"><meta name="twitter:description" content="Free quotes"><title>Legacy</title></head><body><div id="root"></div><script type="module" src="/assets/app.js"></script></body></html>',{headers:{'Content-Type':'text/html'}}));
+  const r=await w.fetch(new Request('https://review.pages.dev/areas/wynnum'),m.env,m.ctx);const html=await r.text();
+  expect(html).not.toContain('Free quotes');
+  expect(html.match(/name="twitter:title" content="([^"]*)"/)?.[1]).toBe(html.match(/property="og:title" content="([^"]*)"/)?.[1]);
+  expect(html.match(/name="twitter:description" content="([^"]*)"/)?.[1]).toBe(html.match(/property="og:description" content="([^"]*)"/)?.[1]);
+ });
  it.each(['/areas/wynnum','/get-quote','/bayside-southeast-review','/'])('closes tracking and removes all noscript pixels from preview %s',async path=>{
   const w=await loadWorker();const m=mocks();const r=await w.fetch(new Request('https://review.pages.dev'+path),m.env,m.ctx);const html=await r.text();
   expect(html).not.toContain('<noscript>');expect(html).toContain('window.__CCG_CONTEXT_TRACKING_ALLOWED=false');expect(html).toContain('window.__CCG_ISOLATED_PREVIEW=true');
