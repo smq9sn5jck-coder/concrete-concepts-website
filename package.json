@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "NODE_ENV=development tsx watch server/_core/index.ts",
-    "build": "pnpm quote:verify:source && pnpm locality:generate && pnpm other-trade:generate && pnpm bayside-southeast:generate && pnpm quote-context:bundle && CF_BUILD=1 vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && pnpm quote:verify:build && pnpm worker:bundle",
+    "build": "pnpm quote:verify:source && pnpm locality:generate && pnpm other-trade:generate && pnpm bayside-southeast:generate && pnpm quote-context:bundle && CF_BUILD=1 vite build && esbuild server/_core/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist && pnpm quote:verify:build && pnpm tracking:verify:build && pnpm worker:bundle",
     "build:batch-one-preview": "VITE_BATCH_ONE_PREVIEW=true pnpm run build",
     "build:southside-preview": "tsx scripts/buildSouthsidePreview.ts",
     "build:other-trade-preview": "VITE_OTHER_TRADE_PREVIEW=true pnpm run build",
@@ -24,7 +24,8 @@
     "quote:verify:source": "tsx scripts/quoteReleaseGuard.ts source .",
     "quote:verify:build": "tsx scripts/quoteReleaseGuard.ts build dist/public",
     "quote:verify:live": "tsx scripts/verifyLiveQuoteRoute.ts",
-    "quote:cloudflare": "tsx scripts/cloudflarePagesRelease.ts"
+    "quote:cloudflare": "tsx scripts/cloudflarePagesRelease.ts",
+    "tracking:verify:build": "tsx scripts/trackingDestinationGuard.ts dist/public/assets"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.693.0",
